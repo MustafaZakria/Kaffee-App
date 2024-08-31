@@ -1,4 +1,4 @@
-package com.example.kaffeeapp
+package com.example.kaffeeapp.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
