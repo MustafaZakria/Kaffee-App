@@ -1,7 +1,9 @@
 package com.example.kaffeeapp.model
 
-sealed class Resource<T>(val data: T?, val message: String?) {
+import kotlin.Exception
+
+sealed class Resource<T>(val data: T?, val exception: Exception?) {
     class Loading<T> : Resource<T>(null, null)
-    class Success<T>(data: T) : Resource<T>(data, null)
-    class Failure<T>(message: String) : Resource<T>(null, message)
+    class Success<T>(data: T?) : Resource<T>(data, null)
+    class Failure<T>(e: Exception?) : Resource<T>(null, e)
 }

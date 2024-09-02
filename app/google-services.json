@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1031111051214",
+    "project_id": "kaffee-app-8b7ab",
+    "storage_bucket": "kaffee-app-8b7ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031111051214:android:217e373075f56203f98d9f",
+        "android_client_info": {
+          "package_name": "com.example.kaffeeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDymDJapnzwQUCpfA8i7SlIpXDIKVcamAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

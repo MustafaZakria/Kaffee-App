@@ -27,7 +27,7 @@ fun NavGraph(
         composable(
             Screen.SignInScreen.route
         ) {
-            SignInScreen()
+            SignInScreen(null)
         }
     }
 }
