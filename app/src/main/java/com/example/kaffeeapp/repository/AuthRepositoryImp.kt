@@ -1,0 +1,73 @@
+package com.example.kaffeeapp.repository
+
+import android.content.Context
+import android.util.Log
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.Credential
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import com.example.kaffeeapp.R
+import com.example.kaffeeapp.model.Resource
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class AuthRepositoryImp @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val credentialManager: CredentialManager,
+) : AuthRepository {
+
+    override suspend fun requestSignIn(
+        context: Context,
+        filterByAuthorizedAccounts: Boolean
+    ): RequestCredentialResponse {
+        return try {
+            val googleIdOption = GetGoogleIdOption
+                .Builder()
+                // true - check if the user has any accounts that have previously been used to sign in to the app
+                .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
+                .setServerClientId(context.getString(R.string.web_client_id))
+                .setAutoSelectEnabled(false)
+                .build()
+            val credentialReq = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
+//            val credentialManager = CredentialManager.create(context)
+            val result = credentialManager.getCredential(
+                request = credentialReq,
+                context = context
+            )
+            Resource.Success(result.credential)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+
+    override suspend fun signInWithGoogle(credential: Credential): SignInWithGoogleResponse {
+        return try {
+            if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                val googleIdTokenCredential =
+                    GoogleIdTokenCredential.createFrom(credential.data)
+                val authCredential =
+                    GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+                val authResult = firebaseAuth.signInWithCredential(authCredential).await()
+                Resource.Success(true)
+            } else {
+                Resource.Failure(Exception("Received an invalid credential type"))
+            }
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+    suspend fun singOut() {
+        credentialManager.clearCredentialState(ClearCredentialStateRequest())
+    }
+}
