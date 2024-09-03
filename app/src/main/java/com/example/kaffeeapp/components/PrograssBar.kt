@@ -6,6 +6,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.kaffeeapp.presentation.sign_in.SignInScreen
+import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 
 @Composable
 fun ProgressBar() {
@@ -13,6 +17,16 @@ fun ProgressBar() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = Color.LightGray
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    KaffeeAppTheme {
+        ProgressBar()
     }
 }

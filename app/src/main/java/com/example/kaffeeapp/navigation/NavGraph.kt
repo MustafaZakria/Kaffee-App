@@ -19,15 +19,13 @@ fun NavGraph(
         composable(
             Screen.SplashScreen.route
         ) {
-            SplashScreen {
-                navController.navigate(Screen.SignInScreen.route)
-            }
+            SplashScreen()
         }
 
         composable(
             Screen.SignInScreen.route
         ) {
-            SignInScreen(null)
+            SignInScreen()
         }
     }
 }

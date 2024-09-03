@@ -13,7 +13,7 @@ interface AuthRepository {
 
     suspend fun requestSignIn(
         context: Context,
-        filterByAuthorizedAccounts: Boolean = true
+//        filterByAuthorizedAccounts: Boolean
     ): RequestCredentialResponse
 
     suspend fun signInWithGoogle(credential: Credential): SignInWithGoogleResponse

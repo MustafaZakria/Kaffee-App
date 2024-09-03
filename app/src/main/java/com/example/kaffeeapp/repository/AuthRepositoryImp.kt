@@ -21,26 +21,15 @@ import javax.inject.Singleton
 class AuthRepositoryImp @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val credentialManager: CredentialManager,
+    private val credentialRequest: GetCredentialRequest
 ) : AuthRepository {
 
     override suspend fun requestSignIn(
         context: Context,
-        filterByAuthorizedAccounts: Boolean
     ): RequestCredentialResponse {
         return try {
-            val googleIdOption = GetGoogleIdOption
-                .Builder()
-                // true - check if the user has any accounts that have previously been used to sign in to the app
-                .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
-                .setServerClientId(context.getString(R.string.web_client_id))
-                .setAutoSelectEnabled(false)
-                .build()
-            val credentialReq = GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
-                .build()
-//            val credentialManager = CredentialManager.create(context)
             val result = credentialManager.getCredential(
-                request = credentialReq,
+                request = credentialRequest,
                 context = context
             )
             Resource.Success(result.credential)

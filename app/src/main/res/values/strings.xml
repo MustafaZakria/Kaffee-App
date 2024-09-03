@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">KaffeeApp</string>
+    <string name="home_heading_1">Fall in Love with\nCoffee in Blissful\nDelight!</string>
+    <string name="home_heading_2">Welcome to our cozy coffee corner, where every cup is a delightful for you.</string>
     <string name="web_client_id">1031111051214-84q0a3tm9gs5qhkp8o3s91rhu48kf0il.apps.googleusercontent.com</string>
 </resources>

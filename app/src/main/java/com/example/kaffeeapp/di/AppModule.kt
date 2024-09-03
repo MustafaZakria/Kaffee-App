@@ -12,7 +12,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -29,8 +28,11 @@ class AppModule {
     @Provides
     fun provideGoogleIdOption(
         @ApplicationContext context: Context
-    ): GetGoogleIdOption = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(true)
-        .setServerClientId(context.getString(R.string.web_client_id)).setAutoSelectEnabled(false)
+    ): GetGoogleIdOption = GetGoogleIdOption
+        .Builder()
+        .setFilterByAuthorizedAccounts(false)
+        .setServerClientId(context.getString(R.string.web_client_id))
+        .setAutoSelectEnabled(false)
         .build()
 
     @Provides
@@ -48,7 +50,8 @@ class AppModule {
     @Singleton
     fun provideAuthRepo(
         auth: FirebaseAuth,
-        credentialManager: CredentialManager
-    ): AuthRepositoryImp = AuthRepositoryImp(auth, credentialManager)
+        credentialManager: CredentialManager,
+        credentialRequest: GetCredentialRequest
+    ): AuthRepositoryImp = AuthRepositoryImp(auth, credentialManager, credentialRequest)
 
 }
