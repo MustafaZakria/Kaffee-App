@@ -57,7 +57,7 @@ fun SignInScreen(
 
     val density = LocalDensity.current.density
     val screenWidth = LocalConfiguration.current.screenWidthDp
-    val largeDensitySize = (13 * density) * (screenWidth / 360f) // Scale based on width
+    val largeDensitySize = (12.5 * density) * (screenWidth / 360f) // Scale based on width
     val smallDensitySize = (6 * density) * (screenWidth / 360f) // Scale based on width
 
     val launcher =
@@ -82,7 +82,7 @@ fun SignInScreen(
             val availableHeight = maxHeight
             Image(
                 painter = painterResource(R.drawable.main_background),
-                contentDescription = "",
+                contentDescription = stringResource(id = R.string.coffee_img_desc),
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,26 +113,28 @@ fun SignInScreen(
 
                 Text(
                     text = stringResource(id = R.string.home_heading_1),
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displaySmall,
                     fontSize = largeDensitySize.sp,
                     fontFamily = sora,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Bold,
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(smallDensitySize.dp))
                 Text(
                     text = stringResource(id = R.string.home_heading_2),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontSize = smallDensitySize.sp,
                     fontFamily = sora,
                     fontWeight = FontWeight.Normal,
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.height(30.dp))
-                GoogleButton(isDarkTheme) {
-                    viewModel?.requestSignIn(context)
+                Spacer(modifier = Modifier.height((smallDensitySize * 1.5).dp))
+                GoogleButton(
+                    isDarkTheme
+                ) {
+                    viewModel.requestSignIn(context)
                 }
                 Spacer(modifier = Modifier.height(smallDensitySize.dp))
             }

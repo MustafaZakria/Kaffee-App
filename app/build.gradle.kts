@@ -93,4 +93,7 @@ dependencies {
 
     //Viewmodel
     implementation(libs.lifecycle.viewmodel.compose)
+
+    //lottie
+    implementation(libs.lottie.compose)
 }
