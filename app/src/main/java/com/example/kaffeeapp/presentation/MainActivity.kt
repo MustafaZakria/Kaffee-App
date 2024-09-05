@@ -45,26 +45,7 @@ class MainActivity : ComponentActivity() {
         NavGraph(
             navController = navController
         )
-        LaunchSplashScreen()
     }
-
-    @Composable
-    fun LaunchSplashScreen() {
-        var isLoading by remember { mutableStateOf(true) }
-
-        LaunchedEffect(Unit) {
-            delay(2000) // Adjust delay as needed
-            isLoading = false
-        }
-
-        if (isLoading) {
-            SplashScreen()
-        } else {
-            navigateToSignInScreen()
-        }
-    }
-
-    private fun navigateToSignInScreen() = navController.navigate(Screen.SignInScreen.route)
 }
 
 
