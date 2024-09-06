@@ -23,16 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
@@ -55,11 +52,6 @@ fun SignInScreen(
     val signInState = viewModel.signInWithGoogleResponse
     val requestState = viewModel.signInRequest
 
-    val density = LocalDensity.current.density
-    val screenWidth = LocalConfiguration.current.screenWidthDp
-    val largeDensitySize = (12.5 * density) * (screenWidth / 360f) // Scale based on width
-    val smallDensitySize = (6 * density) * (screenWidth / 360f) // Scale based on width
-
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -79,14 +71,13 @@ fun SignInScreen(
         BoxWithConstraints(
             contentAlignment = Alignment.TopCenter
         ) {
-            val availableHeight = maxHeight
             Image(
                 painter = painterResource(R.drawable.main_background),
                 contentDescription = stringResource(id = R.string.coffee_img_desc),
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(availableHeight * 0.7f)
+                    .height(maxHeight * 0.7f)
             )
         }
         Box(
@@ -114,29 +105,27 @@ fun SignInScreen(
                 Text(
                     text = stringResource(id = R.string.home_heading_1),
                     style = MaterialTheme.typography.displaySmall,
-                    fontSize = largeDensitySize.sp,
                     fontFamily = sora,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
-                Spacer(modifier = Modifier.height(smallDensitySize.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = stringResource(id = R.string.home_heading_2),
                     style = MaterialTheme.typography.titleSmall,
-                    fontSize = smallDensitySize.sp,
                     fontFamily = sora,
                     fontWeight = FontWeight.Normal,
                     color = Color.Gray,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(modifier = Modifier.height((smallDensitySize * 1.5).dp))
+                Spacer(modifier = Modifier.height(25.dp))
                 GoogleButton(
                     isDarkTheme
                 ) {
                     viewModel.requestSignIn(context)
                 }
-                Spacer(modifier = Modifier.height(smallDensitySize.dp))
+                Spacer(modifier = Modifier.height(15.dp))
             }
         }
     }
