@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.credentials.Credential
-import com.example.kaffeeapp.model.Resource
+import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.repository.RequestCredentialResponse
 
 @Composable

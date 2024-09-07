@@ -40,12 +40,11 @@ import com.example.kaffeeapp.presentation.sign_in.components.RequestSignIn
 import com.example.kaffeeapp.presentation.sign_in.components.SignInWithGoogle
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Fonts.sora
-import com.google.android.gms.common.api.ApiException
 
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
-//    navigateToProductsScreen: () -> Unit
+    navigateToMainScreen: () -> Unit
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val context = LocalContext.current
@@ -55,11 +54,7 @@ fun SignInScreen(
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                try {
-                    viewModel.requestSignIn(context)
-                } catch (it: ApiException) {
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
+                viewModel.requestSignIn(context)
             }
         }
 
@@ -150,7 +145,7 @@ fun SignInScreen(
     SignInWithGoogle(
         signInState = signInState,
         onSuccess = {
-//                navigateToProductsScreen.invoke()
+            navigateToMainScreen.invoke()
         },
         onError = { exception ->
             Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
@@ -166,6 +161,6 @@ fun SignInScreen(
 @Composable
 fun GreetingPreview() {
     KaffeeAppTheme {
-        SignInScreen()
+        SignInScreen() {}
     }
 }
