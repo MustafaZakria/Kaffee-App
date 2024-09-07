@@ -2,7 +2,7 @@ package com.example.kaffeeapp.repository
 
 import android.content.Context
 import androidx.credentials.Credential
-import com.example.kaffeeapp.model.Resource
+import com.example.kaffeeapp.util.model.Resource
 import com.google.firebase.auth.AuthResult
 
 

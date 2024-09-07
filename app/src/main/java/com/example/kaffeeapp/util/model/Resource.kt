@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.model
+package com.example.kaffeeapp.util.model
 
 import kotlin.Exception
 

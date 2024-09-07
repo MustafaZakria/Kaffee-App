@@ -8,8 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.credentials.Credential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kaffeeapp.model.Resource.Loading
-import com.example.kaffeeapp.model.Resource.Success
+import com.example.kaffeeapp.util.model.Resource.Loading
+import com.example.kaffeeapp.util.model.Resource.Success
+import com.example.kaffeeapp.repository.AuthRepository
 import com.example.kaffeeapp.repository.AuthRepositoryImp
 import com.example.kaffeeapp.repository.RequestCredentialResponse
 import com.example.kaffeeapp.repository.SignInWithGoogleResponse
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val repo: AuthRepositoryImp
+    private val repo: AuthRepository
 ) : ViewModel() {
 
     private val _signInRequest = mutableStateOf<RequestCredentialResponse>(Success(null))
