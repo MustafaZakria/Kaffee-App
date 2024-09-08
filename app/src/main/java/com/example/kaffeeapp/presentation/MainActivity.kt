@@ -26,7 +26,6 @@ import kotlinx.coroutines.delay
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: SignInViewModel by viewModels()
     private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +52,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     KaffeeAppTheme {
-        SignInScreen()
+//        SignInScreen()
     }
 }

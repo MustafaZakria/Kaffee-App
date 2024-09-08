@@ -8,12 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.credentials.Credential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kaffeeapp.repository.interfaces.AuthRepository
+import com.example.kaffeeapp.repository.interfaces.RequestCredentialResponse
+import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
 import com.example.kaffeeapp.util.model.Resource.Loading
 import com.example.kaffeeapp.util.model.Resource.Success
-import com.example.kaffeeapp.repository.AuthRepository
-import com.example.kaffeeapp.repository.AuthRepositoryImp
-import com.example.kaffeeapp.repository.RequestCredentialResponse
-import com.example.kaffeeapp.repository.SignInWithGoogleResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,15 +1,15 @@
 package com.example.kaffeeapp.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import com.example.kaffeeapp.R
+import com.example.kaffeeapp.repository.interfaces.AuthRepository
+import com.example.kaffeeapp.repository.interfaces.RequestCredentialResponse
+import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
 import com.example.kaffeeapp.util.model.Resource
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
