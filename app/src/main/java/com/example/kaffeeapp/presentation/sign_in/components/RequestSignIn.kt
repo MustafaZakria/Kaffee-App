@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.credentials.Credential
+import com.example.kaffeeapp.repository.interfaces.RequestCredentialResponse
 import com.example.kaffeeapp.util.model.Resource
-import com.example.kaffeeapp.repository.RequestCredentialResponse
 
 @Composable
 fun RequestSignIn(

@@ -1,10 +1,8 @@
-package com.example.kaffeeapp.repository
+package com.example.kaffeeapp.repository.interfaces
 
 import android.content.Context
 import androidx.credentials.Credential
 import com.example.kaffeeapp.util.model.Resource
-import com.google.firebase.auth.AuthResult
-
 
 typealias SignInWithGoogleResponse = Resource<Boolean>
 typealias RequestCredentialResponse = Resource<Credential>
@@ -12,10 +10,8 @@ typealias RequestCredentialResponse = Resource<Credential>
 interface AuthRepository {
 
     suspend fun requestSignIn(
-        context: Context,
-//        filterByAuthorizedAccounts: Boolean
+        context: Context
     ): RequestCredentialResponse
 
     suspend fun signInWithGoogle(credential: Credential): SignInWithGoogleResponse
-
 }

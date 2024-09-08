@@ -3,8 +3,8 @@ package com.example.kaffeeapp.presentation.sign_in.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
 import com.example.kaffeeapp.util.model.Resource
-import com.example.kaffeeapp.repository.SignInWithGoogleResponse
 
 @Composable
 fun SignInWithGoogle(

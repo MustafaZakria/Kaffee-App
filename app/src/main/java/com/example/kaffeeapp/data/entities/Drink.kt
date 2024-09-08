@@ -1,27 +1,31 @@
 package com.example.kaffeeapp.data.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.firebase.firestore.PropertyName
 
-data class Drink (
-    val id: Int = 0,
+@Entity(tableName = "drinks")
+data class Drink(
+    @PrimaryKey
+    val id: String = "",
     val name: String = "",
     val imageUrl: String = "",
-    val price: DrinkPrice = DrinkPrice(),
+    val price: Map<String, String> = mapOf(),
     val description: String = "",
-    val ingredients: ArrayList<String> = ArrayList(),
+    val ingredients: List<String> = arrayListOf(),
     @get:PropertyName("type")
     @set:PropertyName("type")
     var type: DrinkType = DrinkType.HOT
 )
 
 
-enum class DrinkType(val value: String) {
-    HOT("hot"),
-    COLD("cold");
+enum class DrinkType {
+    HOT,
+    COLD;
 
     companion object {
-        fun fromValue(value: String): DrinkType? {
-            return entries.find { it.value == value }
+        fun fromValue(value: String): DrinkType {
+            return valueOf(value.uppercase())
         }
     }
 }

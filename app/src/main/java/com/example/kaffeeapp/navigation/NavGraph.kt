@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.kaffeeapp.presentation.main.MainScreen
 import com.example.kaffeeapp.presentation.sign_in.SignInScreen
 import com.example.kaffeeapp.presentation.splash.SplashScreen
 
@@ -14,7 +15,7 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.SplashScreen.route
+        startDestination = Screen.MainScreen.route
     ) {
         composable(
             Screen.SplashScreen.route
@@ -30,6 +31,12 @@ fun NavGraph(
             SignInScreen() {
                 navController.navigate(Screen.MainScreen.route)
             }
+        }
+
+        composable(
+            Screen.MainScreen.route
+        ) {
+            MainScreen()
         }
     }
 }
