@@ -12,7 +12,7 @@ fun RootNavGraph(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Graph.AuthGraph.route,
+        startDestination = Graph.MainGraph.route,
         route = Graph.RootGraph.route
     ) {
         authNavGraph(navHostController = navHostController)
