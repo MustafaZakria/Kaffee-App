@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.sign_in
+package com.example.kaffeeapp.presentation.auth.sign_in
 
 import android.content.Context
 import android.content.Intent

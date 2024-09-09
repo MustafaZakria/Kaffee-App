@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.sign_in.components
+package com.example.kaffeeapp.presentation.auth.sign_in.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

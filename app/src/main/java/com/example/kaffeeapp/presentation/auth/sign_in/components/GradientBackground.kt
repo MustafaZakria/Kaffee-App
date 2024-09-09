@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.sign_in.components
+package com.example.kaffeeapp.presentation.auth.sign_in.components
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
