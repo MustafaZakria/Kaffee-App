@@ -14,7 +14,11 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val AccentColor = Color(0xFFC67C4E)
-val lightGrey = Color(0xFFA2A2A2)
+val LightGrey = Color(0xFFA2A2A2)
+
+val LightWhite = Color(0xFFF9F9F9)
+val NormalWhite = Color(0xFFF4F4F4)
+val DarkWhite = Color(0xFFEEEEEE)
 
 val ColorScheme.accentColor: Color
     @Composable
