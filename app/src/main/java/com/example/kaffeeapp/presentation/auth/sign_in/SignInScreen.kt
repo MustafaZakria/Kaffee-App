@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.sign_in
+package com.example.kaffeeapp.presentation.auth.sign_in
 
 import android.app.Activity.RESULT_OK
 import android.widget.Toast
@@ -34,10 +34,10 @@ import androidx.credentials.exceptions.NoCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.ProgressBar
-import com.example.kaffeeapp.presentation.sign_in.components.GoogleButton
-import com.example.kaffeeapp.presentation.sign_in.components.GradientBackground.gradientBackground
-import com.example.kaffeeapp.presentation.sign_in.components.RequestSignIn
-import com.example.kaffeeapp.presentation.sign_in.components.SignInWithGoogle
+import com.example.kaffeeapp.presentation.auth.sign_in.components.GoogleButton
+import com.example.kaffeeapp.presentation.auth.sign_in.components.GradientBackground.gradientBackground
+import com.example.kaffeeapp.presentation.auth.sign_in.components.RequestSignIn
+import com.example.kaffeeapp.presentation.auth.sign_in.components.SignInWithGoogle
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Fonts.sora
 

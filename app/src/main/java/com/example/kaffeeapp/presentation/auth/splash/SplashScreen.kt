@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.splash
+package com.example.kaffeeapp.presentation.auth.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.main
+package com.example.kaffeeapp.presentation.main.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
