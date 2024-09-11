@@ -2,9 +2,11 @@ package com.example.kaffeeapp.presentation.main.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -14,6 +16,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
+import com.example.kaffeeapp.presentation.auth.sign_in.components.GradientBackground.gradientBackground
+import com.example.kaffeeapp.ui.theme.bannerColorCenter
+import com.example.kaffeeapp.ui.theme.bannerColorEnd
+import com.example.kaffeeapp.ui.theme.bannerColorStart
 
 @Composable
 fun HomeScreen(
@@ -28,16 +34,34 @@ fun HomeScreen(
 @Composable
 fun MainScreenContent(drinks: List<Drink>) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = if (drinks.isNotEmpty()) {
-                drinks.toString()
-            } else {
-                "Loading"
-            },
-        )
+        //location section
+        //search and filter section
+        //offer photo section
+        //selected type section
+        //drinks section
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(maxHeight * 0.3f)
+                    .fillMaxWidth()
+                    .gradientBackground(
+                        listOf(
+                            MaterialTheme.colorScheme.bannerColorStart,
+                            MaterialTheme.colorScheme.bannerColorCenter,
+                            MaterialTheme.colorScheme.bannerColorEnd
+                        ), 240f
+                    )
+            ) {}
+        }
+
     }
 }
 
