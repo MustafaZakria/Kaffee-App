@@ -20,6 +20,23 @@ val LightWhite = Color(0xFFF9F9F9)
 val NormalWhite = Color(0xFFF4F4F4)
 val DarkWhite = Color(0xFFEEEEEE)
 
+val BannerColorStart = Color(0xFF111111)
+val BannerColorCenter = Color(0xFF212121)
+val BannerColorEnd = Color(0xFF313131)
+
+val ColorScheme.bannerColorStart: Color
+    @Composable
+    get() = BannerColorStart
+
+val ColorScheme.bannerColorCenter: Color
+    @Composable
+    get() = BannerColorCenter
+
+val ColorScheme.bannerColorEnd: Color
+    @Composable
+    get() = BannerColorEnd
+
+
 val ColorScheme.accentColor: Color
     @Composable
     get() = AccentColor
