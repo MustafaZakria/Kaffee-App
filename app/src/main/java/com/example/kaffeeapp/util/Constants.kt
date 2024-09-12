@@ -21,5 +21,9 @@ object Constants {
     const val CART_TITLE = "Cart"
     const val NOTIFICATIONS_TITLE = "Notifications"
 
+    const val COFFEE = "coffee"
+    const val TEA = "tea"
+    const val MATCHA = "matcha"
+
 
 }

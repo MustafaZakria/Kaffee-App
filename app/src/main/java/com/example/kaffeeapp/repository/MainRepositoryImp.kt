@@ -45,7 +45,11 @@ class MainRepositoryImp @Inject constructor(
 }
 
 enum class SelectedType {
+    ALL_DRINKS,
     HOT_DRINKS,
     COLD_DRINKS,
-    ALL_DRINKS
+    TEA,
+    MATCHA,
+    COFFEE,
+    SEARCHED_DRINK
 }

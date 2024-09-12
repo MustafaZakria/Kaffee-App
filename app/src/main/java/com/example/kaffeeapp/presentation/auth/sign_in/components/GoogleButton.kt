@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,7 @@ fun GoogleButton(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
             .border(
                 BorderStroke(
                     width = 1.dp,
@@ -54,23 +56,23 @@ fun GoogleButton(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(vertical = 5.dp)
+            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_x_small))
         ) {
             Image(
                 painterResource(id = R.drawable.google_logo),
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 5.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_x_small))
                     .size(30.dp)
             )
             Text(
                 text = "Continue with Google",
-                fontSize = 18.sp,
+                fontSize = with(LocalContext.current) { dimensionResource(id = R.dimen.text_size_medium).value.sp },
                 fontFamily = roboto,
                 fontWeight = FontWeight.Medium,
                 color = Color.Gray,
                 modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 5.dp)
+                    .padding(dimensionResource(id = R.dimen.padding_x_small))
             )
         }
     }

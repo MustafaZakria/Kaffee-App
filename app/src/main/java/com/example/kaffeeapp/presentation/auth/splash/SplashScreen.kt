@@ -28,8 +28,6 @@ fun SplashScreen(
     navigateToHomeScreen: () -> Unit
 ) {
     val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.coffee_anim))
-//    val progress by animateLottieCompositionAsState(composition = composition)
-
     LaunchedEffect(key1 = composition) {
         composition?.let {
             val delay = it.duration

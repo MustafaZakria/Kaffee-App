@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.ui.theme
 
-import android.provider.CalendarContract.Colors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -18,11 +17,23 @@ val LightGrey = Color(0xFFA2A2A2)
 
 val LightWhite = Color(0xFFF9F9F9)
 val NormalWhite = Color(0xFFF4F4F4)
+val NormalWhiteActive = Color(0xFFD8D8D8)
 val DarkWhite = Color(0xFFEEEEEE)
 
 val BannerColorStart = Color(0xFF111111)
 val BannerColorCenter = Color(0xFF212121)
 val BannerColorEnd = Color(0xFF313131)
+
+val SearchBackgroundColor = Color(0xFF2A2A2A)
+val LightRed = Color(0xFFED5151)
+
+val ColorScheme.lightRed: Color
+    @Composable
+    get() = LightRed
+
+val ColorScheme.searchBackgroundColor: Color
+    @Composable
+    get() = SearchBackgroundColor
 
 val ColorScheme.bannerColorStart: Color
     @Composable
@@ -35,6 +46,14 @@ val ColorScheme.bannerColorCenter: Color
 val ColorScheme.bannerColorEnd: Color
     @Composable
     get() = BannerColorEnd
+
+val ColorScheme.lightGrey: Color
+    @Composable
+    get() = LightGrey
+
+val ColorScheme.normalWhiteActive: Color
+    @Composable
+    get() = NormalWhiteActive
 
 
 val ColorScheme.accentColor: Color

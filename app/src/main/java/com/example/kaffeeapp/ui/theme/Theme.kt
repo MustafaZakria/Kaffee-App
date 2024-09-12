@@ -15,7 +15,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    surface = NormalWhite
+    surface = NormalWhite,
+    onBackground = NormalWhiteActive
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -23,6 +24,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40,
     surface = DarkWhite,
+    onBackground = NormalWhiteActive
 
     /* Other default colors to override
 
@@ -39,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
 fun KaffeeAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

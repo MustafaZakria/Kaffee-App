@@ -36,7 +36,7 @@ class DrinkRemoteDb @Inject constructor(
                     ingredients = (drinkData["ingredients"] as? List<*>)?.mapNotNull { it as? String }
                         ?: emptyList(),
                     price = price,
-                    type = DrinkType.fromValue(drinkData["type"] as? String ?: DrinkType.HOT.name)
+                    type = DrinkType.fromValue(drinkData["type"] as? String ?: "")
                 )
                 drinkList.add(drink)
             }
