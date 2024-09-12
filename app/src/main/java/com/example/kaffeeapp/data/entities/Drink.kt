@@ -25,7 +25,11 @@ enum class DrinkType {
 
     companion object {
         fun fromValue(value: String): DrinkType {
-            return valueOf(value.uppercase())
+            return try {
+                valueOf(value.uppercase())
+            } catch (e: Exception) {
+                HOT
+            }
         }
     }
 }
