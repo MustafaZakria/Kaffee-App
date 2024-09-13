@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.repository.SelectedType
+import com.example.kaffeeapp.repository.interfaces.MainRepository
+import com.example.kaffeeapp.util.model.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,13 +21,15 @@ class HomeViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    private val drinkSelectedType = MutableLiveData(SelectedType.ALL_DRINKS)
+    val drinkSelectedType = MutableLiveData(SelectedType.ALL_DRINKS)
 
     private var searchValueState by mutableStateOf("")
     private val isSearching by mutableStateOf(searchValueState != "")
 
+    var drinkApiResponse by mutableStateOf<Resource<Boolean>>(Resource.Success(null))
+
     val drinks: LiveData<List<Drink>> = drinkSelectedType.switchMap { type ->
-        if(!isSearching) {
+        if (!isSearching) {
             mainRepository.getAllDrinks(type)
         } else {
             mainRepository.getAllDrinks(type)
@@ -42,8 +45,9 @@ class HomeViewModel @Inject constructor(
     }
 
     init {
+        drinkApiResponse = Resource.Loading()
         viewModelScope.launch {
-            mainRepository.refreshDrinks()
+            drinkApiResponse = mainRepository.refreshDrinks()
         }
     }
 }

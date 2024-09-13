@@ -12,5 +12,7 @@
     <string name="promo">Promo</string>
     <string name="buy_one_get_one">Buy one get\none FREE</string>
     <string name="offer_img_desc">Offer</string>
+    <string name="error_img_desc">Error</string>
+    <string name="add_img_desc">Add coffee</string>
     <string name="drink_price">\$ %1$s</string>
 </resources>

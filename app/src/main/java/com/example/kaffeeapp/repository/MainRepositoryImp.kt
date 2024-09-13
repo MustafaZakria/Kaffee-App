@@ -16,8 +16,8 @@ class MainRepositoryImp @Inject constructor(
     private val drinkRemoteDb: DrinkRemoteDb
 ) : MainRepository {
 
-    override suspend fun refreshDrinks() {
-        try {
+    override suspend fun refreshDrinks(): Resource<Boolean> {
+        return try {
             when (val drinkResponse = drinkRemoteDb.getAllDrinks()) {
                 is Resource.Success -> {
                     drinkResponse.data?.let {
@@ -25,22 +25,26 @@ class MainRepositoryImp @Inject constructor(
                             drinkDao.insert(it)
                         }
                     }
+                    Resource.Success(true)
                 }
-
                 is Resource.Failure -> {
                     throw Exception(drinkResponse.exception)
                 }
-                else -> Unit
+                is Resource.Loading ->  {
+                    Resource.Loading()
+                }
             }
+
         } catch (e: Exception) {
-            Log.e("Main Repository", e.message.toString())
+            Resource.Failure(e)
         }
     }
 
     override fun getAllDrinks(type: SelectedType): LiveData<List<Drink>> = when (type) {
         SelectedType.HOT_DRINKS -> drinkDao.getAllHotDrinks()
         SelectedType.COLD_DRINKS -> drinkDao.getAllColdDrinks()
-        else -> drinkDao.getAllDrinks()
+        SelectedType.ALL_DRINKS -> drinkDao.getAllDrinks()
+        else -> drinkDao.getDrinksByIngredients("%${type.value}%")
     }
 }
 
