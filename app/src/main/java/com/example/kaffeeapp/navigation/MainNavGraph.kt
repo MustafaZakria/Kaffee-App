@@ -1,6 +1,8 @@
 package com.example.kaffeeapp.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,12 +18,14 @@ import com.example.kaffeeapp.util.Constants.NOTIFICATION_SCREEN
 
 @Composable
 fun MainNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    modifier: Modifier
 ) {
     NavHost(
         navController = navController,
         startDestination = MainScreen.HomeScreen.route,
-        route = Graph.MainGraph.route
+        route = Graph.MainGraph.route,
+//        modifier = modifier
     ) {
         composable(
             MainScreen.HomeScreen.route

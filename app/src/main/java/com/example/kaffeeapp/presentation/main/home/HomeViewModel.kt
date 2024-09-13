@@ -1,5 +1,8 @@
 package com.example.kaffeeapp.presentation.main.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,8 +22,23 @@ class HomeViewModel @Inject constructor(
 
     private val drinkSelectedType = MutableLiveData(SelectedType.ALL_DRINKS)
 
+    private var searchValueState by mutableStateOf("")
+    private val isSearching by mutableStateOf(searchValueState != "")
+
     val drinks: LiveData<List<Drink>> = drinkSelectedType.switchMap { type ->
-        mainRepository.getAllDrinks(type)
+        if(!isSearching) {
+            mainRepository.getAllDrinks(type)
+        } else {
+            mainRepository.getAllDrinks(type)
+        }
+    }
+
+    fun setSelectedType(type: SelectedType) {
+        drinkSelectedType.value = type
+    }
+
+    fun onSearchValueChange(value: String) {
+        searchValueState = value
     }
 
     init {
