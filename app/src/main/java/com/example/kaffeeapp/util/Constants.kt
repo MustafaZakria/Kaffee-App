@@ -25,5 +25,10 @@ object Constants {
     const val TEA = "tea"
     const val MATCHA = "matcha"
 
+    const val KEY_SMALL_SIZE = "small"
+    const val KEY_MEDIUM_SIZE = "medium"
+    const val KEY_LARGE_SIZE = "large"
+
+    const val ERROR = "error"
 
 }

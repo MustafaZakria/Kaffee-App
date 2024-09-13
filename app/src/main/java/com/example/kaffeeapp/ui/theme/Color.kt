@@ -14,6 +14,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val AccentColor = Color(0xFFC67C4E)
 val LightGrey = Color(0xFFA2A2A2)
+val NormalGrey = Color(0xFF313131)
 
 val LightWhite = Color(0xFFF9F9F9)
 val NormalWhite = Color(0xFFF4F4F4)
@@ -50,6 +51,10 @@ val ColorScheme.bannerColorEnd: Color
 val ColorScheme.lightGrey: Color
     @Composable
     get() = LightGrey
+
+val ColorScheme.normalGrey: Color
+    @Composable
+    get() = NormalGrey
 
 val ColorScheme.normalWhiteActive: Color
     @Composable

@@ -1,9 +1,9 @@
 package com.example.kaffeeapp.presentation.main
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.RippleAlpha
@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,13 +33,13 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.kaffeeapp.R
 import com.example.kaffeeapp.navigation.MainNavGraph
 import com.example.kaffeeapp.navigation.bottomNavItems
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.ui.theme.accentColor
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
     logout: () -> Unit
@@ -98,7 +99,7 @@ fun MainScreen(
                                                 painterResource(id = item.selectedIcon)
                                             else painterResource(id = item.unselectedItem),
                                             contentDescription = item.title,
-                                            modifier = Modifier.size(24.dp)
+                                            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
                                         )
                                     }
                                 },
@@ -117,8 +118,11 @@ fun MainScreen(
                     }
                 }
             }
-        ) {
-            MainNavGraph(navController = navHostController)
+        ) { innerPadding ->
+            MainNavGraph(
+                navController = navHostController,
+                modifier = Modifier.padding(innerPadding)
+            )
         }
     }
 }
