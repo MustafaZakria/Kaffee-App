@@ -25,10 +25,11 @@ fun SelectTypeCard(
     Card(
         modifier = Modifier
             .padding(
-                horizontal =
+                start =
                 if (type != SelectedType.ALL_DRINKS)
-                    dimensionResource(id = R.dimen.padding_small)
-                else (0.dp)
+                    dimensionResource(id = R.dimen.padding_x_small)
+                else (0.dp),
+                end =  dimensionResource(id = R.dimen.padding_x_small)
             ),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)),
         onClick = {
@@ -37,15 +38,15 @@ fun SelectTypeCard(
         colors =
         CardDefaults.cardColors().copy(
             containerColor = if (drinkSelectedType == type)
-                MaterialTheme.colorScheme.accentColor
-            else MaterialTheme.colorScheme.normalWhiteActive
+                MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.onSurface
         )
     ) {
         CustomizedText(
             text = type.value,
             fontSize = dimensionResource(id = R.dimen.text_size_medium),
             color = if (drinkSelectedType == type)
-                MaterialTheme.colorScheme.normalWhiteActive
+                MaterialTheme.colorScheme.onSurface
             else MaterialTheme.colorScheme.normalGrey,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(

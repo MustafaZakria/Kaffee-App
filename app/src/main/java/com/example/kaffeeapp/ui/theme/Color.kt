@@ -28,6 +28,12 @@ val BannerColorEnd = Color(0xFF313131)
 val SearchBackgroundColor = Color(0xFF2A2A2A)
 val LightRed = Color(0xFFED5151)
 
+val ErrorColor = Color(0xFFB00020)
+
+val ColorScheme.errorColor: Color
+    @Composable
+    get() = ErrorColor
+
 val ColorScheme.lightRed: Color
     @Composable
     get() = LightRed

@@ -121,7 +121,8 @@ fun MainScreen(
         ) { innerPadding ->
             MainNavGraph(
                 navController = navHostController,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
+                logout = logout
             )
         }
     }

@@ -23,7 +23,7 @@ fun CustomizedText(
     text: String,
     style: TextStyle = TextStyle.Default,
     fontSize: Dp,
-    color: Color,
+    color: Color = MaterialTheme.colorScheme.onSurface,
     fontWeight: FontWeight = FontWeight.Normal,
     textDecoration: TextDecoration? = null,
     modifier: Modifier = Modifier,
