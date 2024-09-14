@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
+import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.util.model.Resource

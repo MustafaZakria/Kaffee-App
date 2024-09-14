@@ -12,4 +12,6 @@ interface MainRepository {
     fun getAllDrinks(type: SelectedType): LiveData<List<Drink>>
 
     fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>>
+
+    suspend fun getDrinkById(id: String): Drink
 }
