@@ -19,8 +19,10 @@ fun RootNavGraph(
         composable(route = Graph.MainGraph.route) {
             MainScreen(
                 logout = {
-                    navHostController.navigate(Graph.AuthGraph.route) {
-                        popUpTo(0)
+                    navHostController.navigate(AuthScreen.SignInScreen.route) {
+                        popUpTo(navHostController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                     }
                 }
             )

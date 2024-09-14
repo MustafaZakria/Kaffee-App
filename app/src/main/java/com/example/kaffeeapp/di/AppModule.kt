@@ -14,6 +14,7 @@ import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.repository.MainRepositoryImp
 import com.example.kaffeeapp.util.Constants.DRINK_COLLECTION
 import com.example.kaffeeapp.util.Constants.DRINK_DATABASE_NAME
+import com.example.kaffeeapp.util.DispatcherProvider
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -26,6 +27,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 
@@ -104,4 +107,18 @@ class AppModule {
         drinkDao: DrinkDao,
         db: DrinkRemoteDb
     ): MainRepository = MainRepositoryImp(drinkDao, db)
+
+    @Singleton
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider = object : DispatcherProvider {
+        override val main: CoroutineDispatcher
+            get() = Dispatchers.Main
+        override val io: CoroutineDispatcher
+            get() = Dispatchers.IO
+        override val default: CoroutineDispatcher
+            get() = Dispatchers.Default
+        override val unconfined: CoroutineDispatcher
+            get() = Dispatchers.Unconfined
+
+    }
 }

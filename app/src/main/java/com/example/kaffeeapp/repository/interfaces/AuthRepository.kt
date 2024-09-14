@@ -14,4 +14,6 @@ interface AuthRepository {
     ): RequestCredentialResponse
 
     suspend fun signInWithGoogle(credential: Credential): SignInWithGoogleResponse
+
+    suspend fun singOut()
 }

@@ -29,4 +29,7 @@ interface DrinkDao {
 
     @Query("SELECT * FROM drinks WHERE ingredients like :ingredient COLLATE NOCASE")
     fun getDrinksByIngredients(ingredient: String): LiveData<List<Drink>>
+
+    @Query("SELECT * FROM drinks WHERE name like :drink COLLATE NOCASE")
+    fun getDrinksBySearch(drink: String): LiveData<List<Drink>>
 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.repository.interfaces.AuthRepository
 import com.example.kaffeeapp.repository.interfaces.RequestCredentialResponse
 import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
+import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource.Loading
 import com.example.kaffeeapp.util.model.Resource.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val repo: AuthRepository
+    private val repo: AuthRepository,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     private val _signInRequest = mutableStateOf<RequestCredentialResponse>(Success(null))
@@ -29,12 +31,12 @@ class SignInViewModel @Inject constructor(
     private val _signInWithGoogleResponse = mutableStateOf<SignInWithGoogleResponse>(Success(false))
     val signInWithGoogleResponse: State<SignInWithGoogleResponse> = _signInWithGoogleResponse
 
-    fun requestSignIn(context: Context) = viewModelScope.launch {
+    fun requestSignIn(context: Context) = viewModelScope.launch(dispatcherProvider.io) {
         _signInRequest.value = Loading()
         _signInRequest.value = repo.requestSignIn(context)
     }
 
-    fun signInWithGoogle(credential: Credential) = viewModelScope.launch {
+    fun signInWithGoogle(credential: Credential) = viewModelScope.launch(dispatcherProvider.io) {
         _signInWithGoogleResponse.value = Loading()
         _signInWithGoogleResponse.value = repo.signInWithGoogle(credential)
     }
