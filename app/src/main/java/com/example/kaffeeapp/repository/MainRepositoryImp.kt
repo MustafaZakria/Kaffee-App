@@ -48,6 +48,10 @@ class MainRepositoryImp @Inject constructor(
     override fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>> =
         drinkDao.getDrinksBySearch("%$drink%")
 
+    override suspend fun getDrinkById(id: String): Drink =
+        drinkDao.getDrinkById(id)
+
+
 }
 
 enum class SelectedType(val value: String) {

@@ -54,13 +54,13 @@ fun HomeScreen(
     val drinks by homeViewModel.drinks.observeAsState(emptyList())
     val selectedType by homeViewModel.drinkSelectedType.observeAsState(SelectedType.ALL_DRINKS)
     val drinksResponse = homeViewModel.drinkApiResponse
-    val searchState = homeViewModel.searchValueState.observeAsState("")
+    val searchState by homeViewModel.searchValueState.observeAsState("")
 
     MainScreenContent(
         drinks = drinks,
         drinksResponse = drinksResponse,
         onSearchValueChange = { value -> homeViewModel.onSearchValueChange(value) },
-        searchValue = searchState.value,
+        searchValue = searchState,
         logout = {
             logout.also {
                 homeViewModel.signOut()
@@ -84,7 +84,6 @@ fun MainScreenContent(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
     ) {
         val scrollState = rememberScrollState() //for drinks type row
 

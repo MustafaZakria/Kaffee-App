@@ -13,7 +13,7 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 @Composable
 fun ProgressBar() {
     Box(
-        modifier = Modifier.fillMaxSize(),
+//        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
         CircularProgressIndicator(
