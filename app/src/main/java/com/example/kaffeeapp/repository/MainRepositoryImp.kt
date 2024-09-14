@@ -1,16 +1,15 @@
 package com.example.kaffeeapp.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.util.model.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class MainRepositoryImp @Inject constructor(
     private val drinkDao: DrinkDao,
     private val drinkRemoteDb: DrinkRemoteDb
@@ -21,20 +20,19 @@ class MainRepositoryImp @Inject constructor(
             when (val drinkResponse = drinkRemoteDb.getAllDrinks()) {
                 is Resource.Success -> {
                     drinkResponse.data?.let {
-                        withContext(Dispatchers.IO) {
-                            drinkDao.insert(it)
-                        }
+                        drinkDao.insert(it)
                     }
                     Resource.Success(true)
                 }
+
                 is Resource.Failure -> {
                     throw Exception(drinkResponse.exception)
                 }
-                is Resource.Loading ->  {
+
+                is Resource.Loading -> {
                     Resource.Loading()
                 }
             }
-
         } catch (e: Exception) {
             Resource.Failure(e)
         }
@@ -46,6 +44,10 @@ class MainRepositoryImp @Inject constructor(
         SelectedType.ALL_DRINKS -> drinkDao.getAllDrinks()
         else -> drinkDao.getDrinksByIngredients("%${type.value}%")
     }
+
+    override fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>> =
+        drinkDao.getDrinksBySearch("%$drink%")
+
 }
 
 enum class SelectedType(val value: String) {

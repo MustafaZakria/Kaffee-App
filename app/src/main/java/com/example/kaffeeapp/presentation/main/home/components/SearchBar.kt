@@ -45,7 +45,7 @@ fun SearchBar(
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(id = R.string.search_img_desc),
-                    tint = MaterialTheme.colorScheme.normalWhiteActive
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             },
             colors = TextFieldDefaults.colors().copy(

@@ -56,7 +56,8 @@ class AuthRepositoryImp @Inject constructor(
         }
     }
 
-    suspend fun singOut() {
+    override suspend fun singOut() {
         credentialManager.clearCredentialState(ClearCredentialStateRequest())
+        firebaseAuth.signOut()
     }
 }

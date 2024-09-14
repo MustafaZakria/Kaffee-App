@@ -54,23 +54,31 @@ fun HomeScreen(
     val drinks by homeViewModel.drinks.observeAsState(emptyList())
     val selectedType by homeViewModel.drinkSelectedType.observeAsState(SelectedType.ALL_DRINKS)
     val drinksResponse = homeViewModel.drinkApiResponse
+    val searchState = homeViewModel.searchValueState.observeAsState("")
 
     MainScreenContent(
         drinks = drinks,
-        selectedType = selectedType,
         drinksResponse = drinksResponse,
-        logout = logout,
+        onSearchValueChange = { value -> homeViewModel.onSearchValueChange(value) },
+        searchValue = searchState.value,
+        logout = {
+            logout.also {
+                homeViewModel.signOut()
+            }
+        },
+        selectedType = selectedType,
         onDrinkTypeSelect = { type -> homeViewModel.setSelectedType(type = type) }
     )
-
 }
 
 @Composable
 fun MainScreenContent(
     drinks: List<Drink>,
-    selectedType: SelectedType,
     drinksResponse: Resource<Boolean>,
+    onSearchValueChange: (String) -> Unit,
+    searchValue: String,
     logout: () -> Unit,
+    selectedType: SelectedType,
     onDrinkTypeSelect: (SelectedType) -> Unit
 ) {
     Surface(
@@ -106,8 +114,8 @@ fun MainScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .requiredHeightIn(max = 50.dp),
-                searchStateValue = "",
-                onSearchValueChange = {},
+                searchStateValue = searchValue,
+                onSearchValueChange = { value -> onSearchValueChange(value) },
                 onClickFilterButton = {}
             )
             //spacer
@@ -247,7 +255,7 @@ fun MainPreview() {
         )
     )
     KaffeeAppTheme {
-        MainScreenContent(drinks, SelectedType.ALL_DRINKS, Resource.Loading(), {}) {}
+        MainScreenContent(drinks, Resource.Loading(), {}, "", {}, SelectedType.ALL_DRINKS) {}
     }
 
 }

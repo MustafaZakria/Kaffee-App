@@ -4,6 +4,8 @@ import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.util.model.Resource
 import com.google.firebase.firestore.CollectionReference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton

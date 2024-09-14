@@ -60,7 +60,7 @@ fun DrinkCard(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_10))
         ) {
             var imageLoadingState by rememberSaveable { mutableStateOf(true) }
-            var imageErrorState by rememberSaveable { mutableStateOf(true) }
+            var imageErrorState by rememberSaveable { mutableStateOf(false) }
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

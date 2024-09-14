@@ -26,7 +26,10 @@ fun DrinksSection(
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment =
+        (if (drinksResponse is Resource.Loading || drinks.isEmpty())
+            Alignment.Center
+        else Alignment.TopStart)
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -45,6 +48,9 @@ fun DrinksSection(
         }
         if (drinksResponse is Resource.Loading) {
             ProgressBar()
+        }
+        if (drinks.isEmpty() && drinksResponse !is Resource.Loading) {
+            EmptyList()
         }
     }
 }

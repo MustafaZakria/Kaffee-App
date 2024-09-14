@@ -12,8 +12,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.ui.theme.accentColor
-import com.example.kaffeeapp.ui.theme.normalWhiteActive
 
 @Composable
 fun FilterButton(
@@ -26,12 +24,12 @@ fun FilterButton(
         IconButton(
             onClick = { onClickFilterButton.invoke() },
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.accentColor)
+                .background(MaterialTheme.colorScheme.primary)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.filter_icon),
                 contentDescription = stringResource(id = R.string.filter_img_desc),
-                tint = MaterialTheme.colorScheme.normalWhiteActive,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
             )
         }
