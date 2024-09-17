@@ -24,6 +24,8 @@ class SignInViewModel @Inject constructor(
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
+    val isUserAuthenticated get() = repo.isUserAuthenticatedInFirebase
+
     private val _signInRequest = mutableStateOf<RequestCredentialResponse>(Success(null))
     val signInRequest: State<RequestCredentialResponse> = _signInRequest
 
