@@ -53,8 +53,8 @@ fun MainNavGraph(
         composable(
             MainScreen.FavouriteScreen.route
         ) { backStackEntry ->
-            val detailsViewModel =
-                backStackEntry.sharedViewModel<DrinkDetailsViewModel>(navController = navController)
+//            val detailsViewModel =
+//                backStackEntry.sharedViewModel<DrinkDetailsViewModel>(navController = navController)
             FavouriteScreen()
         }
         composable(

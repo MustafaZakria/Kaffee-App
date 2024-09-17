@@ -40,11 +40,10 @@ import com.example.kaffeeapp.presentation.main.home.components.DrinksSelectTypeS
 import com.example.kaffeeapp.presentation.main.home.components.FilterButton
 import com.example.kaffeeapp.presentation.main.home.components.OfferBannerSection
 import com.example.kaffeeapp.presentation.main.home.components.SearchBar
-import com.example.kaffeeapp.repository.SelectedType
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.ui.theme.lightGrey
 import com.example.kaffeeapp.ui.theme.searchBackgroundColor
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.model.SelectedType
 
 @Composable
 fun HomeScreen(

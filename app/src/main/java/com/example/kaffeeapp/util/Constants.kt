@@ -15,7 +15,11 @@ object Constants {
     const val AUTH_GRAPH = "auth_graph"
     const val ROOT_GRAPH = "root_graph"
 
-    const val DRINK_COLLECTION = "drinks"
+    const val DRINKS_COLLECTION = "drinks"
+    const val USERS_COLLECTION = "users"
+
+    const val FAV_DRINKS_KEY = "favourite drinks"
+    const val ORDERS_KEY = "orders"
 
     const val DRINK_DATABASE_NAME = "drink.db"
 
@@ -23,10 +27,6 @@ object Constants {
     const val FAVOURITE_TITLE = "Favourite"
     const val CART_TITLE = "Cart"
     const val NOTIFICATIONS_TITLE = "Notifications"
-
-    const val COFFEE = "coffee"
-    const val TEA = "tea"
-    const val MATCHA = "matcha"
 
     const val KEY_SMALL_SIZE = "small"
     const val SMALL_SHORTENED = "S"
@@ -36,5 +36,7 @@ object Constants {
     const val LARGE_SHORTENED = "L"
 
     const val ERROR = "error"
+
+    const val SHARED_PREFERENCE_NAME = "drinks shared pref"
 
 }
