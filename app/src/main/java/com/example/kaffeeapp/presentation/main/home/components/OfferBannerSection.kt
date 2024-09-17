@@ -31,7 +31,7 @@ fun OfferBannerSection(
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large))),
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium))),
             painter = painterResource(id = R.drawable.img_offer_banner),
             contentDescription = stringResource(id = R.string.offer_img_desc),
             contentScale = ContentScale.Crop

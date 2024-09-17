@@ -18,12 +18,19 @@ fun ImageLoaderWithUrl(
 ) {
     var imageLoadingState by rememberSaveable { mutableStateOf(true) }
     var imageErrorState by rememberSaveable { mutableStateOf(false) }
+
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
             .listener(
-                onStart = { imageLoadingState = true },
-                onSuccess = { _, _ -> imageLoadingState = false },
+                onStart = {
+                    imageLoadingState = true
+                    imageErrorState = false
+                },
+                onSuccess = { _, _ ->
+                    imageLoadingState = false
+                    imageErrorState = false
+                },
                 onError = { _, _ ->
                     imageLoadingState = false
                     imageErrorState = true

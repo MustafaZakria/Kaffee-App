@@ -13,6 +13,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val AccentColor = Color(0xFFC67C4E)
+val LightBrown = Color(0xFFF9F2ED)
 val LightGrey = Color(0xFFA2A2A2)
 val NormalGrey = Color(0xFF313131)
 
@@ -33,6 +34,10 @@ val ErrorColor = Color(0xFFB00020)
 val ColorScheme.errorColor: Color
     @Composable
     get() = ErrorColor
+
+val ColorScheme.lightBrown: Color
+    @Composable
+    get() = LightBrown
 
 val ColorScheme.lightRed: Color
     @Composable

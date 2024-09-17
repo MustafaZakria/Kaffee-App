@@ -7,6 +7,9 @@ object Constants {
     const val FAVOURITE_SCREEN = "favourite_screen"
     const val CART_SCREEN = "cart_screen"
     const val NOTIFICATION_SCREEN = "notification_screen"
+    const val DRINK_DETAIL_SCREEN = "drink_detail_screen"
+
+    const val DRINK_ID_KEY = "id"
 
     const val MAIN_GRAPH = "main_graph"
     const val AUTH_GRAPH = "auth_graph"
@@ -26,8 +29,11 @@ object Constants {
     const val MATCHA = "matcha"
 
     const val KEY_SMALL_SIZE = "small"
+    const val SMALL_SHORTENED = "S"
     const val KEY_MEDIUM_SIZE = "medium"
+    const val MEDIUM_SHORTENED = "M"
     const val KEY_LARGE_SIZE = "large"
+    const val LARGE_SHORTENED = "L"
 
     const val ERROR = "error"
 

@@ -35,9 +35,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.navigation.MainNavGraph
-import com.example.kaffeeapp.navigation.bottomNavItems
+import com.example.kaffeeapp.navigation.model.bottomNavItems
+import com.example.kaffeeapp.navigation.model.bottomNavRoutes
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.ui.theme.accentColor
+import com.example.kaffeeapp.util.Utils.clearRippleConfiguration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,76 +47,70 @@ fun MainScreen(
     logout: () -> Unit
 ) {
     val navHostController = rememberNavController()
-    val clearRippleConfiguration = RippleConfiguration(
-        color = Color.Transparent, rippleAlpha = RippleAlpha(
-            draggedAlpha = 0.0f,
-            focusedAlpha = 0.0f,
-            hoveredAlpha = 0.0f,
-            pressedAlpha = 0.0f,
-        )
-    )
+
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
             bottomBar = {
-                CompositionLocalProvider(
-                    LocalRippleConfiguration provides clearRippleConfiguration
-                ) {
-                    NavigationBar(
-                        containerColor = Color.White,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(24.dp))
-                            .height(80.dp)
+                if (currentDestination?.route in bottomNavRoutes) {
+                    CompositionLocalProvider(
+                        LocalRippleConfiguration provides clearRippleConfiguration
                     ) {
-                        val navBackStackEntry by navHostController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
-
-                        Spacer(modifier = Modifier.weight(0.2f))
-                        bottomNavItems.forEach { item ->
-                            NavigationBarItem(
-                                selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                                onClick = {
-                                    navHostController.navigate(item.route) {
-                                        //avoid large stack
-                                        popUpTo(navHostController.graph.findStartDestination().id) {
-                                            saveState = true
+                        NavigationBar(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
+                                .height(80.dp)
+                        ) {
+                            Spacer(modifier = Modifier.weight(0.2f))
+                            bottomNavItems.forEach { item ->
+                                NavigationBarItem(
+                                    selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
+                                    onClick = {
+                                        navHostController.navigate(item.route) {
+                                            //avoid large stack
+                                            popUpTo(navHostController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            //avoid multiple copies on re-selecting same item
+                                            launchSingleTop = true
+                                            //restore state
+                                            restoreState = true
                                         }
-                                        //avoid multiple copies on re-selecting same item
-                                        launchSingleTop = true
-                                        //restore state
-                                        restoreState = true
-                                    }
-                                },
-                                icon = {
-                                    BadgedBox(
-                                        badge = {
-                                            if (item.hasUpdate)
-                                                Badge()
+                                    },
+                                    icon = {
+                                        BadgedBox(
+                                            badge = {
+                                                if (item.hasUpdate)
+                                                    Badge()
+                                            }
+                                        ) {
+                                            Icon(
+                                                painter = if (currentDestination?.hierarchy?.any { it.route == item.route } == true)
+                                                    painterResource(id = item.selectedIcon)
+                                                else painterResource(id = item.unselectedItem),
+                                                contentDescription = item.title,
+                                                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
+                                            )
                                         }
-                                    ) {
-                                        Icon(
-                                            painter = if (currentDestination?.hierarchy?.any { it.route == item.route } == true)
-                                                painterResource(id = item.selectedIcon)
-                                            else painterResource(id = item.unselectedItem),
-                                            contentDescription = item.title,
-                                            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-                                        )
-                                    }
-                                },
-                                colors = NavigationBarItemColors(
-                                    selectedIconColor = MaterialTheme.colorScheme.accentColor,
-                                    unselectedIconColor = Color.Gray,
-                                    selectedIndicatorColor = Color.Transparent,
-                                    unselectedTextColor = Color.Transparent,
-                                    disabledIconColor = Color.Transparent,
-                                    disabledTextColor = Color.Transparent,
-                                    selectedTextColor = Color.Transparent
-                                ),
-                            )
+                                    },
+                                    colors = NavigationBarItemColors(
+                                        selectedIconColor = MaterialTheme.colorScheme.accentColor,
+                                        unselectedIconColor = Color.Gray,
+                                        selectedIndicatorColor = Color.Transparent,
+                                        unselectedTextColor = Color.Transparent,
+                                        disabledIconColor = Color.Transparent,
+                                        disabledTextColor = Color.Transparent,
+                                        selectedTextColor = Color.Transparent
+                                    ),
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(0.2f))
                         }
-                        Spacer(modifier = Modifier.weight(0.2f))
                     }
                 }
             }
@@ -122,7 +118,9 @@ fun MainScreen(
             MainNavGraph(
                 navController = navHostController,
                 modifier = Modifier.padding(innerPadding),
-                logout = logout
+                logout = {
+                    logout.invoke()
+                }
             )
         }
     }

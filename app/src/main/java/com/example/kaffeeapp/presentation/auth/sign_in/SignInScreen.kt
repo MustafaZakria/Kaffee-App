@@ -61,7 +61,7 @@ fun SignInScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .gradientBackground(listOf(Color.Black, Color.White), 45f)
+            .gradientBackground(listOf(Color.Black, MaterialTheme.colorScheme.secondary), 45f)
     ) {
         BoxWithConstraints(
             contentAlignment = Alignment.TopCenter
@@ -101,7 +101,7 @@ fun SignInScreen(
                     text = stringResource(id = R.string.home_heading_1),
                     style = MaterialTheme.typography.displaySmall,
                     fontFamily = sora,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )
@@ -137,7 +137,7 @@ fun SignInScreen(
                 launcher.launch(intent)
             }
         }) {
-        ProgressBar()
+        ProgressBar(modifier = Modifier.fillMaxSize())
     }
 
 
@@ -150,7 +150,7 @@ fun SignInScreen(
         onError = { exception ->
             Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
         }) {
-        ProgressBar()
+        ProgressBar(modifier = Modifier.fillMaxSize())
     }
 
 

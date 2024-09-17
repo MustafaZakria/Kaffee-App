@@ -19,7 +19,7 @@ fun DrinksSelectTypeSection(
             SelectTypeCard(
                 type = type,
                 drinkSelectedType = drinkSelectedType,
-                onClickType = { selectedType -> onClickType(selectedType) }
+                onClickType = { selectedType -> onClickType.invoke(selectedType) }
             )
         }
     }

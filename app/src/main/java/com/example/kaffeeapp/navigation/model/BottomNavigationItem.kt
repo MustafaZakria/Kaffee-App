@@ -1,6 +1,7 @@
-package com.example.kaffeeapp.navigation
+package com.example.kaffeeapp.navigation.model
 
 import com.example.kaffeeapp.R
+import com.example.kaffeeapp.navigation.MainScreen
 import com.example.kaffeeapp.util.Constants.CART_TITLE
 import com.example.kaffeeapp.util.Constants.FAVOURITE_TITLE
 import com.example.kaffeeapp.util.Constants.HOME_TITLE
@@ -44,3 +45,4 @@ val bottomNavItems = listOf(
         hasUpdate = false
     )
 )
+val bottomNavRoutes = bottomNavItems.map { it.route }

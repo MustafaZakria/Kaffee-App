@@ -40,7 +40,7 @@ fun GoogleButton(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
             .border(
                 BorderStroke(
                     width = 1.dp,

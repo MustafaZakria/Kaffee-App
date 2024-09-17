@@ -19,4 +19,11 @@
     <string name="drink_price">\$ %1$s</string>
     <string name="empty_list">Empty List!!</string>
     <string name="detail">Detail</string>
+    <string name="price">Price</string>
+    <string name="size">Size</string>
+    <string name="small">S</string>
+    <string name="medium">M</string>
+    <string name="large">L</string>
+    <string name="description">Description</string>
+    <string name="buy_now">Buy Now</string>
 </resources>
