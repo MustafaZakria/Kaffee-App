@@ -11,8 +11,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.repository.SelectedType
 import com.example.kaffeeapp.ui.theme.normalGrey
+import com.example.kaffeeapp.util.model.SelectedType
 
 @Composable
 fun SelectTypeCard(

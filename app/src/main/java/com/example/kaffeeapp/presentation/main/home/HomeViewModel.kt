@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.repository.SelectedType
 import com.example.kaffeeapp.repository.interfaces.AuthRepository
 import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.model.SelectedType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,6 +62,7 @@ class HomeViewModel @Inject constructor(
         drinkApiResponse = Resource.Loading()
         viewModelScope.launch(dispatcherProvider.io) {
             drinkApiResponse = mainRepository.refreshDrinks()
+            mainRepository.refreshData()
         }
         drinks = drinksFromSelectType
     }

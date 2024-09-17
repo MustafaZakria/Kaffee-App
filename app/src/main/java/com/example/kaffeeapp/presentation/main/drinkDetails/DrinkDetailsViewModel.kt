@@ -2,20 +2,16 @@ package com.example.kaffeeapp.presentation.main.drinkDetails
 
 import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.util.DispatcherProvider
-import com.example.kaffeeapp.util.model.DrinkSize
+import com.example.kaffeeapp.data.entities.DrinkSize
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @HiltViewModel
 class DrinkDetailsViewModel @Inject constructor(

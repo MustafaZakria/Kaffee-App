@@ -3,7 +3,6 @@ package com.example.kaffeeapp.presentation.main.drinkDetails.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,10 +15,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.presentation.main.drinkDetails.IconBoxed
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
-import com.example.kaffeeapp.util.model.DrinkSize
-
+import com.example.kaffeeapp.data.entities.DrinkSize
 
 
 @Composable

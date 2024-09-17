@@ -3,39 +3,40 @@ package com.example.kaffeeapp.repository
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.local.DrinkDao
+import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
+import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.model.SelectedType
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MainRepositoryImp @Inject constructor(
     private val drinkDao: DrinkDao,
-    private val drinkRemoteDb: DrinkRemoteDb
+    private val drinkRemoteDb: DrinkRemoteDb,
+    private val drinkSharedPreference: DrinkSharedPreference,
+    private val orderSharedPreference: OrderSharedPreference
 ) : MainRepository {
-
     override suspend fun refreshDrinks(): Resource<Boolean> {
-        return try {
-            when (val drinkResponse = drinkRemoteDb.getAllDrinks()) {
-                is Resource.Success -> {
-                    drinkResponse.data?.let {
-                        drinkDao.insert(it)
-                    }
-                    Resource.Success(true)
+        return when (val drinkResponse = drinkRemoteDb.getAllDrinks()) {
+            is Resource.Success -> {
+                drinkResponse.data?.let {
+                    drinkDao.insert(it)
                 }
-
-                is Resource.Failure -> {
-                    throw Exception(drinkResponse.exception)
-                }
-
-                is Resource.Loading -> {
-                    Resource.Loading()
-                }
+                Resource.Success(true)
             }
-        } catch (e: Exception) {
-            Resource.Failure(e)
+
+            else -> {
+                Resource.Failure(drinkResponse.exception)
+            }
         }
+    }
+
+    override suspend fun refreshData() {
+        refreshFavouriteDrinks()
+        refreshOrders()
     }
 
     override fun getAllDrinks(type: SelectedType): LiveData<List<Drink>> = when (type) {
@@ -48,17 +49,16 @@ class MainRepositoryImp @Inject constructor(
     override fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>> =
         drinkDao.getDrinksBySearch("%$drink%")
 
-    override suspend fun getDrinkById(id: String): Drink =
-        drinkDao.getDrinkById(id)
+    override suspend fun getDrinkById(id: String): Drink = drinkDao.getDrinkById(id)
 
+    override suspend fun refreshFavouriteDrinks() {
+        val ids = drinkRemoteDb.getFavDrinksIds()
+        drinkSharedPreference.insertFavDrinksList(ids)
+    }
 
-}
+    override suspend fun refreshOrders() {
+        val ids = drinkRemoteDb.getOrdersIds()
+        orderSharedPreference.insertOrdersList(ids)
+    }
 
-enum class SelectedType(val value: String) {
-    ALL_DRINKS("All"),
-    HOT_DRINKS("Hot"),
-    COLD_DRINKS("Cold"),
-    TEA("Tea"),
-    MATCHA("Matcha"),
-    COFFEE("Coffee")
 }

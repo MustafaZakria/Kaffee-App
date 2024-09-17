@@ -3,7 +3,7 @@ package com.example.kaffeeapp.presentation.main.home.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.kaffeeapp.repository.SelectedType
+import com.example.kaffeeapp.util.model.SelectedType
 
 
 @Composable

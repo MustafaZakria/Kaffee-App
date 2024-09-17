@@ -2,8 +2,8 @@ package com.example.kaffeeapp.repository.interfaces
 
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.repository.SelectedType
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.model.SelectedType
 
 interface MainRepository {
 
@@ -14,4 +14,10 @@ interface MainRepository {
     fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>>
 
     suspend fun getDrinkById(id: String): Drink
+
+    suspend fun refreshFavouriteDrinks()
+
+    suspend fun refreshOrders()
+
+    suspend fun refreshData()
 }

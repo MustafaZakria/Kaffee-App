@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.presentation.main.drinkDetails.IconBoxed
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 
 @Composable
