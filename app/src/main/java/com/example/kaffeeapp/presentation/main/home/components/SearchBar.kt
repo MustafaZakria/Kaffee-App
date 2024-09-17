@@ -16,7 +16,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.ui.theme.lightGrey
-import com.example.kaffeeapp.ui.theme.normalWhiteActive
 
 @Composable
 fun SearchBar(
@@ -34,7 +33,7 @@ fun SearchBar(
                 onSearchValueChange.invoke(value)
             },
             singleLine = true,
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)),
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
             placeholder = {
                 Text(
                     text = hint,

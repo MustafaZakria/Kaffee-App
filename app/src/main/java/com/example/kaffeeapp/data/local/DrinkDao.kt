@@ -15,7 +15,7 @@ interface DrinkDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(drinks: List<Drink>)
 
-    @Query("SELECT * FROM drinks WHERE id like :id")
+    @Query("SELECT * FROM drinks WHERE id = :id")
     suspend fun getDrinkById(id: String): Drink
 
     @Query("SELECT * FROM drinks")

@@ -12,9 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.repository.SelectedType
-import com.example.kaffeeapp.ui.theme.accentColor
 import com.example.kaffeeapp.ui.theme.normalGrey
-import com.example.kaffeeapp.ui.theme.normalWhiteActive
 
 @Composable
 fun SelectTypeCard(
@@ -29,7 +27,7 @@ fun SelectTypeCard(
                 if (type != SelectedType.ALL_DRINKS)
                     dimensionResource(id = R.dimen.padding_x_small)
                 else (0.dp),
-                end =  dimensionResource(id = R.dimen.padding_x_small)
+                end = dimensionResource(id = R.dimen.padding_x_small)
             ),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)),
         onClick = {

@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.kaffeeapp.navigation.model.Graph
 import com.example.kaffeeapp.presentation.auth.sign_in.SignInScreen
 import com.example.kaffeeapp.presentation.auth.splash.SplashScreen
 import com.example.kaffeeapp.util.Constants.SIGNIN_SCREEN

@@ -11,9 +11,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 
 @Composable
-fun ProgressBar() {
+fun ProgressBar(modifier: Modifier = Modifier) {
     Box(
-//        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ){
         CircularProgressIndicator(

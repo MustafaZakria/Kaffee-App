@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.navigation
+package com.example.kaffeeapp.navigation.model
 
 import com.example.kaffeeapp.util.Constants.AUTH_GRAPH
 import com.example.kaffeeapp.util.Constants.MAIN_GRAPH

@@ -49,7 +49,8 @@ import com.example.kaffeeapp.util.model.Resource
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    logout: () -> Unit
+    logout: () -> Unit,
+    navigateToDetailScreen: (String) -> Unit
 ) {
     val drinks by homeViewModel.drinks.observeAsState(emptyList())
     val selectedType by homeViewModel.drinkSelectedType.observeAsState(SelectedType.ALL_DRINKS)
@@ -59,15 +60,15 @@ fun HomeScreen(
     MainScreenContent(
         drinks = drinks,
         drinksResponse = drinksResponse,
-        onSearchValueChange = { value -> homeViewModel.onSearchValueChange(value) },
+        onSearchValueChange = { value -> homeViewModel.onSearchValueChange(value = value) },
         searchValue = searchState,
         logout = {
-            logout.also {
-                homeViewModel.signOut()
-            }
+            logout.invoke()
+            homeViewModel.signOut()
         },
         selectedType = selectedType,
-        onDrinkTypeSelect = { type -> homeViewModel.setSelectedType(type = type) }
+        onDrinkTypeSelect = { type -> homeViewModel.setSelectedType(type = type) },
+        navigateToDetailScreen = { id -> navigateToDetailScreen.invoke(id) }
     )
 }
 
@@ -79,7 +80,8 @@ fun MainScreenContent(
     searchValue: String,
     logout: () -> Unit,
     selectedType: SelectedType,
-    onDrinkTypeSelect: (SelectedType) -> Unit
+    onDrinkTypeSelect: (SelectedType) -> Unit,
+    navigateToDetailScreen: (String) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -114,7 +116,7 @@ fun MainScreenContent(
                     .fillMaxWidth()
                     .requiredHeightIn(max = 50.dp),
                 searchStateValue = searchValue,
-                onSearchValueChange = { value -> onSearchValueChange(value) },
+                onSearchValueChange = { value -> onSearchValueChange.invoke(value) },
                 onClickFilterButton = {}
             )
             //spacer
@@ -130,7 +132,7 @@ fun MainScreenContent(
                     .fillMaxWidth(),
                 drinkSelectedType = selectedType,
             ) { type ->
-                onDrinkTypeSelect(type)
+                onDrinkTypeSelect.invoke(type)
             }
             //spacer
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_x_small)))
@@ -138,7 +140,9 @@ fun MainScreenContent(
             DrinksSection(
                 drinks = drinks,
                 drinksResponse = drinksResponse
-            ) {}
+            ) { id ->
+                navigateToDetailScreen.invoke(id)
+            }
         }
 
     }
@@ -159,7 +163,7 @@ fun LocationSection(
         Column {
             CustomizedText(
                 text = stringResource(id = R.string.location),
-                color = MaterialTheme.colorScheme.lightGrey,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = dimensionResource(id = R.dimen.text_size_small),
                 fontWeight = FontWeight.Normal
             )
@@ -193,18 +197,18 @@ fun SearchSection(
     ) {
         SearchBar(
             modifier = Modifier
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
                 .weight(1f)
                 .background(MaterialTheme.colorScheme.searchBackgroundColor),
             hint = stringResource(id = R.string.search_hint),
             searchStateValue = searchStateValue
         ) { value ->
-            onSearchValueChange(value)
+            onSearchValueChange.invoke(value)
         }
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
         FilterButton(
             Modifier
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
         ) {
             onClickFilterButton.invoke()
         }
@@ -254,7 +258,15 @@ fun MainPreview() {
         )
     )
     KaffeeAppTheme {
-        MainScreenContent(drinks, Resource.Loading(), {}, "", {}, SelectedType.ALL_DRINKS) {}
+        MainScreenContent(
+            drinks,
+            Resource.Loading(),
+            {},
+            "",
+            {},
+            SelectedType.ALL_DRINKS,
+            {}
+        ) {}
     }
 
 }

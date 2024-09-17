@@ -38,10 +38,10 @@ fun DrinkCard(
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
         onClick = { onClickDrink(drink.id) },
         colors = CardDefaults.cardColors().copy(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.secondary
         )
     ) {
         Column(
@@ -55,7 +55,7 @@ fun DrinkCard(
                     modifier = Modifier
                         .height(150.dp)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large))),
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium))),
                     imageUrl = drink.imageUrl
                 )
             }

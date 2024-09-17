@@ -43,7 +43,7 @@ fun DrinksSection(
             items(drinks) { drink ->
                 DrinkCard(
                     drink = drink,
-                    onClickDrink = { id -> onClickDrink(id) }
+                    onClickDrink = { id -> onClickDrink.invoke(id) }
                 )
             }
         }

@@ -10,6 +10,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -27,7 +28,8 @@ fun CustomizedText(
     fontWeight: FontWeight = FontWeight.Normal,
     textDecoration: TextDecoration? = null,
     modifier: Modifier = Modifier,
-    textLines: Int = Int.MAX_VALUE
+    textLines: Int = Int.MAX_VALUE,
+    textAlign: TextAlign? = null
 ) {
     Text(
         modifier = modifier,
@@ -39,6 +41,7 @@ fun CustomizedText(
         textDecoration = textDecoration,
         fontFamily = sora,
         overflow = TextOverflow.Ellipsis,
-        maxLines = textLines
+        maxLines = textLines,
+        textAlign = textAlign
     )
 }
