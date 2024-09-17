@@ -8,6 +8,7 @@ typealias SignInWithGoogleResponse = Resource<Boolean>
 typealias RequestCredentialResponse = Resource<Credential>
 
 interface AuthRepository {
+    val isUserAuthenticatedInFirebase: Boolean
 
     suspend fun requestSignIn(
         context: Context
@@ -16,4 +17,6 @@ interface AuthRepository {
     suspend fun signInWithGoogle(credential: Credential): SignInWithGoogleResponse
 
     suspend fun singOut()
+
+    suspend fun addUserToFirestore()
 }

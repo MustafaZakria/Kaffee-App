@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +47,13 @@ fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
     navigateToMainScreen: () -> Unit
 ) {
+
+    LaunchedEffect(key1 = Unit) {
+        if(viewModel.isUserAuthenticated) {
+            navigateToMainScreen.invoke()
+        }
+    }
+
     val isDarkTheme = isSystemInDarkTheme()
     val context = LocalContext.current
     val signInState = viewModel.signInWithGoogleResponse
