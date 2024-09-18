@@ -42,6 +42,7 @@ class DrinkRemoteDb @Inject constructor(
                     name = drinkData["name"] as? String ?: "",
                     imageUrl = drinkData["imageUrl"] as? String ?: "",
                     description = drinkData["description"] as? String ?: "",
+                    rating = drinkData["rating"] as? String ?: "",
                     ingredients = (drinkData["ingredients"] as? List<*>)?.mapNotNull { it as? String }
                         ?: emptyList(),
                     price = price,
