@@ -15,7 +15,8 @@ data class Drink(
     val ingredients: List<String> = arrayListOf(),
     @get:PropertyName("type")
     @set:PropertyName("type")
-    var type: DrinkType = DrinkType.HOT
+    var type: DrinkType = DrinkType.HOT,
+    val rating: String = ""
 )
 
 
