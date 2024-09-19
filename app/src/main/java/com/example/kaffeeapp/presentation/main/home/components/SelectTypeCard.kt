@@ -37,15 +37,15 @@ fun SelectTypeCard(
         CardDefaults.cardColors().copy(
             containerColor = if (drinkSelectedType == type)
                 MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.onSurface
+            else MaterialTheme.colorScheme.secondary
         )
     ) {
         CustomizedText(
             text = type.value,
             fontSize = dimensionResource(id = R.dimen.text_size_medium),
             color = if (drinkSelectedType == type)
-                MaterialTheme.colorScheme.onSurface
-            else MaterialTheme.colorScheme.normalGrey,
+                MaterialTheme.colorScheme.onPrimary
+            else MaterialTheme.colorScheme.onSecondary,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(
                 vertical = dimensionResource(id = R.dimen.padding_x_small),

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -70,7 +71,7 @@ fun GoogleButton(
                 fontSize = with(LocalContext.current) { dimensionResource(id = R.dimen.text_size_medium).value.sp },
                 fontFamily = roboto,
                 fontWeight = FontWeight.Medium,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_x_small))
             )

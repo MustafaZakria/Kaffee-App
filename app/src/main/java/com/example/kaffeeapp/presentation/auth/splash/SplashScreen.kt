@@ -17,7 +17,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.ui.theme.accentColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -41,7 +40,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.accentColor),
+            .background(color = MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         LottieAnimation(

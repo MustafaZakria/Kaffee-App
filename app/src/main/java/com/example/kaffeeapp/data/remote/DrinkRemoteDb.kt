@@ -64,7 +64,7 @@ class DrinkRemoteDb @Inject constructor(
             }
             (user?.get(FAV_DRINKS_KEY) as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
         } catch (e: Exception) {
-            Log.d("Exception(FAV DRINKS):", e.message.toString())
+            Log.e("Exception(FAV DRINKS):", e.message.toString())
             emptyList()
         }
     }
@@ -76,7 +76,7 @@ class DrinkRemoteDb @Inject constructor(
                     .update(FAV_DRINKS_KEY, FieldValue.arrayUnion(id)).await()
             }
         } catch (e: Exception) {
-            Log.d("Exception(FAV DRINKS):", e.message.toString())
+            Log.e("Exception(FAV DRINKS):", e.message.toString())
         }
     }
 
@@ -87,7 +87,7 @@ class DrinkRemoteDb @Inject constructor(
                     .update(FAV_DRINKS_KEY, FieldValue.arrayRemove(id)).await()
             }
         } catch (e: Exception) {
-            Log.d("Exception(FAV DRINKS):", e.message.toString())
+            Log.e("Exception(FAV DRINKS):", e.message.toString())
         }
     }
 
@@ -98,7 +98,7 @@ class DrinkRemoteDb @Inject constructor(
             }
             (user?.get(ORDERS_KEY) as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
         } catch (e: Exception) {
-            Log.d("Exception(ORDERS):", e.message.toString())
+            Log.e("Exception(ORDERS):", e.message.toString())
             emptyList()
         }
     }
@@ -110,7 +110,7 @@ class DrinkRemoteDb @Inject constructor(
                     .update(ORDERS_KEY, FieldValue.arrayUnion(id)).await()
             }
         } catch (e: Exception) {
-            Log.d("Exception(ORDERS):", e.message.toString())
+            Log.e("Exception(ORDERS):", e.message.toString())
         }
     }
 }

@@ -25,18 +25,18 @@ fun SizeCard(
     Card(modifier = modifier,
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
         colors = CardDefaults.cardColors().copy(
-            containerColor = if (isClicked) MaterialTheme.colorScheme.lightBrown else MaterialTheme.colorScheme.secondary
+            containerColor = if (isClicked) MaterialTheme.colorScheme.lightBrown else MaterialTheme.colorScheme.tertiary
         ),
         border = BorderStroke(
             width = 1.dp,
-            if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+            if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
         ),
         onClick = {
             onSizeClick.invoke(size)
         }) {
         CustomizedText(
             text = size.shortened,
-            color = if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
+            color = if (isClicked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onTertiary,
             fontWeight = FontWeight.Medium,
             fontSize = dimensionResource(id = R.dimen.text_size_16),
             modifier = Modifier

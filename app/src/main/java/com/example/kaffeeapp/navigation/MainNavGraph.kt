@@ -1,7 +1,9 @@
 package com.example.kaffeeapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +20,6 @@ import com.example.kaffeeapp.util.Constants.DRINK_ID_KEY
 import com.example.kaffeeapp.util.Constants.FAVOURITE_SCREEN
 import com.example.kaffeeapp.util.Constants.HOME_SCREEN
 import com.example.kaffeeapp.util.Constants.NOTIFICATION_SCREEN
-import com.example.kaffeeapp.util.Utils.sharedViewModel
 
 
 @Composable
@@ -43,9 +44,16 @@ fun MainNavGraph(
         composable(
             route = "${MainScreen.DrinkDetailScreen.route}/{$DRINK_ID_KEY}"
         ) { navBackStackEntry ->
+            val parentEntry = remember(navBackStackEntry) {
+                navController.getBackStackEntry(Graph.MainGraph.route)
+            }
+            val viewModel: DrinkDetailsViewModel = hiltViewModel(parentEntry)
             val id = navBackStackEntry.arguments?.getString(DRINK_ID_KEY)
             id?.let { drinkId ->
-                DrinkDetailsScreen(id = drinkId) {
+                DrinkDetailsScreen(
+                    id = drinkId,
+                    detailsViewModel = viewModel
+                ) {
                     navController.popBackStack()
                 }
             }
@@ -59,8 +67,12 @@ fun MainNavGraph(
         }
         composable(
             MainScreen.CartScreen.route
-        ) {
-            CartScreen()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(Graph.MainGraph.route)
+            }
+            val viewModel: DrinkDetailsViewModel = hiltViewModel(parentEntry)
+            CartScreen(viewModel = viewModel)
         }
         composable(
             MainScreen.NotificationScreen.route

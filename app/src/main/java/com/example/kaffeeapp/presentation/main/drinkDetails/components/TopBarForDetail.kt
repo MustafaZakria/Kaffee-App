@@ -45,15 +45,15 @@ fun TopBarForDetail(
             Icon(
                 painter = painterResource(id = R.drawable.back_icon),
                 contentDescription = stringResource(id = R.string.back_img_desc),
-                tint = MaterialTheme.colorScheme.tertiary,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
             )
         }
         CustomizedText(
             text = stringResource(id = R.string.detail),
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
+            fontSize = dimensionResource(id = R.dimen.text_size_18),
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.tertiary
+            color = MaterialTheme.colorScheme.onSurface
         )
         IconButton(onClick = {
             onFavouriteClick.invoke()
@@ -63,7 +63,7 @@ fun TopBarForDetail(
                     id = R.drawable.heart_outlined
                 ),
                 contentDescription = stringResource(id = R.string.heart_img_desc),
-                tint = if (isFav) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
+                tint = if (isFav) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
             )
         }

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5a6eb1d8889fdd5861cbfb3c04262b46",
+    "identityHash": "ba5ec0cfc269bd43c5816c426a9a6f88",
     "entities": [
       {
         "tableName": "drinks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `price` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `price` TEXT NOT NULL, `description` TEXT NOT NULL, `ingredients` TEXT NOT NULL, `type` TEXT NOT NULL, `rating` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -49,6 +49,12 @@
             "columnName": "type",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -64,7 +70,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5a6eb1d8889fdd5861cbfb3c04262b46')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba5ec0cfc269bd43c5816c426a9a6f88')"
     ]
   }
 }

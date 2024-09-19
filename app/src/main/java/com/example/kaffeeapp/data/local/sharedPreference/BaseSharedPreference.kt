@@ -13,7 +13,7 @@ open class BaseSharedPreference(
     }
 
     protected fun getList(key: String): List<String> {
-        val idsString = sharedPreferences.getString(FAV_DRINKS_KEY, "")
+        val idsString = sharedPreferences.getString(key, "")
         return idsString?.let {
             ArrayList(it.split(","))
         } ?: emptyList()

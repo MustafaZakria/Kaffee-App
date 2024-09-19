@@ -2,24 +2,14 @@ package com.example.kaffeeapp.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
 import androidx.room.Room
-import com.example.kaffeeapp.R
-import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.DrinkDatabase
-import com.example.kaffeeapp.data.local.sharedPreference.BaseSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
-import com.example.kaffeeapp.repository.AuthRepositoryImp
-import com.example.kaffeeapp.repository.MainRepositoryImp
-import com.example.kaffeeapp.repository.interfaces.AuthRepository
-import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.util.Constants.DRINK_DATABASE_NAME
 import com.example.kaffeeapp.util.Constants.SHARED_PREFERENCE_NAME
 import com.example.kaffeeapp.util.DispatcherProvider
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -86,7 +76,8 @@ class AppModule {
     @Provides
     fun provideSharedPreference(
         @ApplicationContext context: Context
-    ): SharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+    ): SharedPreferences =
+        context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
     @Singleton
     @Provides

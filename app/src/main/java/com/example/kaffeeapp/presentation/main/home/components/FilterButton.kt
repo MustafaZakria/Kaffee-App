@@ -29,7 +29,7 @@ fun FilterButton(
             Icon(
                 painter = painterResource(id = R.drawable.filter_icon),
                 contentDescription = stringResource(id = R.string.filter_img_desc),
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
             )
         }

@@ -21,7 +21,7 @@ fun IconBoxed(
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)))
-            .background(MaterialTheme.colorScheme.onSurface)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         Icon(
             painter = painterResource(id = icon),

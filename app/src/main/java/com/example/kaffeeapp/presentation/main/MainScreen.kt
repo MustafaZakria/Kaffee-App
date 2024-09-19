@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
-import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -38,7 +36,6 @@ import com.example.kaffeeapp.navigation.MainNavGraph
 import com.example.kaffeeapp.navigation.model.bottomNavItems
 import com.example.kaffeeapp.navigation.model.bottomNavRoutes
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.ui.theme.accentColor
 import com.example.kaffeeapp.util.Utils.clearRippleConfiguration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +58,7 @@ fun MainScreen(
                         LocalRippleConfiguration provides clearRippleConfiguration
                     ) {
                         NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.secondary,
+                            containerColor = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
                                 .height(80.dp)
@@ -99,7 +96,7 @@ fun MainScreen(
                                         }
                                     },
                                     colors = NavigationBarItemColors(
-                                        selectedIconColor = MaterialTheme.colorScheme.accentColor,
+                                        selectedIconColor = MaterialTheme.colorScheme.primary,
                                         unselectedIconColor = Color.Gray,
                                         selectedIndicatorColor = Color.Transparent,
                                         unselectedTextColor = Color.Transparent,
