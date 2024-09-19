@@ -30,7 +30,7 @@ fun DrinkSizeSection(
             text = stringResource(id = R.string.size),
             fontSize = dimensionResource(id = R.dimen.text_size_16),
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.tertiary
+            color = MaterialTheme.colorScheme.onSurface
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),

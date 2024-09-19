@@ -29,7 +29,7 @@ fun DrinkInfoSection(
             CustomizedText(
                 text = drinkName,
                 fontSize = dimensionResource(id = R.dimen.text_size_large),
-                color = MaterialTheme.colorScheme.tertiary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Medium
             )
             CustomizedText(

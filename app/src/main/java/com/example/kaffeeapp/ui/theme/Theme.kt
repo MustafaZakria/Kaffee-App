@@ -22,10 +22,18 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = AccentColor,
-    secondary = Color.White,
-    tertiary = Color.Black,
+    onPrimary = Color.White,
+
+    secondary = NormalWhiteActive,
+    onSecondary = NormalGrey,
+
+    tertiary = Color.White,
+    onTertiary = NormalGrey,
+
+
     surface = DarkWhite,
-    onSurface = NormalWhiteActive,
+    onSurface = Color.Black,
+
     onBackground = LightGrey,
     error = ErrorColor
 

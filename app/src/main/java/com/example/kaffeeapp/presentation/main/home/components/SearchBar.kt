@@ -37,14 +37,14 @@ fun SearchBar(
             placeholder = {
                 Text(
                     text = hint,
-                    color = MaterialTheme.colorScheme.lightGrey
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(id = R.string.search_img_desc),
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             },
             colors = TextFieldDefaults.colors().copy(

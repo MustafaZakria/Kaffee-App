@@ -35,8 +35,6 @@ object Constants {
     const val KEY_LARGE_SIZE = "large"
     const val LARGE_SHORTENED = "L"
 
-    const val ERROR = "error"
-
     const val SHARED_PREFERENCE_NAME = "drinks shared pref"
 
 }

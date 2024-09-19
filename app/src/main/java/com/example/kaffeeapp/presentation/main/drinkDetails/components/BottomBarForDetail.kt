@@ -33,7 +33,7 @@ fun BottomBarForDetail(
                     topEnd = dimensionResource(id = R.dimen.shape_rounded_corner_large)
                 )
             )
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.tertiary)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_medium),
                 vertical = dimensionResource(id = R.dimen.padding_large)

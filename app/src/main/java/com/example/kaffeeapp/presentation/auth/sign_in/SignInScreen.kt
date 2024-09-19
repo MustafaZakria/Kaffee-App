@@ -109,7 +109,7 @@ fun SignInScreen(
                     text = stringResource(id = R.string.home_heading_1),
                     style = MaterialTheme.typography.displaySmall,
                     fontFamily = sora,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                 )

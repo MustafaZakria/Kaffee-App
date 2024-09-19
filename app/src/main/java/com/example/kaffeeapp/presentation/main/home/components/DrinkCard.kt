@@ -41,7 +41,7 @@ fun DrinkCard(
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
         onClick = { onClickDrink(drink.id) },
         colors = CardDefaults.cardColors().copy(
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = MaterialTheme.colorScheme.tertiary
         )
     ) {
         Column(
@@ -55,7 +55,7 @@ fun DrinkCard(
                     modifier = Modifier
                         .height(150.dp)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium))),
+                        .clip(RoundedCornerShape(4.dp)),
                     imageUrl = drink.imageUrl
                 )
             }
@@ -63,7 +63,7 @@ fun DrinkCard(
                 text = drink.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.text_size_18),
-                color = MaterialTheme.colorScheme.normalGrey,
+                color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.displaySmall,
                 textLines = 1
             )
@@ -79,7 +79,7 @@ fun DrinkCard(
                     ),
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.text_size_16),
-                    color = MaterialTheme.colorScheme.normalGrey,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     style = MaterialTheme.typography.displaySmall
                 )
                 Box(
@@ -91,7 +91,7 @@ fun DrinkCard(
                         imageVector = Icons.Default.Add,
                         contentDescription = stringResource(id = R.string.add_img_desc),
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)),
-                        tint = MaterialTheme.colorScheme.onSurface
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
