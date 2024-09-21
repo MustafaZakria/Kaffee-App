@@ -60,10 +60,10 @@ fun MainNavGraph(
         }
         composable(
             MainScreen.FavouriteScreen.route
-        ) { backStackEntry ->
-//            val detailsViewModel =
-//                backStackEntry.sharedViewModel<DrinkDetailsViewModel>(navController = navController)
-            FavouriteScreen()
+        ) {
+            FavouriteScreen() { id ->
+                navController.navigate("${MainScreen.DrinkDetailScreen.route}/$id")
+            }
         }
         composable(
             MainScreen.CartScreen.route
