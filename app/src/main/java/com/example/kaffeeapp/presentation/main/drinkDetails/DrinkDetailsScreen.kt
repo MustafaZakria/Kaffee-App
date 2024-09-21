@@ -1,19 +1,13 @@
 package com.example.kaffeeapp.presentation.main.drinkDetails
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -23,14 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkSize
@@ -41,9 +30,7 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.components.DrinkImag
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.DrinkInfoSection
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.DrinkSizeSection
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.TopBarForDetail
-import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.ui.theme.gold
 
 @Composable
 fun DrinkDetailsScreen(
@@ -139,29 +126,7 @@ fun DrinkDetailsContent(
                 //spacer
                 Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
                 //drink info
-                DrinkInfoSection(
-                    drinkName = drink.name, drinkType = drink.type.name
-                )
-                //spacer
-                Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
-                //rating
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.star_icon),
-                        contentDescription = "star",
-                        tint = MaterialTheme.colorScheme.gold,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-                    )
-                    CustomizedText(
-                        text = drink.rating,
-                        fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                DrinkInfoSection(drink = drink)
                 //spacer
                 Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
                 HorizontalDivider(

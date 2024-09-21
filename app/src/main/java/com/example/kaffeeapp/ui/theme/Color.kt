@@ -31,7 +31,7 @@ val LightRed = Color(0xFFED5151)
 
 val ErrorColor = Color(0xFFB00020)
 
-val Gold = Color(0xFFFBBE21)
+val Gold = Color(0xFFFF7A31)
 
 val ColorScheme.gold: Color
     @Composable
