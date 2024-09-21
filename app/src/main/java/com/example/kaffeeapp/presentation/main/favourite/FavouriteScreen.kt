@@ -25,10 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,13 +50,17 @@ import com.example.kaffeeapp.util.model.Resource
 
 @Composable
 fun FavouriteScreen(
-    viewModel: FavouriteViewModel = hiltViewModel()
+    viewModel: FavouriteViewModel = hiltViewModel(),
+    navigateToDetailsScreen: (String) -> Unit
 ) {
     val favDrinks = viewModel.favDrinks.collectAsState(initial = Resource.Loading())
     FavouriteScreenContent(
         drinks = favDrinks.value,
         onRemoveDrink = { id ->
             viewModel.removeFavDrink(id)
+        },
+        onAddToCartClick = { id ->
+            navigateToDetailsScreen(id)
         }
     )
 }
@@ -69,7 +69,8 @@ fun FavouriteScreen(
 @Composable
 fun FavouriteScreenContent(
     drinks: Resource<List<Drink>>,
-    onRemoveDrink: (String) -> Unit
+    onRemoveDrink: (String) -> Unit,
+    onAddToCartClick: (String) -> Unit
 ) {
     Scaffold(containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
@@ -99,11 +100,11 @@ fun FavouriteScreenContent(
                 items(drinksList) { drink ->
                     FavDrinkCard(
                         drink = drink,
-                        onRemoveClick = {
-                            onRemoveDrink.invoke(drink.id)
+                        onRemoveClick = { id ->
+                            onRemoveDrink.invoke(id)
                         },
-                        onAddToCartClick = {
-
+                        onAddToCartClick = { id ->
+                            onAddToCartClick(id)
                         }
                     )
                 }
@@ -177,40 +178,40 @@ fun FavDrinkCard(
                         .animateContentSize(),
                     verticalAlignment = Alignment.Bottom,
                 ) {
-                    var isSizesExpanded by rememberSaveable { mutableStateOf(false) }
-                    var drinkSize by rememberSaveable { mutableStateOf(DrinkSize.SMALL) }
-                    if (!isSizesExpanded) {
-                        RoundedButton(
-                            backgroundColor = MaterialTheme.colorScheme.primary,
-                            text = stringResource(id = R.string.add_to_cart),
-                            textColor = MaterialTheme.colorScheme.onPrimary
-                        ) {
-                            isSizesExpanded = true
-                            onAddToCartClick.invoke(drink.id)
-                        }
-                    } else {
-                        CircleDrinkSize(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            drinkSize = DrinkSize.SMALL,
-                        ) {
-                            isSizesExpanded = false
-                            drinkSize = DrinkSize.SMALL
-                        }
-                        CircleDrinkSize(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            drinkSize = DrinkSize.MEDIUM,
-                        ) {
-                            isSizesExpanded = false
-                            drinkSize = DrinkSize.MEDIUM
-                        }
-                        CircleDrinkSize(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            drinkSize = DrinkSize.LARGE,
-                        ) {
-                            isSizesExpanded = false
-                            drinkSize = DrinkSize.LARGE
-                        }
+//                    var isSizesExpanded by rememberSaveable { mutableStateOf(false) }
+//                    var drinkSize by rememberSaveable { mutableStateOf(DrinkSize.SMALL) }
+//                    if (!isSizesExpanded) {
+                    RoundedButton(
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        text = stringResource(id = R.string.add_to_cart),
+                        textColor = MaterialTheme.colorScheme.onPrimary
+                    ) {
+//                            isSizesExpanded = true
+                        onAddToCartClick.invoke(drink.id)
                     }
+//                    } else {
+//                        CircleDrinkSize(
+//                            modifier = Modifier.align(Alignment.CenterVertically),
+//                            drinkSize = DrinkSize.SMALL,
+//                        ) {
+//                            isSizesExpanded = false
+//                            drinkSize = DrinkSize.SMALL
+//                        }
+//                        CircleDrinkSize(
+//                            modifier = Modifier.align(Alignment.CenterVertically),
+//                            drinkSize = DrinkSize.MEDIUM,
+//                        ) {
+//                            isSizesExpanded = false
+//                            drinkSize = DrinkSize.MEDIUM
+//                        }
+//                        CircleDrinkSize(
+//                            modifier = Modifier.align(Alignment.CenterVertically),
+//                            drinkSize = DrinkSize.LARGE,
+//                        ) {
+//                            isSizesExpanded = false
+//                            drinkSize = DrinkSize.LARGE
+//                        }
+//                    }
 
                     RoundedButton(
                         backgroundColor = Color.Transparent,
@@ -335,6 +336,6 @@ fun FavPreview() {
         )
     )
     KaffeeAppTheme {
-        FavouriteScreenContent(Resource.Success(drinks)) {}
+        FavouriteScreenContent(Resource.Success(drinks), {}) {}
     }
 }
