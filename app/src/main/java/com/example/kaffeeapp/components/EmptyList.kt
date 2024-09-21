@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -17,7 +18,8 @@ import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 @Composable
 fun EmptyList() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Icon(
             painter = painterResource(id = R.drawable.empty_icon),

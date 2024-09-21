@@ -30,7 +30,6 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Color.White,
     onTertiary = NormalGrey,
 
-
     surface = DarkWhite,
     onSurface = Color.Black,
 
