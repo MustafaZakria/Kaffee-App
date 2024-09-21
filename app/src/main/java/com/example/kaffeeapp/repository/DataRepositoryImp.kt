@@ -6,6 +6,10 @@ import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.DataRepository
+import com.example.kaffeeapp.repository.interfaces.FavDrinksResult
+import com.example.kaffeeapp.util.model.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,5 +34,13 @@ class DataRepositoryImp @Inject constructor(
         drinkRemoteDb.removeFavDrink(id)
     }
 
-    override fun getFavDrinks() = drinkSharedPreference.getFavDrinksIds()
+    override suspend fun getFavDrinks(): Flow<FavDrinksResult> = flow {
+        emit(Resource.Loading())
+        val ids = drinkSharedPreference.getFavDrinksIds()
+        val list = mutableListOf<Drink>()
+        for (id in ids) {
+            list.add(getDrinkById(id))
+        }
+        emit(Resource.Success(list))
+    }
 }

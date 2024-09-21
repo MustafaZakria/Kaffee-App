@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.ImageLoaderWithUrl
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.ui.theme.normalGrey
 import com.example.kaffeeapp.util.Constants.KEY_MEDIUM_SIZE
 
 @Composable
@@ -55,7 +53,7 @@ fun DrinkCard(
                     modifier = Modifier
                         .height(150.dp)
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(4.dp)),
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_x_small))),
                     imageUrl = drink.imageUrl
                 )
             }

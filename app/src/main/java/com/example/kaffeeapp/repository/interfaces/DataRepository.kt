@@ -1,6 +1,10 @@
 package com.example.kaffeeapp.repository.interfaces
 
 import com.example.kaffeeapp.data.entities.Drink
+import com.example.kaffeeapp.util.model.Resource
+import kotlinx.coroutines.flow.Flow
+
+typealias FavDrinksResult = Resource<List<Drink>>
 
 interface DataRepository {
 
@@ -12,5 +16,5 @@ interface DataRepository {
 
     suspend fun removeDrinkFromFav(id: String)
 
-    fun getFavDrinks(): List<String>
+    suspend fun getFavDrinks(): Flow<FavDrinksResult>
 }

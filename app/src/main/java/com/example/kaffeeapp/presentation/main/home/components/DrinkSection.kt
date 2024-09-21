@@ -31,7 +31,7 @@ fun DrinksSection(
         (if (drinksResponse is Resource.Loading || drinks.isEmpty())
             Alignment.Center
         else Alignment.TopStart)
-    ) {
+    ) { 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier

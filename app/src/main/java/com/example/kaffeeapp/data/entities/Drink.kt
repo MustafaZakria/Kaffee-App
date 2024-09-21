@@ -17,7 +17,10 @@ data class Drink(
     @set:PropertyName("type")
     var type: DrinkType = DrinkType.HOT,
     val rating: String = ""
-)
+) {
+    fun getFormattedIngredients() = ingredients.joinToString(" | ")
+
+}
 
 
 enum class DrinkType {

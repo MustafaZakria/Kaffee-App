@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.ui.theme.lightGrey
 
 @Composable
 fun SearchBar(

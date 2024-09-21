@@ -32,9 +32,7 @@ fun DrinkDescriptionSection(drinkDescription: String) {
     Row(
 //        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
     ) {
-        var isExpanded by rememberSaveable {
-            mutableStateOf(false)
-        }
+        var isExpanded by rememberSaveable { mutableStateOf(false) }
         Column(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
             modifier = if(isExpanded) Modifier.fillMaxWidth() else Modifier.fillMaxWidth(0.83f)

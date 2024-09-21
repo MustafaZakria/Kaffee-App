@@ -10,6 +10,7 @@ import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.repository.DataRepositoryImp
+import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.util.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DrinkDetailsViewModel @Inject constructor(
-    private val dataRepository: DataRepositoryImp,
+    private val dataRepository: DataRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 

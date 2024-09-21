@@ -60,20 +60,3 @@ val ColorScheme.bannerColorCenter: Color
 val ColorScheme.bannerColorEnd: Color
     @Composable
     get() = BannerColorEnd
-
-val ColorScheme.lightGrey: Color
-    @Composable
-    get() = LightGrey
-
-val ColorScheme.normalGrey: Color
-    @Composable
-    get() = NormalGrey
-
-val ColorScheme.normalWhiteActive: Color
-    @Composable
-    get() = NormalWhiteActive
-
-
-val ColorScheme.accentColor: Color
-    @Composable
-    get() = AccentColor
