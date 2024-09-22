@@ -59,4 +59,8 @@ class DrinkDetailsViewModel @Inject constructor(
         }
         Log.d("TEST: ", drinkOrders.toString())
     }
+
+    fun removeDrinkFromCart(drinkOrder: DrinkOrder) {
+        drinkOrders.remove(drinkOrder)
+    }
 }

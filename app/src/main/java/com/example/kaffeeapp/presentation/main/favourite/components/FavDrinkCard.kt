@@ -99,8 +99,8 @@ fun FavDrinkCard(
                         onAddToCartClick.invoke(drink.id)
                     }
                     RoundedButton(
-                        backgroundColor = Color.Transparent,
-                        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+                        backgroundColor = MaterialTheme.colorScheme.tertiary,
+                        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiary),
                         text = stringResource(id = R.string.remove),
                         textColor = MaterialTheme.colorScheme.onTertiary,
                         textModifier = Modifier.padding(

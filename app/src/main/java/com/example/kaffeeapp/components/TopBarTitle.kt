@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.presentation.main.favourite.components
+package com.example.kaffeeapp.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,14 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 
 @Composable
-fun TopBarFavourite() {
+fun TopBarTitle(
+    title: String
+) {
     Surface(
         modifier = Modifier
             .padding(
@@ -29,7 +30,7 @@ fun TopBarFavourite() {
             .fillMaxWidth()
     ) {
         CustomizedText(
-            text = stringResource(id = R.string.favourites),
+            text = title,
             fontSize = dimensionResource(id = R.dimen.text_size_18),
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,
