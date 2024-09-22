@@ -15,16 +15,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ProgressBar
+import com.example.kaffeeapp.components.TopBarTitle
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.presentation.main.favourite.components.FavDrinkCard
-import com.example.kaffeeapp.presentation.main.favourite.components.TopBarFavourite
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.model.Resource
 
@@ -55,7 +56,7 @@ fun FavouriteScreenContent(
 ) {
     Scaffold(containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopBarFavourite()
+            TopBarTitle(title = stringResource(id = R.string.favourites))
         }
     ) { innerPadding ->
 

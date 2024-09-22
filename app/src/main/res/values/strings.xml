@@ -20,6 +20,7 @@
     <string name="empty_list">Empty List!!</string>
     <string name="detail">Detail</string>
     <string name="favourites">Favourites</string>
+    <string name="cart">Cart</string>
     <string name="price">Price</string>
     <string name="size">Size</string>
     <string name="small">S</string>
@@ -28,4 +29,13 @@
     <string name="description">Description</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="remove">Remove</string>
+    <string name="delivery">Delivery</string>
+    <string name="pick_up">Pick Up</string>
+    <string name="delivery_address">Delivery Address</string>
+    <string name="edit_address">Edit Address</string>
+    <string name="add_your_address">Add your Address..</string>
+    <string name="add_note">Add Note</string>
+    <string name="pick_up_branch">Pick Up Branch</string>
+    <string name="pick_up_nearby_branch">Pick Up a Nearby Branch</string>
+    <string name="no_orders">No Orders!</string>
 </resources>
