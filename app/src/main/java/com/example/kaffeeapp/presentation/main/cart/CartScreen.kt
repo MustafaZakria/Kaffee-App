@@ -55,7 +55,6 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsViewMode
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.ui.theme.lightBrown
-import com.example.kaffeeapp.ui.theme.lightWhite
 
 @Composable
 fun CartScreen(
@@ -289,7 +288,7 @@ fun PaymentSummary(
                 item = stringResource(id = R.string.discount),
                 price = stringResource(id = R.string.discount_price, discountValue)
             )
-            if(isDeliveryEnabled) {
+            if (isDeliveryEnabled) {
                 //delivery
                 RowItemPrice(
                     item = stringResource(id = R.string.delivery),

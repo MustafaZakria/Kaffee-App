@@ -1,4 +1,4 @@
-package com.example.kaffeeapp
+package com.zeko.kaffee
 
 import org.junit.Test
 

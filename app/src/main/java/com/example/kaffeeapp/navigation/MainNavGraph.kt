@@ -13,12 +13,14 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsScreen
 import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsViewModel
 import com.example.kaffeeapp.presentation.main.favourite.FavouriteScreen
 import com.example.kaffeeapp.presentation.main.home.HomeScreen
+import com.example.kaffeeapp.presentation.main.map.MapScreen
 import com.example.kaffeeapp.presentation.main.notification.NotificationScreen
 import com.example.kaffeeapp.util.Constants.CART_SCREEN
 import com.example.kaffeeapp.util.Constants.DRINK_DETAIL_SCREEN
 import com.example.kaffeeapp.util.Constants.DRINK_ID_KEY
 import com.example.kaffeeapp.util.Constants.FAVOURITE_SCREEN
 import com.example.kaffeeapp.util.Constants.HOME_SCREEN
+import com.example.kaffeeapp.util.Constants.MAP_SCREEN
 import com.example.kaffeeapp.util.Constants.NOTIFICATION_SCREEN
 
 
@@ -37,7 +39,9 @@ fun MainNavGraph(
         composable(
             MainScreen.HomeScreen.route
         ) {
-            HomeScreen(logout = { logout.invoke() }) { id ->
+            HomeScreen(
+                logout = { logout.invoke() }
+            ) { id ->
                 navController.navigate("${MainScreen.DrinkDetailScreen.route}/$id")
             }
         }
@@ -80,6 +84,11 @@ fun MainNavGraph(
 
             NotificationScreen()
         }
+        composable(
+            MainScreen.MapScreen.route
+        ) {
+            MapScreen()
+        }
     }
 }
 
@@ -90,4 +99,5 @@ sealed class MainScreen(val route: String) {
     data object FavouriteScreen : MainScreen(FAVOURITE_SCREEN)
     data object CartScreen : MainScreen(CART_SCREEN)
     data object NotificationScreen : MainScreen(NOTIFICATION_SCREEN)
+    data object MapScreen : MainScreen(MAP_SCREEN)
 }

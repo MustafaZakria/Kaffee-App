@@ -3,14 +3,14 @@ package com.example.kaffeeapp.data.remote
 import android.util.Log
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.example.kaffeeapp.util.Constants.DRINKS_COLLECTION
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
 import com.example.kaffeeapp.util.Constants.USERS_COLLECTION
 import com.example.kaffeeapp.util.model.Resource
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton

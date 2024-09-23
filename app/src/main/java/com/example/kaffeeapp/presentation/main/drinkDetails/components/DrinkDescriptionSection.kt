@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
-import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsContent
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 
@@ -35,7 +34,8 @@ fun DrinkDescriptionSection(drinkDescription: String) {
         var isExpanded by rememberSaveable { mutableStateOf(false) }
         Column(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
-            modifier = if(isExpanded) Modifier.fillMaxWidth() else Modifier.fillMaxWidth(0.83f)
+            modifier = if (isExpanded) Modifier.fillMaxWidth() else Modifier
+                .fillMaxWidth(0.83f)
                 .animateContentSize()
         ) {
             CustomizedText(
@@ -82,7 +82,8 @@ fun DrinkDetailsPreview() {
             type = DrinkType.HOT,
             rating = "3.4"
         )
-        DrinkDescriptionSection("Our Hot Americano puts the oh! in Americano by combining two shots of 100% Rainforest Alliance Certified™ espresso with hot water creating a rich, robust drink.",
+        DrinkDescriptionSection(
+            "Our Hot Americano puts the oh! in Americano by combining two shots of 100% Rainforest Alliance Certified™ espresso with hot water creating a rich, robust drink.",
         )
     }
 }

@@ -49,7 +49,7 @@ fun SignInScreen(
 ) {
 
     LaunchedEffect(key1 = Unit) {
-        if(viewModel.isUserAuthenticated) {
+        if (viewModel.isUserAuthenticated) {
             navigateToMainScreen.invoke()
         }
     }
