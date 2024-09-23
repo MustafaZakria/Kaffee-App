@@ -14,9 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
+import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.lightBrown
-import com.example.kaffeeapp.data.entities.DrinkSize
 
 @Composable
 fun SizeCard(

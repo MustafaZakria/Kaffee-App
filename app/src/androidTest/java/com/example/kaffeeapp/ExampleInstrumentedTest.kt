@@ -1,4 +1,4 @@
-package com.example.kaffeeapp
+package com.zeko.kaffee
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

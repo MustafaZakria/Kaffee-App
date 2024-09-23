@@ -8,6 +8,7 @@ object Constants {
     const val CART_SCREEN = "cart_screen"
     const val NOTIFICATION_SCREEN = "notification_screen"
     const val DRINK_DETAIL_SCREEN = "drink_detail_screen"
+    const val MAP_SCREEN = "map_screen"
 
     const val DRINK_ID_KEY = "id"
 

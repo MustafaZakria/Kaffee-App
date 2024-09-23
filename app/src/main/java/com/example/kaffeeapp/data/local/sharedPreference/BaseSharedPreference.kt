@@ -1,7 +1,6 @@
 package com.example.kaffeeapp.data.local.sharedPreference
 
 import android.content.SharedPreferences
-import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 
 open class BaseSharedPreference(
     private val sharedPreferences: SharedPreferences
