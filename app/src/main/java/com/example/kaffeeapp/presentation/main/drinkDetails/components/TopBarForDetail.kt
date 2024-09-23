@@ -33,7 +33,7 @@ fun TopBarForDetail(
                 top = dimensionResource(id = R.dimen.padding_x_large),
                 start = dimensionResource(id = R.dimen.padding_medium),
                 end = dimensionResource(id = R.dimen.padding_medium),
-                bottom = dimensionResource(id = R.dimen.padding_large),
+                bottom = dimensionResource(id = R.dimen.padding_medium),
             )
             .background(Color.Transparent),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -53,7 +53,8 @@ fun TopBarForDetail(
             text = stringResource(id = R.string.detail),
             fontSize = dimensionResource(id = R.dimen.text_size_18),
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
         )
         IconButton(onClick = {
             onFavouriteClick.invoke()

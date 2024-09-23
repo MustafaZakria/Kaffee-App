@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
@@ -35,8 +36,7 @@ fun DrinksSection(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 64.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
         ) {
@@ -51,7 +51,7 @@ fun DrinksSection(
             ProgressBar()
         }
         if (drinks.isEmpty() && drinksResponse !is Resource.Loading) {
-            EmptyList()
+            EmptyList(stringResource(id = R.string.empty_list))
         }
     }
 }

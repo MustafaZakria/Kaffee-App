@@ -16,7 +16,9 @@ import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 
 @Composable
-fun EmptyList() {
+fun EmptyList(
+    message: String
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -27,7 +29,7 @@ fun EmptyList() {
             tint = Color.Black
         )
         CustomizedText(
-            text = stringResource(id = R.string.empty_list),
+            text = message,
             fontSize = dimensionResource(id = R.dimen.text_size_medium),
             color = Color.Black,
             fontWeight = FontWeight.Bold,

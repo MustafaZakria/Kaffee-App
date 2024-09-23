@@ -16,7 +16,9 @@
     <string name="heart_img_desc">Heart</string>
     <string name="back_img_desc">Back</string>
     <string name="add_img_desc">Add coffee</string>
-    <string name="drink_price">\$ %1$s</string>
+    <string name="drink_price">\$ %1$s EGP</string>
+    <string name="discount_price">-\$ %1$s</string>
+    <string name="price_value">\$ %1$s</string>
     <string name="empty_list">Empty List!!</string>
     <string name="detail">Detail</string>
     <string name="favourites">Favourites</string>
@@ -35,7 +37,14 @@
     <string name="edit_address">Edit Address</string>
     <string name="add_your_address">Add your Address..</string>
     <string name="add_note">Add Note</string>
-    <string name="pick_up_branch">Pick Up Branch</string>
+    <string name="pick_up_branch">Pick Up at Branch</string>
     <string name="pick_up_nearby_branch">Pick Up a Nearby Branch</string>
     <string name="no_orders">No Orders!</string>
+    <string name="phone_hint">Telephone Number</string>
+    <string name="promo_hint">Promo Code</string>
+    <string name="apply">Apply</string>
+    <string name="items">Items</string>
+    <string name="discount">Discount</string>
+    <string name="total">Total</string>
+    <string name="free">Free</string>
 </resources>

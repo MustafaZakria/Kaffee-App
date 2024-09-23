@@ -37,6 +37,10 @@ val ColorScheme.gold: Color
     @Composable
     get() = Gold
 
+val ColorScheme.lightWhite: Color
+    @Composable
+    get() = LightWhite
+
 val ColorScheme.lightBrown: Color
     @Composable
     get() = LightBrown

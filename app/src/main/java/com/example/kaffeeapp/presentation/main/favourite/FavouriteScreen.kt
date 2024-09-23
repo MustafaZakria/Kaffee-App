@@ -65,7 +65,7 @@ fun FavouriteScreenContent(
                 .fillMaxSize()
                 .padding(
                     top = innerPadding.calculateTopPadding(),
-                    bottom = 64.dp,
+                    bottom = dimensionResource(id = R.dimen.padding_bottom_navigation),
                     start = dimensionResource(id = R.dimen.padding_medium),
                     end = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -79,16 +79,18 @@ fun FavouriteScreenContent(
                 val drinksList = if (drinks is Resource.Success) {
                     drinks.data ?: emptyList()
                 } else listOf()
-                items(drinksList) { drink ->
-                    FavDrinkCard(
-                        drink = drink,
-                        onRemoveClick = { id ->
-                            onRemoveDrink.invoke(id)
-                        },
-                        onAddToCartClick = { id ->
-                            onAddToCartClick(id)
-                        }
-                    )
+                if(drinksList.isNotEmpty()) {
+                    items(drinksList) { drink ->
+                        FavDrinkCard(
+                            drink = drink,
+                            onRemoveClick = { id ->
+                                onRemoveDrink.invoke(id)
+                            },
+                            onAddToCartClick = { id ->
+                                onAddToCartClick(id)
+                            }
+                        )
+                    }
                 }
             }
             if (drinks is Resource.Loading) {
@@ -96,7 +98,7 @@ fun FavouriteScreenContent(
                     modifier = Modifier.fillMaxSize()
                 )
             } else if (drinks is Resource.Success && drinks.data?.isEmpty() == true) {
-                EmptyList()
+                EmptyList(stringResource(id = R.string.empty_list))
             }
         }
     }

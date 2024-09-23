@@ -1,8 +1,10 @@
 package com.example.kaffeeapp.presentation.main
 
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,7 +63,7 @@ fun MainScreen(
                             containerColor = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
-                                .height(80.dp)
+                                .heightIn(max = dimensionResource(id = R.dimen.main_bottom_navigation_height))
                         ) {
                             Spacer(modifier = Modifier.weight(0.2f))
                             bottomNavItems.forEach { item ->
@@ -114,7 +116,7 @@ fun MainScreen(
         ) { innerPadding ->
             MainNavGraph(
                 navController = navHostController,
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
                 logout = {
                     logout.invoke()
                 }
