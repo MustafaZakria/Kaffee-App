@@ -85,6 +85,7 @@ fun MainScreenContent(
     Surface(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_bottom_navigation))
     ) {
         val scrollState = rememberScrollState() //for drinks type row
 
