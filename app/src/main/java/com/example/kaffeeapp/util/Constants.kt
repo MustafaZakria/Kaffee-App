@@ -38,4 +38,7 @@ object Constants {
 
     const val SHARED_PREFERENCE_NAME = "drinks shared pref"
 
+    const val LOCATION_UPDATE_INTERVAL = 100000L
+    const val MAP_ZOOM = 15f
+
 }

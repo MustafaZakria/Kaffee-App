@@ -17,14 +17,19 @@ composeBom = "2024.09.00"
 lifecycleViewmodelCompose = "2.8.5"
 lifecycleViewmodelKtx = "2.8.5"
 lottieCompose = "6.5.2"
+mapsCompose = "6.1.2"
+mapsKtx = "5.1.1"
 navigationCompose = "2.8.0"
 navigationRuntimeKtx = "2.8.0"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
 playServicesAuth = "21.2.0"
 firebaseFirestore = "25.1.0"
+playServicesLocation = "21.3.0"
+playServicesMaps = "19.0.0"
 roomRuntime = "2.6.1"
 runtimeLivedata = "1.7.0"
+secretsGradlePlugin = "2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,9 +66,14 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+maps-ktx = { module = "com.google.maps.android:maps-ktx", version.ref = "mapsKtx" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

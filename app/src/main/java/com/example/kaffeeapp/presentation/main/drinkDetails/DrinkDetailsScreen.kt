@@ -34,7 +34,7 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 
 @Composable
 fun DrinkDetailsScreen(
-    detailsViewModel: DrinkDetailsViewModel,
+    detailsViewModel: OrderDetailsViewModel,
     id: String,
     onBackClick: () -> Unit
 ) {
