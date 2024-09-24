@@ -1,6 +1,7 @@
 package com.example.kaffeeapp.presentation.main.favourite
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -77,8 +78,9 @@ fun FavouriteScreenContent(
             ) {
                 val drinksList = if (drinks is Resource.Success) {
                     drinks.data ?: emptyList()
-                } else listOf()
+                } else emptyList()
                 if (drinksList.isNotEmpty()) {
+                    Log.d("drinksData", drinksList.toString())
                     items(drinksList) { drink ->
                         FavDrinkCard(
                             drink = drink,

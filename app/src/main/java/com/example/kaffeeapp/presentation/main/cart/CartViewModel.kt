@@ -1,25 +1,22 @@
-package com.example.kaffeeapp.presentation.main.drinkDetails
+package com.example.kaffeeapp.presentation.main.cart
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.kaffeeapp.data.entities.DeliveryMethod.AddressDelivery
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.util.DispatcherProvider
+import com.example.kaffeeapp.util.model.OrderCost
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OrderDetailsViewModel @Inject constructor(
+class CartViewModel @Inject constructor(
     private val dataRepository: DataRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
@@ -28,16 +25,21 @@ class OrderDetailsViewModel @Inject constructor(
 
     var deliveryMethod = mutableStateOf<DeliveryMethod?>(null)
 
-    private var promoCode = mutableStateOf("")
+    private var promoCodeState = mutableStateOf("")
 
-    val itemsPrice = mutableStateOf("")
-    val discountValue = mutableStateOf("0.0")
-    val deliveryFee = mutableStateOf("0.0")
+    //    val itemsPrice = mutableStateOf("0.0")
+//    val discountValue = mutableStateOf("0.0")
+//    val deliveryFee = mutableStateOf("0.0")
+    private val phoneNumberState = mutableStateOf("")
 
-    val totalPrice by derivedStateOf {
-        val itemsPrice = itemsPrice.value.toDoubleOrNull() ?: 0.0
-        val discountValue = discountValue.value.toDoubleOrNull() ?: 0.0
-        val deliveryFee = deliveryFee.value.toDoubleOrNull() ?: 0.0
+    val isDeliveryEnabled = mutableStateOf(true)
+
+    val orderCost = mutableStateOf(OrderCost())
+
+    val totalPriceState by derivedStateOf {
+        val itemsPrice = orderCost.value.itemsPrice.toDoubleOrNull() ?: 0.0
+        val discountValue = orderCost.value.discountValue.toDoubleOrNull() ?: 0.0
+        val deliveryFee = orderCost.value.deliveryFee.toDoubleOrNull() ?: 0.0
 
         itemsPrice + deliveryFee - discountValue
     }
@@ -46,8 +48,16 @@ class OrderDetailsViewModel @Inject constructor(
 
     }
 
+    fun onPhoneNumberValueChange(newValue: String) {
+        phoneNumberState.value = newValue
+    }
+
+    fun setDeliveryEnabledValue(isEnabled: Boolean) {
+        isDeliveryEnabled.value = isEnabled
+    }
+
     fun setDeliveryMethod(address: DeliveryMethod) {
-         deliveryMethod.value = address
+        deliveryMethod.value = address
     }
 
     fun removeDrinkFromCart(orderIndex: Int) {
@@ -69,36 +79,16 @@ class OrderDetailsViewModel @Inject constructor(
             val orderPrice = order.price.toDoubleOrNull() ?: 0.0
             total += order.quantity * orderPrice
         }
-        itemsPrice.value = total.toString()
+        orderCost.value.itemsPrice = total.toString()
     }
 
     fun setPromoCode(value: String) {
-        promoCode.value = value
+        promoCodeState.value = value
     }
 
-    private var _drink = mutableStateOf(Drink())
-    val drink: State<Drink> = _drink
 
-    fun getDrinkById(id: String) = viewModelScope.launch(dispatcherProvider.io) {
-        _drink.value = dataRepository.getDrinkById(id)
-    }
-
-    fun getDrinkPrice(drinkSize: DrinkSize): String {
-        return _drink.value.price[drinkSize.key].toString()
-    }
-
-    fun isDrinkFav() = dataRepository.isDrinkFav(_drink.value.id)
-
-    fun addDrinkToFav() = viewModelScope.launch(dispatcherProvider.io) {
-        dataRepository.addDrinkToFav(_drink.value.id)
-    }
-
-    fun removeDrinkFromFav() = viewModelScope.launch(dispatcherProvider.io) {
-        dataRepository.removeDrinkFromFav(_drink.value.id)
-    }
-
-    fun addDrinkToCart(size: DrinkSize) {
-        _drink.value.apply {
+    fun addDrinkToCart(drink: Drink, size: DrinkSize) {
+        drink.apply {
             val price = price[size.key] ?: "0"
             drinkOrders.add(
                 DrinkOrder(

@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.presentation.main.cart
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,21 +51,25 @@ import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ImageLoaderWithUrl
 import com.example.kaffeeapp.components.TopBarTitle
+import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DrinkOrder
-import com.example.kaffeeapp.presentation.main.drinkDetails.OrderDetailsViewModel
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.ui.theme.lightBrown
+import com.example.kaffeeapp.util.model.OrderCost
 
 @Composable
 fun CartScreen(
-    viewModel: OrderDetailsViewModel
+    viewModel: CartViewModel,
+    navigateToMapScreen: () -> Unit
 ) {
     val drinkOrders = viewModel.drinkOrders
-    val itemsPrice = viewModel.itemsPrice.value
-    val discountValue = viewModel.discountValue.value
-    val deliveryFee = viewModel.deliveryFee.value
-    val totalPrice = viewModel.totalPrice.toString()
+    val orderCost = viewModel.orderCost
+    val totalPrice = viewModel.totalPriceState.toString()
+    val deliveryMethod = viewModel.deliveryMethod
+    val isDeliveryEnabled = viewModel.isDeliveryEnabled
+
+    Log.d("Info**","${deliveryMethod.value}")
 
     CartScreenContent(
         orders = drinkOrders,
@@ -76,9 +81,12 @@ fun CartScreen(
             )
         },
         onApplyPromoClick = { code -> viewModel.setPromoCode(code) },
-        itemsPrice = itemsPrice,
-        discountValue = discountValue,
-        deliveryFee = deliveryFee,
+        orderCost = orderCost.value,
+        deliveryMethod = deliveryMethod.value,
+        isDeliveryEnabled = isDeliveryEnabled.value,
+        onDeliveryEnableChange = { isEnabled -> viewModel.setDeliveryEnabledValue(isEnabled) },
+        navigateToMapScreen = { navigateToMapScreen.invoke() },
+        onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
         totalPrice = totalPrice
     )
 }
@@ -89,9 +97,12 @@ fun CartScreenContent(
     onDeleteOrderClick: (Int) -> Unit,
     onChangeQuantityClick: (Int, Int) -> Unit,
     onApplyPromoClick: (String) -> Unit,
-    itemsPrice: String,
-    discountValue: String,
-    deliveryFee: String,
+    orderCost: OrderCost,
+    deliveryMethod: DeliveryMethod?,
+    isDeliveryEnabled: Boolean,
+    onDeliveryEnableChange: (Boolean) -> Unit,
+    navigateToMapScreen: () -> Unit,
+    onPhoneValueChange: (String) -> Unit,
     totalPrice: String
 ) {
     Scaffold(
@@ -111,7 +122,7 @@ fun CartScreenContent(
                     end = dimensionResource(id = R.dimen.padding_medium)
                 )
         ) {
-            var isDeliveryEnabled by rememberSaveable { mutableStateOf(true) }
+//            var isDeliveryEnabled by rememberSaveable { mutableStateOf(true) }
 
             if (orders.isNotEmpty()) {
                 Column(
@@ -124,10 +135,10 @@ fun CartScreenContent(
                             .fillMaxWidth(),
                         isDeliveryEnabled = isDeliveryEnabled,
                         onDeliveryClick = {
-                            isDeliveryEnabled = true
+                            onDeliveryEnableChange.invoke(true)
                         },
                         onPickUpClick = {
-                            isDeliveryEnabled = false
+                            onDeliveryEnableChange.invoke(false)
                         }
                     )
                     //drink orders
@@ -138,7 +149,20 @@ fun CartScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         item {
-                            BeforeOrderList(isDeliveryEnabled = isDeliveryEnabled)
+                            //spacer
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
+                            BeforeOrderList(
+                                isDeliveryEnabled = isDeliveryEnabled,
+                                deliveryMethod = deliveryMethod,
+                                navigateToMapScreen = { navigateToMapScreen.invoke() },
+                                onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) }
+                            )
+                            //spacer
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.secondary,
+                            )
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                         }
                         itemsIndexed(orders) { index, order ->
                             OrderCard(
@@ -161,9 +185,9 @@ fun CartScreenContent(
                         }
                         item {
                             AfterOrderList(
-                                itemsPrice = itemsPrice,
-                                discountValue = discountValue,
-                                deliveryFee = deliveryFee,
+                                itemsPrice = orderCost.itemsPrice,
+                                discountValue = orderCost.discountValue,
+                                deliveryFee = orderCost.deliveryFee,
                                 totalPrice = totalPrice,
                                 isDeliveryEnabled = isDeliveryEnabled,
                                 onApplyPromoClick = { code -> onApplyPromoClick.invoke(code) }
@@ -180,10 +204,11 @@ fun CartScreenContent(
 
 @Composable
 fun BeforeOrderList(
-    isDeliveryEnabled: Boolean
+    isDeliveryEnabled: Boolean,
+    deliveryMethod: DeliveryMethod?,
+    navigateToMapScreen: () -> Unit,
+    onPhoneValueChange: (String) -> Unit
 ) {
-    //spacer
-    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
     //delivery content
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -199,14 +224,24 @@ fun BeforeOrderList(
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
         if (isDeliveryEnabled) {
+            var address = ""
+            if (deliveryMethod != null) {
+                address = (deliveryMethod as? DeliveryMethod.AddressDelivery)?.address ?: ""
+            }
             DeliverySection(
-                address = "",
-                onEditAddressClick = {},
+                address = address,
+                onEditAddressClick = {
+                    navigateToMapScreen.invoke()
+                },
                 onAddNoteClick = {}
             )
         } else {
+            var branchName = ""
+            if (deliveryMethod != null) {
+                branchName = (deliveryMethod as? DeliveryMethod.BranchDelivery)?.branchAddress ?: ""
+            }
             PickUpSection(
-                branch = stringResource(id = R.string.pick_up_nearby_branch),
+                branch = branchName,
                 onClick = {}
             )
         }
@@ -214,15 +249,11 @@ fun BeforeOrderList(
         //telephone number section
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
         PhoneNumberContainer(
-            onPhoneValueChange = {}
+            onPhoneValueChange = { value ->
+                onPhoneValueChange.invoke(value)
+            }
         )
     }
-    //spacer
-    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
-    HorizontalDivider(
-        color = MaterialTheme.colorScheme.secondary,
-    )
-    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 }
 
 @Composable
@@ -346,13 +377,13 @@ fun PickUpSection(
 ) {
     RoundedButtonWithIcon(
         backgroundColor = MaterialTheme.colorScheme.tertiary,
-        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiary),
+        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         leadingIconId = R.drawable.edit_icon,
         leadingIconDesc = "edit",
         trailingIconId = R.drawable.arrow_right_icon,
         trailingIconDesc = "arrow right",
-        color = MaterialTheme.colorScheme.onTertiary,
-        text = branch
+        color = MaterialTheme.colorScheme.primary,
+        text = if (branch == "") stringResource(id = R.string.pick_up_nearby_branch) else branch
     ) {
         onClick.invoke()
     }
@@ -364,15 +395,8 @@ fun DeliverySection(
     onEditAddressClick: () -> Unit,
     onAddNoteClick: () -> Unit
 ) {
-//    CustomizedText(
-//        text = address,
-//        fontSize = dimensionResource(id = R.dimen.text_size_medium),
-//        color = MaterialTheme.colorScheme.onSecondary,
-//        fontWeight = FontWeight.Medium
-//    )
-//    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
     Row(
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RoundedButtonWithIcon(
@@ -382,11 +406,11 @@ fun DeliverySection(
             leadingIconDesc = "edit",
             trailingIconId = R.drawable.arrow_right_icon,
             trailingIconDesc = "arrow right",
-            color = MaterialTheme.colorScheme.onTertiary,
+            color = MaterialTheme.colorScheme.primary,
             text = if (address == "") stringResource(id = R.string.edit_address) else address,
             borderStroke = BorderStroke(
                 1.dp,
-                MaterialTheme.colorScheme.onTertiary
+                MaterialTheme.colorScheme.primary
             )
         ) {
             onEditAddressClick.invoke()
@@ -395,11 +419,11 @@ fun DeliverySection(
             backgroundColor = MaterialTheme.colorScheme.tertiary,
             leadingIconId = R.drawable.document_icon,
             leadingIconDesc = "add",
-            color = MaterialTheme.colorScheme.onTertiary,
+            color = MaterialTheme.colorScheme.primary,
             text = stringResource(id = R.string.add_note),
             borderStroke = BorderStroke(
                 1.dp,
-                MaterialTheme.colorScheme.onTertiary
+                MaterialTheme.colorScheme.primary
             )
         ) {
             onAddNoteClick.invoke()
@@ -788,7 +812,7 @@ fun RoundedButtonWithIcon(
 ) {
     Card(
         modifier = modifier.clickable { onClick.invoke() },
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
         colors = CardDefaults.cardColors().copy(
             containerColor = backgroundColor
         ),
@@ -821,7 +845,7 @@ fun RoundedButtonWithIcon(
                 Icon(
                     painter = painterResource(id = trailingIconId),
                     contentDescription = trailingIconDesc,
-                    tint = MaterialTheme.colorScheme.onTertiary,
+                    tint = color,
                     modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
                 )
             }
@@ -852,10 +876,13 @@ fun CartScreenPreview() {
             {},
             { _, _ -> },
             {},
-            "0.0",
-            "0.0",
-            "0.0",
-            "0.0"
+            OrderCost(),
+            null,
+            true,
+            {},
+            {},
+            {},
+            ""
         )
     }
 }
