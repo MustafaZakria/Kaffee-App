@@ -51,14 +51,14 @@ import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ImageLoaderWithUrl
 import com.example.kaffeeapp.components.TopBarTitle
 import com.example.kaffeeapp.data.entities.DrinkOrder
-import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsViewModel
+import com.example.kaffeeapp.presentation.main.drinkDetails.OrderDetailsViewModel
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.ui.theme.lightBrown
 
 @Composable
 fun CartScreen(
-    viewModel: DrinkDetailsViewModel
+    viewModel: OrderDetailsViewModel
 ) {
     val drinkOrders = viewModel.drinkOrders
     val itemsPrice = viewModel.itemsPrice.value

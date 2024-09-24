@@ -35,11 +35,3 @@ fun KaffeeApp(navHostController: NavHostController) {
         navHostController = navHostController
     )
 }
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    KaffeeAppTheme {
-//        SignInScreen()
-    }
-}

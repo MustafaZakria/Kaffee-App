@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kaffeeapp.data.entities.DeliveryMethod.AddressDelivery
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
@@ -18,12 +19,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DrinkDetailsViewModel @Inject constructor(
+class OrderDetailsViewModel @Inject constructor(
     private val dataRepository: DataRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     val drinkOrders = mutableStateListOf<DrinkOrder>()
+
+    var deliveryMethod = mutableStateOf<DeliveryMethod?>(null)
 
     private var promoCode = mutableStateOf("")
 
@@ -41,6 +44,10 @@ class DrinkDetailsViewModel @Inject constructor(
 
     fun createOrder(telephoneNumber: String, deliveryMethod: DeliveryMethod) {
 
+    }
+
+    fun setDeliveryMethod(address: DeliveryMethod) {
+         deliveryMethod.value = address
     }
 
     fun removeDrinkFromCart(orderIndex: Int) {

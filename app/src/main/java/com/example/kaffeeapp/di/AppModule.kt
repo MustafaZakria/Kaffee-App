@@ -2,6 +2,7 @@ package com.example.kaffeeapp.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.LocationManager
 import androidx.room.Room
 import com.example.kaffeeapp.data.local.DrinkDatabase
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
@@ -10,6 +11,8 @@ import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.util.Constants.DRINK_DATABASE_NAME
 import com.example.kaffeeapp.util.Constants.SHARED_PREFERENCE_NAME
 import com.example.kaffeeapp.util.DispatcherProvider
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,6 +39,18 @@ class AppModule {
     @Provides
     @Singleton
     fun provideFirestoreInstance(): FirebaseFirestore = Firebase.firestore
+
+    @Singleton
+    @Provides
+    fun provideFusedLocationProvider(
+        @ApplicationContext context: Context
+    ): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+
+    @Singleton
+    @Provides
+    fun provideLocationManager(
+        @ApplicationContext context: Context
+    ): LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     @Provides
     @Singleton

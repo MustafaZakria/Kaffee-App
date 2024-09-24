@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.kaffeeapp" />
+                  <option name="mobileSdkAppId" value="1:1031111051214:android:217e373075f56203f98d9f" />
+                  <option name="projectId" value="kaffee-app-8b7ab" />
+                  <option name="projectNumber" value="1031111051214" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

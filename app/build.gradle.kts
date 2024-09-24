@@ -5,6 +5,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.google.gms.google.services)
     id("androidx.room")
+    id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -42,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -120,5 +122,12 @@ dependencies {
 
     //gson
     implementation (libs.gson)
+
+    // Maps SDK for Android
+    implementation(libs.play.services.maps)
+    implementation (libs.play.services.location)
+    // KTX for the Maps SDK for Android library
+    implementation(libs.maps.ktx)
+    implementation (libs.maps.compose)
 
 }
