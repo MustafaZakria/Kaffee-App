@@ -34,7 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.DeliveryMethod
-import com.example.kaffeeapp.presentation.main.drinkDetails.OrderDetailsViewModel
+import com.example.kaffeeapp.presentation.main.cart.CartViewModel
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.util.Constants.MAP_ZOOM
 import com.example.kaffeeapp.util.model.Resource
@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun MapScreen(
-    orderDetailsViewModel: OrderDetailsViewModel,
+    orderDetailsViewModel: CartViewModel,
     mapViewModel: MapViewModel = hiltViewModel(),
     navigateBack: () -> Unit
 ) {

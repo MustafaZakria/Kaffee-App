@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.kaffeeapp.navigation.model.Graph
 import com.example.kaffeeapp.presentation.main.cart.CartScreen
+import com.example.kaffeeapp.presentation.main.cart.CartViewModel
 import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsScreen
-import com.example.kaffeeapp.presentation.main.drinkDetails.OrderDetailsViewModel
 import com.example.kaffeeapp.presentation.main.favourite.FavouriteScreen
 import com.example.kaffeeapp.presentation.main.home.HomeScreen
 import com.example.kaffeeapp.presentation.main.map.MapScreen
@@ -32,7 +32,7 @@ fun MainNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainScreen.MapScreen.route,
+        startDestination = MainScreen.HomeScreen.route,
         route = Graph.MainGraph.route,
 //        modifier = modifier
     ) {
@@ -51,12 +51,12 @@ fun MainNavGraph(
             val parentEntry = remember(navBackStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
             }
-            val viewModel: OrderDetailsViewModel = hiltViewModel(parentEntry)
+            val viewModel: CartViewModel = hiltViewModel(parentEntry)
             val id = navBackStackEntry.arguments?.getString(DRINK_ID_KEY)
             id?.let { drinkId ->
                 DrinkDetailsScreen(
                     id = drinkId,
-                    detailsViewModel = viewModel
+                    cartViewModel = viewModel
                 ) {
                     navController.popBackStack()
                 }
@@ -75,8 +75,10 @@ fun MainNavGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
             }
-            val viewModel: OrderDetailsViewModel = hiltViewModel(parentEntry)
-            CartScreen(viewModel = viewModel)
+            val viewModel: CartViewModel = hiltViewModel(parentEntry)
+            CartScreen(viewModel = viewModel) {
+                navController.navigate(MainScreen.MapScreen.route)
+            }
         }
         composable(
             MainScreen.NotificationScreen.route
@@ -90,8 +92,8 @@ fun MainNavGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
             }
-            val viewModel: OrderDetailsViewModel = hiltViewModel(parentEntry)
-            MapScreen(orderDetailsViewModel = viewModel){
+            val viewModel: CartViewModel = hiltViewModel(parentEntry)
+            MapScreen(orderDetailsViewModel = viewModel) {
                 navController.popBackStack()
             }
         }

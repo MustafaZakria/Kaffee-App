@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.repository
 
+import android.util.Log
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
@@ -37,10 +38,7 @@ class DataRepositoryImp @Inject constructor(
     override suspend fun getFavDrinks(): Flow<FavDrinksResult> = flow {
         emit(Resource.Loading())
         val ids = drinkSharedPreference.getFavDrinksIds()
-        val list = mutableListOf<Drink>()
-        for (id in ids) {
-            list.add(getDrinkById(id))
-        }
+        val list = ids.mapNotNull { id -> getDrinkById(id) }
         emit(Resource.Success(list))
     }
 }

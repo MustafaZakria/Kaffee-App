@@ -20,10 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.data.entities.DrinkType
+import com.example.kaffeeapp.presentation.main.cart.CartViewModel
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.BottomBarForDetail
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.DrinkDescriptionSection
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.DrinkImageSection
@@ -34,14 +36,15 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 
 @Composable
 fun DrinkDetailsScreen(
-    detailsViewModel: OrderDetailsViewModel,
+    cartViewModel: CartViewModel,
+    drinkDetailsViewModel: DrinkDetailsViewModel = hiltViewModel(),
     id: String,
     onBackClick: () -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {
-        detailsViewModel.getDrinkById(id)
+        drinkDetailsViewModel.getDrinkById(id)
     }
-    val drink = detailsViewModel.drink
+    val drink = drinkDetailsViewModel.drink
 
     var drinkPrice by rememberSaveable { mutableStateOf("") }
 
@@ -51,9 +54,9 @@ fun DrinkDetailsScreen(
 
     LaunchedEffect(key1 = drink.value.price) {
         if (drink.value.price.isNotEmpty()) {
-            drinkPrice = detailsViewModel.getDrinkPrice(DrinkSize.SMALL)
+            drinkPrice = drinkDetailsViewModel.getDrinkPrice(DrinkSize.SMALL)
         }
-        isFavDrink = detailsViewModel.isDrinkFav()
+        isFavDrink = drinkDetailsViewModel.isDrinkFav()
     }
 
 
@@ -63,20 +66,20 @@ fun DrinkDetailsScreen(
             onBackClick.invoke()
         },
         onSizeClicked = { size ->
-            drinkPrice = detailsViewModel.getDrinkPrice(size)
+            drinkPrice = drinkDetailsViewModel.getDrinkPrice(size)
             drinkSize = size
         },
         drinkPrice = drinkPrice,
         onFavouriteClick = {
             isFavDrink = !isFavDrink
             if (isFavDrink) {
-                detailsViewModel.addDrinkToFav()
+                drinkDetailsViewModel.addDrinkToFav()
             } else {
-                detailsViewModel.removeDrinkFromFav()
+                drinkDetailsViewModel.removeDrinkFromFav()
             }
         },
         onBuyClick = {
-            detailsViewModel.addDrinkToCart(drinkSize)
+            cartViewModel.addDrinkToCart(drink.value, drinkSize)
             onBackClick.invoke()
         },
         isFav = isFavDrink

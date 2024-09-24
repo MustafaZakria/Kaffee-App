@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.local.DrinkDao

@@ -60,10 +60,12 @@ class HomeViewModel @Inject constructor(
 
     init {
         drinkApiResponse = Resource.Loading()
+
         viewModelScope.launch(dispatcherProvider.io) {
             drinkApiResponse = mainRepository.refreshDrinks()
             mainRepository.refreshData()
         }
+
         drinks = drinksFromSelectType
     }
 }
