@@ -33,8 +33,8 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color.Black,
 
     onBackground = LightGrey,
-    error = ErrorColor
-
+    error = ErrorColor,
+    outline = LightBrown
     /* Other default colors to override
 
     surface = Color(0xFFFFFBFE),

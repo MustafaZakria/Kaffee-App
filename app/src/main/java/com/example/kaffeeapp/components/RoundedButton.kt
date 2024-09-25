@@ -8,8 +8,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
@@ -21,11 +23,13 @@ fun RoundedButton(
     text: String,
     textColor: Color,
     textModifier: Modifier,
+    fontSize: Dp,
+    roundedShapeSize: Dp,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.clickable { onClick.invoke() },
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)),
+        shape = RoundedCornerShape(roundedShapeSize),
         colors = CardDefaults.cardColors().copy(
             containerColor = backgroundColor
         ),
@@ -33,7 +37,7 @@ fun RoundedButton(
     ) {
         CustomizedText(
             text = text,
-            fontSize = dimensionResource(id = R.dimen.text_size_small),
+            fontSize = fontSize,
             fontWeight = FontWeight.Medium,
             color = textColor,
             modifier = textModifier

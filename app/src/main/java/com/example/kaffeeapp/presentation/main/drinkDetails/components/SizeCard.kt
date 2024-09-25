@@ -23,7 +23,7 @@ fun SizeCard(
     modifier: Modifier, size: DrinkSize, isClicked: Boolean, onSizeClick: (DrinkSize) -> Unit
 ) {
     Card(modifier = modifier,
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_12)),
         colors = CardDefaults.cardColors().copy(
             containerColor = if (isClicked) MaterialTheme.colorScheme.lightBrown else MaterialTheme.colorScheme.tertiary
         ),
@@ -42,7 +42,7 @@ fun SizeCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    vertical = dimensionResource(id = R.dimen.padding_medium)
+                    vertical = dimensionResource(id = R.dimen.padding_10)
                 ),
             textAlign = TextAlign.Center
         )

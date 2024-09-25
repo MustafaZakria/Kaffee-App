@@ -10,19 +10,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import java.util.UUID
 
 object Utils {
-
-    @Composable
-    inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
-        navController: NavController,
-    ): T {
-        val navGraphRoute = destination.parent?.route ?: return viewModel()
-        val parentEntry = remember(this) {
-            navController.getBackStackEntry(navGraphRoute)
-        }
-        return viewModel(parentEntry)
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     val clearRippleConfiguration = RippleConfiguration(
@@ -33,5 +23,9 @@ object Utils {
             pressedAlpha = 0.0f,
         )
     )
+
+    fun generateUniqueId(): String {
+        return UUID.randomUUID().toString()
+    }
 
 }

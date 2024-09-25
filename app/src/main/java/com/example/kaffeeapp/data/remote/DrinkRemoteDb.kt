@@ -65,7 +65,6 @@ class DrinkRemoteDb @Inject constructor(
 
     suspend fun getFavDrinksIds(): List<String> {
         return try {
-//            currentUserId = firebaseAuth.currentUser?.uid
             val user = currentUserId?.let {
                 firestore.collection(USERS_COLLECTION).document(it).get().await()
             }
@@ -110,7 +109,7 @@ class DrinkRemoteDb @Inject constructor(
         }
     }
 
-    suspend fun addOrder(id: String) {
+    suspend fun addOrderToUser(id: String) {
         try {
             currentUserId?.let {
                 firestore.collection(USERS_COLLECTION).document(it)

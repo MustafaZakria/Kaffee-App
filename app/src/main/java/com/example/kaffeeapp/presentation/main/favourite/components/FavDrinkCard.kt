@@ -93,19 +93,23 @@ fun FavDrinkCard(
                         textModifier = Modifier.padding(
                             vertical = dimensionResource(id = R.dimen.padding_x_small),
                             horizontal = dimensionResource(id = R.dimen.padding_small)
-                        )
+                        ),
+                        fontSize = dimensionResource(id = R.dimen.text_size_small),
+                        roundedShapeSize = dimensionResource(id = R.dimen.shape_rounded_corner_6)
                     ) {
                         onAddToCartClick.invoke(drink.id)
                     }
                     RoundedButton(
                         backgroundColor = MaterialTheme.colorScheme.tertiary,
-                        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiary),
+                        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                         text = stringResource(id = R.string.remove),
-                        textColor = MaterialTheme.colorScheme.onTertiary,
+                        textColor = MaterialTheme.colorScheme.primary,
                         textModifier = Modifier.padding(
                             vertical = dimensionResource(id = R.dimen.padding_x_small),
                             horizontal = dimensionResource(id = R.dimen.padding_small)
-                        )
+                        ),
+                        fontSize = dimensionResource(id = R.dimen.text_size_small),
+                        roundedShapeSize = dimensionResource(id = R.dimen.shape_rounded_corner_6)
                     ) {
                         onRemoveClick.invoke(drink.id)
                     }
