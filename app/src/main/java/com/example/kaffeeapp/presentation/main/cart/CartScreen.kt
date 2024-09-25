@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -55,7 +56,6 @@ import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.ui.theme.lightBrown
 import com.example.kaffeeapp.util.model.OrderCost
 
 @Composable
@@ -65,11 +65,11 @@ fun CartScreen(
 ) {
     val drinkOrders = viewModel.drinkOrders
     val orderCost = viewModel.orderCost
-    val totalPrice = viewModel.totalPriceState.toString()
+    val totalPrice = viewModel.totalPrice.toString()
     val deliveryMethod = viewModel.deliveryMethod
     val isDeliveryEnabled = viewModel.isDeliveryEnabled
 
-    Log.d("Info**","${deliveryMethod.value}")
+    Log.d("Info**", "${deliveryMethod.value}")
 
     CartScreenContent(
         orders = drinkOrders,
@@ -85,8 +85,10 @@ fun CartScreen(
         deliveryMethod = deliveryMethod.value,
         isDeliveryEnabled = isDeliveryEnabled.value,
         onDeliveryEnableChange = { isEnabled -> viewModel.setDeliveryEnabledValue(isEnabled) },
+        isAddressNull = false,
         navigateToMapScreen = { navigateToMapScreen.invoke() },
         onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
+        isPhoneNumberValid = true,
         totalPrice = totalPrice
     )
 }
@@ -101,15 +103,15 @@ fun CartScreenContent(
     deliveryMethod: DeliveryMethod?,
     isDeliveryEnabled: Boolean,
     onDeliveryEnableChange: (Boolean) -> Unit,
+    isAddressNull: Boolean,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
+    isPhoneNumberValid: Boolean,
     totalPrice: String
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
-        topBar = {
-            TopBarTitle(title = stringResource(id = R.string.cart))
-        }
+        topBar = { TopBarTitle(title = stringResource(id = R.string.cart)) },
     ) { innerPadding ->
 
         Surface(
@@ -118,12 +120,8 @@ fun CartScreenContent(
                 .padding(
                     top = innerPadding.calculateTopPadding(),
                     bottom = dimensionResource(id = R.dimen.padding_bottom_navigation),
-                    start = dimensionResource(id = R.dimen.padding_medium),
-                    end = dimensionResource(id = R.dimen.padding_medium)
                 )
         ) {
-//            var isDeliveryEnabled by rememberSaveable { mutableStateOf(true) }
-
             if (orders.isNotEmpty()) {
                 Column(
                     modifier = Modifier
@@ -132,7 +130,11 @@ fun CartScreenContent(
                     //selecting pick up way
                     SelectDeliverWay(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .padding(
+                                start = dimensionResource(id = R.dimen.padding_medium),
+                                end = dimensionResource(id = R.dimen.padding_medium)
+                            ),
                         isDeliveryEnabled = isDeliveryEnabled,
                         onDeliveryClick = {
                             onDeliveryEnableChange.invoke(true)
@@ -141,28 +143,34 @@ fun CartScreenContent(
                             onDeliveryEnableChange.invoke(false)
                         }
                     )
+                    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                     //drink orders
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(
+                                start = dimensionResource(id = R.dimen.padding_medium),
+                                end = dimensionResource(id = R.dimen.padding_medium)
+                            ),
                         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         item {
-                            //spacer
-                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                             BeforeOrderList(
                                 isDeliveryEnabled = isDeliveryEnabled,
                                 deliveryMethod = deliveryMethod,
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
-                                onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) }
+                                onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
+                                isAddressNull = isAddressNull,
+                                isPhoneNumberValid = isPhoneNumberValid
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.secondary,
                             )
-                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
                         }
                         itemsIndexed(orders) { index, order ->
                             OrderCard(
@@ -184,6 +192,13 @@ fun CartScreenContent(
                             )
                         }
                         item {
+                            //spacer
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.secondary,
+                            )
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
+
                             AfterOrderList(
                                 itemsPrice = orderCost.itemsPrice,
                                 discountValue = orderCost.discountValue,
@@ -192,11 +207,68 @@ fun CartScreenContent(
                                 isDeliveryEnabled = isDeliveryEnabled,
                                 onApplyPromoClick = { code -> onApplyPromoClick.invoke(code) }
                             )
+                            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                         }
                     }
+                    OrderBox(
+                        totalPrice = totalPrice,
+                        onOrderClick = {}
+                    )
                 }
             } else {
                 EmptyList(message = stringResource(id = R.string.no_orders))
+            }
+        }
+    }
+}
+
+@Composable
+fun OrderBox(
+    totalPrice: String,
+    onOrderClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+//            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
+            .background(MaterialTheme.colorScheme.tertiary)
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.padding_medium),
+                vertical = dimensionResource(id = R.dimen.padding_medium)
+            )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
+            ) {
+                CustomizedText(
+                    text = stringResource(id = R.string.cash),
+                    fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    fontWeight = FontWeight.Medium
+                )
+                CustomizedText(
+                    text = stringResource(id = R.string.drink_price, totalPrice),
+                    fontSize = dimensionResource(id = R.dimen.text_size_18),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)))
+            Button(
+                onClick = { onOrderClick.invoke() },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+                modifier = Modifier.weight(1f)
+            ) {
+                CustomizedText(
+                    text = stringResource(id = R.string.order),
+                    fontSize = dimensionResource(id = R.dimen.text_size_18),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
+                )
             }
         }
     }
@@ -207,7 +279,9 @@ fun BeforeOrderList(
     isDeliveryEnabled: Boolean,
     deliveryMethod: DeliveryMethod?,
     navigateToMapScreen: () -> Unit,
-    onPhoneValueChange: (String) -> Unit
+    onPhoneValueChange: (String) -> Unit,
+    isAddressNull: Boolean,
+    isPhoneNumberValid: Boolean
 ) {
     //delivery content
     Column(
@@ -233,6 +307,7 @@ fun BeforeOrderList(
                 onEditAddressClick = {
                     navigateToMapScreen.invoke()
                 },
+                isAddressNull = isAddressNull,
                 onAddNoteClick = {}
             )
         } else {
@@ -242,6 +317,7 @@ fun BeforeOrderList(
             }
             PickUpSection(
                 branch = branchName,
+                isAddressNull = isAddressNull,
                 onClick = {}
             )
         }
@@ -251,7 +327,8 @@ fun BeforeOrderList(
         PhoneNumberContainer(
             onPhoneValueChange = { value ->
                 onPhoneValueChange.invoke(value)
-            }
+            },
+            isNumberValid = isPhoneNumberValid
         )
     }
 }
@@ -265,12 +342,6 @@ fun AfterOrderList(
     isDeliveryEnabled: Boolean,
     onApplyPromoClick: (String) -> Unit,
 ) {
-    //spacer
-    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
-    HorizontalDivider(
-        color = MaterialTheme.colorScheme.secondary,
-    )
-    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
     //promo code
     PromoCodeContainer(
         onApplyClick = { code -> onApplyPromoClick.invoke(code) }
@@ -285,152 +356,7 @@ fun AfterOrderList(
         totalPrice = totalPrice,
         isDeliveryEnabled = isDeliveryEnabled
     )
-    Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)))
-
 }
-
-@Composable
-fun PaymentSummary(
-    itemsPrice: String,
-    discountValue: String,
-    deliveryFee: String,
-    totalPrice: String,
-    isDeliveryEnabled: Boolean
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = MaterialTheme.colorScheme.tertiary
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small))
-        ) {
-            //items
-            RowItemPrice(
-                item = stringResource(id = R.string.items),
-                price = stringResource(id = R.string.price_value, itemsPrice)
-            )
-            //discount
-            RowItemPrice(
-                item = stringResource(id = R.string.discount),
-                price = stringResource(id = R.string.discount_price, discountValue)
-            )
-            if (isDeliveryEnabled) {
-                //delivery
-                RowItemPrice(
-                    item = stringResource(id = R.string.delivery),
-                    price = if (deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
-                        id = R.string.price_value,
-                        deliveryFee
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
-            //total
-            RowItemPrice(
-                item = stringResource(id = R.string.total),
-                price = stringResource(id = R.string.drink_price, totalPrice),
-                fontWeightItem = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-fun RowItemPrice(
-    item: String,
-    fontWeightItem: FontWeight = FontWeight.Normal,
-    price: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        CustomizedText(
-            text = item,
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = fontWeightItem
-        )
-        CustomizedText(
-            text = price,
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
-            color = MaterialTheme.colorScheme.onTertiary,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-fun PickUpSection(
-    branch: String,
-    onClick: () -> Unit
-) {
-    RoundedButtonWithIcon(
-        backgroundColor = MaterialTheme.colorScheme.tertiary,
-        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        leadingIconId = R.drawable.edit_icon,
-        leadingIconDesc = "edit",
-        trailingIconId = R.drawable.arrow_right_icon,
-        trailingIconDesc = "arrow right",
-        color = MaterialTheme.colorScheme.primary,
-        text = if (branch == "") stringResource(id = R.string.pick_up_nearby_branch) else branch
-    ) {
-        onClick.invoke()
-    }
-}
-
-@Composable
-fun DeliverySection(
-    address: String,
-    onEditAddressClick: () -> Unit,
-    onAddNoteClick: () -> Unit
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        RoundedButtonWithIcon(
-            modifier = Modifier.weight(1f),
-            backgroundColor = MaterialTheme.colorScheme.tertiary,
-            leadingIconId = R.drawable.edit_icon,
-            leadingIconDesc = "edit",
-            trailingIconId = R.drawable.arrow_right_icon,
-            trailingIconDesc = "arrow right",
-            color = MaterialTheme.colorScheme.primary,
-            text = if (address == "") stringResource(id = R.string.edit_address) else address,
-            borderStroke = BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.primary
-            )
-        ) {
-            onEditAddressClick.invoke()
-        }
-        RoundedButtonWithIcon(
-            backgroundColor = MaterialTheme.colorScheme.tertiary,
-            leadingIconId = R.drawable.document_icon,
-            leadingIconDesc = "add",
-            color = MaterialTheme.colorScheme.primary,
-            text = stringResource(id = R.string.add_note),
-            borderStroke = BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.primary
-            )
-        ) {
-            onAddNoteClick.invoke()
-        }
-    }
-}
-
 
 @Composable
 fun SelectDeliverWay(
@@ -468,7 +394,7 @@ fun SelectDeliverWay(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimensionResource(id = R.dimen.padding_x_small))
+                        .padding(vertical = dimensionResource(id = R.dimen.padding_small))
                 )
             }
             Box(
@@ -485,13 +411,77 @@ fun SelectDeliverWay(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = dimensionResource(id = R.dimen.padding_x_small)),
+                        .padding(vertical = dimensionResource(id = R.dimen.padding_small)),
                     color = if (!isDeliveryEnabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
                 )
             }
         }
     }
 }
+
+@Composable
+fun PickUpSection(
+    branch: String,
+    isAddressNull: Boolean,
+    onClick: () -> Unit
+) {
+    RoundedButtonWithIcon(
+        backgroundColor = MaterialTheme.colorScheme.tertiary,
+        borderStroke = BorderStroke(1.dp, if (isAddressNull) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline),
+        leadingIconId = R.drawable.edit_icon,
+        leadingIconDesc = "edit",
+        trailingIconId = R.drawable.arrow_right_icon,
+        trailingIconDesc = "arrow right",
+        color = MaterialTheme.colorScheme.primary,
+        text = if (branch == "") stringResource(id = R.string.pick_up_nearby_branch) else branch
+    ) {
+        onClick.invoke()
+    }
+}
+
+@Composable
+fun DeliverySection(
+    address: String,
+    isAddressNull: Boolean,
+    onEditAddressClick: () -> Unit,
+    onAddNoteClick: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RoundedButtonWithIcon(
+            modifier = Modifier.weight(1f),
+            backgroundColor = MaterialTheme.colorScheme.tertiary,
+            leadingIconId = R.drawable.edit_icon,
+            leadingIconDesc = "edit",
+            trailingIconId = R.drawable.arrow_right_icon,
+            trailingIconDesc = "arrow right",
+            color = MaterialTheme.colorScheme.primary,
+            text = if (address == "") stringResource(id = R.string.edit_address) else address,
+            borderStroke = BorderStroke(
+                1.dp,
+                if (isAddressNull) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
+            )
+        ) {
+            onEditAddressClick.invoke()
+        }
+        RoundedButtonWithIcon(
+            backgroundColor = MaterialTheme.colorScheme.tertiary,
+            leadingIconId = R.drawable.document_icon,
+            leadingIconDesc = "add",
+            color = MaterialTheme.colorScheme.primary,
+            text = stringResource(id = R.string.add_note),
+            borderStroke = BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.outline
+            )
+        ) {
+            onAddNoteClick.invoke()
+        }
+    }
+}
+
 
 @Composable
 fun OrderCard(
@@ -557,7 +547,7 @@ fun OrderCard(
                 )
             }
 
-            QuantityAndClosePart(
+            QuantityAndCloseColumn(
                 modifier = Modifier
                     .height(85.dp)
                     .weight(1f),
@@ -569,6 +559,61 @@ fun OrderCard(
         }
     }
 }
+
+
+@Composable
+fun PhoneNumberContainer(
+    onPhoneValueChange: (String) -> Unit,
+    isNumberValid: Boolean
+) {
+    var phoneNumber by rememberSaveable { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
+            .background(MaterialTheme.colorScheme.tertiary),
+    ) {
+        TextField(
+            value = phoneNumber,
+            onValueChange = { value ->
+                onPhoneValueChange.invoke(value)
+                phoneNumber = value
+            },
+            isError = !isNumberValid,
+            singleLine = true,
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+            placeholder = {
+                CustomizedText(
+                    text = stringResource(id = R.string.phone_hint),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = dimensionResource(id = R.dimen.text_size_medium)
+                )
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Phone
+            ),
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.phone_icon),
+                    contentDescription = "Phone",
+                    tint = MaterialTheme.colorScheme.onTertiary,
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
+                )
+            },
+            colors = TextFieldDefaults.colors().copy(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                errorContainerColor = Color.Transparent,
+                focusedTextColor = MaterialTheme.colorScheme.onTertiary
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
 
 @Composable
 fun PromoCodeContainer(
@@ -631,78 +676,64 @@ fun PromoCodeContainer(
     }
 }
 
-@Composable
-fun PhoneNumberContainer(
-    onPhoneValueChange: (String) -> Unit
-) {
-    var errorMessage by rememberSaveable { mutableStateOf("") }
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
 
-    Box(
+@Composable
+fun PaymentSummary(
+    itemsPrice: String,
+    discountValue: String,
+    deliveryFee: String,
+    totalPrice: String,
+    isDeliveryEnabled: Boolean
+) {
+    Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
-            .background(MaterialTheme.colorScheme.tertiary),
-    ) {
-        TextField(
-            value = phoneNumber,
-            onValueChange = { value ->
-                onPhoneValueChange.invoke(value)
-                phoneNumber = value
-                errorMessage = if (phoneNumber == "") {
-                    "required"
-                } else if (phoneNumber.length < 10) {
-                    "Enter valid phone number"
-                } else {
-                    ""
-                }
-            },
-            isError = errorMessage != "",
-//            supportingText = {
-//                if (errorMessage.isNotBlank()) {
-//                    CustomizedText(
-//                        text = errorMessage,
-//                        color = MaterialTheme.colorScheme.error,
-//                        modifier = Modifier.testTag(errorMessage),
-//                        fontSize = dimensionResource(id = R.dimen.text_size_small)
-//                    )
-//                }
-//            },
-            singleLine = true,
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-            placeholder = {
-                CustomizedText(
-                    text = stringResource(id = R.string.phone_hint),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = dimensionResource(id = R.dimen.text_size_medium)
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone
-            ),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.phone_icon),
-                    contentDescription = "Phone",
-                    tint = MaterialTheme.colorScheme.onTertiary,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-                )
-            },
-            colors = TextFieldDefaults.colors().copy(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onTertiary
-            ),
-            modifier = Modifier.fillMaxWidth()
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = MaterialTheme.colorScheme.tertiary
         )
+    ) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small))
+        ) {
+            //items
+            RowItemPrice(
+                item = stringResource(id = R.string.items),
+                price = stringResource(id = R.string.price_value, itemsPrice)
+            )
+            //discount
+            RowItemPrice(
+                item = stringResource(id = R.string.discount),
+                price = stringResource(id = R.string.discount_price, discountValue)
+            )
+            if (isDeliveryEnabled) {
+                //delivery
+                RowItemPrice(
+                    item = stringResource(id = R.string.delivery),
+                    price = if (deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
+                        id = R.string.price_value,
+                        deliveryFee
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.secondary,
+            )
+            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
+            //total
+            RowItemPrice(
+                item = stringResource(id = R.string.total),
+                price = stringResource(id = R.string.drink_price, totalPrice),
+                fontWeightItem = FontWeight.Medium
+            )
+        }
     }
 }
 
 @Composable
-fun QuantityAndClosePart(
+fun QuantityAndCloseColumn(
     modifier: Modifier,
     quantity: Int,
     onDeleteClick: () -> Unit,
@@ -746,7 +777,7 @@ fun QuantityAndClosePart(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 ),
                 shape = CircleShape,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.lightBrown)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 CompositionLocalProvider(
                     LocalContentColor provides
@@ -782,7 +813,7 @@ fun QuantityAndClosePart(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 ),
                 shape = CircleShape,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.lightBrown)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.positive_icon),
@@ -794,6 +825,32 @@ fun QuantityAndClosePart(
             }
         }
 
+    }
+}
+
+@Composable
+fun RowItemPrice(
+    item: String,
+    fontWeightItem: FontWeight = FontWeight.Normal,
+    price: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CustomizedText(
+            text = item,
+            fontSize = dimensionResource(id = R.dimen.text_size_16),
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = fontWeightItem
+        )
+        CustomizedText(
+            text = price,
+            fontSize = dimensionResource(id = R.dimen.text_size_16),
+            color = MaterialTheme.colorScheme.onTertiary,
+            fontWeight = FontWeight.Medium
+        )
     }
 }
 
@@ -823,7 +880,7 @@ fun RoundedButtonWithIcon(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(
-                    vertical = dimensionResource(id = R.dimen.padding_small),
+                    vertical = dimensionResource(id = R.dimen.padding_10),
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
         ) {
@@ -880,8 +937,10 @@ fun CartScreenPreview() {
             null,
             true,
             {},
+            false,
             {},
             {},
+            true,
             ""
         )
     }

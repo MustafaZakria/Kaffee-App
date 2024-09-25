@@ -147,13 +147,13 @@ fun MapScreen(
 @Composable
 fun RequestLocationPermission(
     context: Context,
-    isPermissionGranted: () -> Unit
+    permissionGranted: () -> Unit
 ) {
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            isPermissionGranted.invoke()
+            permissionGranted.invoke()
         }
     }
 
@@ -163,7 +163,7 @@ fun RequestLocationPermission(
                 ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            isPermissionGranted.invoke()
+            permissionGranted.invoke()
         } else {
             //ask for permission
             requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)

@@ -1,7 +1,9 @@
 package com.example.kaffeeapp.repository
 
-import android.util.Log
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.Drink
+import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
@@ -41,4 +43,23 @@ class DataRepositoryImp @Inject constructor(
         val list = ids.mapNotNull { id -> getDrinkById(id) }
         emit(Resource.Success(list))
     }
+
+    override suspend fun addOrder(
+        drinkOrders: SnapshotStateList<DrinkOrder>,
+        phoneNumber: String,
+        totalPrice: String,
+        isHomeDelivery: Boolean,
+        deliveryDetail: DeliveryMethod
+    ) {
+
+    }
+
+    override suspend fun addOrderToUser() {
+
+    }
+
+    override suspend fun addOrderToServer() {
+
+    }
+
 }

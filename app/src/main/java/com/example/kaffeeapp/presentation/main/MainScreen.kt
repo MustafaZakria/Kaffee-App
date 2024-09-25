@@ -59,7 +59,7 @@ fun MainScreen(
                         NavigationBar(
                             containerColor = MaterialTheme.colorScheme.tertiary,
                             modifier = Modifier
-                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
+//                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_large)))
                                 .heightIn(max = dimensionResource(id = R.dimen.main_bottom_navigation_height))
                         ) {
                             Spacer(modifier = Modifier.weight(0.2f))
