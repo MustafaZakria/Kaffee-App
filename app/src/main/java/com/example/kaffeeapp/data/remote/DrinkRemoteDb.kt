@@ -3,8 +3,10 @@ package com.example.kaffeeapp.data.remote
 import android.util.Log
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
+import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.util.Constants.DRINKS_COLLECTION
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
+import com.example.kaffeeapp.util.Constants.ORDERS_COLLECTION
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
 import com.example.kaffeeapp.util.Constants.USERS_COLLECTION
 import com.example.kaffeeapp.util.model.Resource
@@ -109,14 +111,23 @@ class DrinkRemoteDb @Inject constructor(
         }
     }
 
-    suspend fun addOrderToUser(id: String) {
-        try {
-            currentUserId?.let {
-                firestore.collection(USERS_COLLECTION).document(it)
-                    .update(ORDERS_KEY, FieldValue.arrayUnion(id)).await()
-            }
+    private suspend fun addOrderToUser(id: String) {
+        currentUserId?.let {
+            firestore.collection(USERS_COLLECTION).document(it)
+                .update(ORDERS_KEY, FieldValue.arrayUnion(id)).await()
+        }
+    }
+
+    suspend fun addOrderToServer(order: Order): Resource<Boolean> {
+        return try {
+            firestore.collection(ORDERS_COLLECTION).document(order.orderId)
+                .set(order).await()
+
+            addOrderToUser(order.orderId)
+
+            Resource.Success(true)
         } catch (e: Exception) {
-            Log.e("Exception(ORDERS):", e.message.toString())
+            Resource.Failure(e)
         }
     }
 }

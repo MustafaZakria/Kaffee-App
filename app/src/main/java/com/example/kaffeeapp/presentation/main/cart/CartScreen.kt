@@ -1,6 +1,7 @@
 package com.example.kaffeeapp.presentation.main.cart
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,12 +53,14 @@ import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ImageLoaderWithUrl
+import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.components.TopBarTitle
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.model.OrderCost
+import com.example.kaffeeapp.util.model.Resource
 
 @Composable
 fun CartScreen(
@@ -68,8 +72,14 @@ fun CartScreen(
     val totalPrice = viewModel.totalPrice.toString()
     val deliveryMethod = viewModel.deliveryMethod
     val isDeliveryEnabled = viewModel.isDeliveryEnabled
+    val isPhoneNumberValid = viewModel.isPhoneNumberValid
+    val phoneNumberState = viewModel.phoneNumberState
+    val isAddressNull = viewModel.isAddressNull
+    val orderResult = viewModel.orderResult
 
-    Log.d("Info**", "${deliveryMethod.value}")
+    if (drinkOrders.isEmpty()) {
+        viewModel.removeBadgeOnCart()
+    }
 
     CartScreenContent(
         orders = drinkOrders,
@@ -85,11 +95,14 @@ fun CartScreen(
         deliveryMethod = deliveryMethod.value,
         isDeliveryEnabled = isDeliveryEnabled.value,
         onDeliveryEnableChange = { isEnabled -> viewModel.setDeliveryEnabledValue(isEnabled) },
-        isAddressNull = false,
+        isAddressNull = isAddressNull.value,
         navigateToMapScreen = { navigateToMapScreen.invoke() },
         onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
-        isPhoneNumberValid = true,
-        totalPrice = totalPrice
+        isPhoneNumberValid = isPhoneNumberValid.value,
+        phoneNumber = phoneNumberState.value,
+        totalPrice = totalPrice,
+        orderResult = orderResult.value,
+        onOrderClick = { viewModel.submitOrder() }
     )
 }
 
@@ -107,13 +120,16 @@ fun CartScreenContent(
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
     isPhoneNumberValid: Boolean,
-    totalPrice: String
+    phoneNumber: String,
+    totalPrice: String,
+    orderResult: Resource<Boolean>?,
+    onOrderClick: () -> Unit
 ) {
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = { TopBarTitle(title = stringResource(id = R.string.cart)) },
     ) { innerPadding ->
-
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -163,7 +179,8 @@ fun CartScreenContent(
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
                                 onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
                                 isAddressNull = isAddressNull,
-                                isPhoneNumberValid = isPhoneNumberValid
+                                isPhoneNumberValid = isPhoneNumberValid,
+                                phoneNumber = phoneNumber
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
@@ -212,13 +229,50 @@ fun CartScreenContent(
                     }
                     OrderBox(
                         totalPrice = totalPrice,
-                        onOrderClick = {}
+                        onOrderClick = {
+                            onOrderClick.invoke()
+                        }
                     )
                 }
             } else {
                 EmptyList(message = stringResource(id = R.string.no_orders))
             }
         }
+    }
+    OnResultState(
+        orderResult = orderResult,
+        context = LocalContext.current
+    )
+}
+
+@Composable
+fun OnResultState(
+    orderResult: Resource<Boolean>?,
+    context: Context
+) {
+    when (orderResult) {
+        is Resource.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.2f)) // Dimmed background
+            ) {
+                ProgressBar(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+        is Resource.Failure -> {
+//            Toast.makeText(context, stringResource(id = R.string.network_error), Toast.LENGTH_SHORT)
+//                .show()
+        }
+
+        is Resource.Success -> {
+//            Toast.makeText(context, stringResource(id = R.string.order_success), Toast.LENGTH_SHORT)
+//                .show()
+        }
+
+        else -> {}
     }
 }
 
@@ -229,7 +283,6 @@ fun OrderBox(
 ) {
     Box(
         modifier = Modifier
-//            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
             .background(MaterialTheme.colorScheme.tertiary)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_medium),
@@ -281,7 +334,8 @@ fun BeforeOrderList(
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
     isAddressNull: Boolean,
-    isPhoneNumberValid: Boolean
+    isPhoneNumberValid: Boolean,
+    phoneNumber: String
 ) {
     //delivery content
     Column(
@@ -328,7 +382,8 @@ fun BeforeOrderList(
             onPhoneValueChange = { value ->
                 onPhoneValueChange.invoke(value)
             },
-            isNumberValid = isPhoneNumberValid
+            isNumberValid = isPhoneNumberValid,
+            phoneNumber = phoneNumber
         )
     }
 }
@@ -427,7 +482,10 @@ fun PickUpSection(
 ) {
     RoundedButtonWithIcon(
         backgroundColor = MaterialTheme.colorScheme.tertiary,
-        borderStroke = BorderStroke(1.dp, if (isAddressNull) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline),
+        borderStroke = BorderStroke(
+            1.dp,
+            if (isAddressNull) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
+        ),
         leadingIconId = R.drawable.edit_icon,
         leadingIconDesc = "edit",
         trailingIconId = R.drawable.arrow_right_icon,
@@ -564,10 +622,9 @@ fun OrderCard(
 @Composable
 fun PhoneNumberContainer(
     onPhoneValueChange: (String) -> Unit,
-    isNumberValid: Boolean
+    isNumberValid: Boolean,
+    phoneNumber: String
 ) {
-    var phoneNumber by rememberSaveable { mutableStateOf("") }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -578,7 +635,6 @@ fun PhoneNumberContainer(
             value = phoneNumber,
             onValueChange = { value ->
                 onPhoneValueChange.invoke(value)
-                phoneNumber = value
             },
             isError = !isNumberValid,
             singleLine = true,
@@ -941,7 +997,10 @@ fun CartScreenPreview() {
             {},
             {},
             true,
-            ""
+            "",
+            "",
+            Resource.Loading(),
+            {},
         )
     }
 }

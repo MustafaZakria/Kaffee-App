@@ -7,13 +7,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.DeliveryMethod
+import com.example.kaffeeapp.data.entities.DeliveryMethod.AddressDelivery
+import com.example.kaffeeapp.data.entities.DeliveryMethod.BranchDelivery
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.DrinkSize
+import com.example.kaffeeapp.navigation.MainScreen
+import com.example.kaffeeapp.navigation.model.bottomNavItems
 import com.example.kaffeeapp.repository.interfaces.DataRepository
+import com.example.kaffeeapp.util.Constants.ADDRESS
+import com.example.kaffeeapp.util.Constants.BRANCH_ADDRESS
+import com.example.kaffeeapp.util.Constants.LATITUDE
+import com.example.kaffeeapp.util.Constants.LONGITUDE
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.OrderCost
+import com.example.kaffeeapp.util.model.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,14 +39,14 @@ class CartViewModel @Inject constructor(
 
     private var promoCodeState = mutableStateOf("")
 
-    private val phoneNumberState = mutableStateOf("")
+    val phoneNumberState = mutableStateOf("")
 
     val isDeliveryEnabled = mutableStateOf(true)
 
     val orderCost = mutableStateOf(OrderCost())
 
     val isPhoneNumberValid = mutableStateOf(true)
-    val isAddressNull = mutableStateOf(true)
+    val isAddressNull = mutableStateOf(false)
 
     val totalPrice by derivedStateOf {
         val itemsPrice = orderCost.value.itemsPrice.toDoubleOrNull() ?: 0.0
@@ -46,30 +56,40 @@ class CartViewModel @Inject constructor(
         itemsPrice + deliveryFee - discountValue
     }
 
-    fun createOrder() {
-        if(isOrderDetailsValid()) {
+    var orderResult = mutableStateOf<Resource<Boolean>?>(null)
+
+    fun submitOrder() {
+        if (isOrderDetailsValid()) {
             viewModelScope.launch(dispatcherProvider.io) {
-                deliveryMethod.value?.let {
-                    dataRepository.addOrder(
-                        drinkOrders = drinkOrders,
-                        phoneNumber = phoneNumberState.value,
-                        totalPrice = totalPrice.toString(),
-                        isHomeDelivery = isDeliveryEnabled.value,
-                        deliveryDetail = it
-                    )
+                dataRepository.addOrder(
+                    drinkOrders = drinkOrders,
+                    phoneNumber = phoneNumberState.value,
+                    totalPrice = totalPrice.toString(),
+                    isHomeDelivery = isDeliveryEnabled.value,
+                    deliveryDetail = deliveryMethod.value
+                ).collect { result ->
+                    orderResult.value = result
+                    if(orderResult.value is Resource.Success) {
+                        clearData()
+                    }
                 }
             }
         }
     }
 
+
     private fun isOrderDetailsValid(): Boolean {
-        if(deliveryMethod.value == null){
+        if (deliveryMethod.value == null) {
             isAddressNull.value = true
             return false
+        } else {
+            isAddressNull.value = false
         }
-        if(phoneNumberState.value == "" || phoneNumberState.value.length < 10) {
+        if (phoneNumberState.value == "" || phoneNumberState.value.length < 10) {
             isPhoneNumberValid.value = false
             return false
+        } else {
+            isPhoneNumberValid.value = true
         }
         return true
     }
@@ -89,6 +109,10 @@ class CartViewModel @Inject constructor(
     fun removeDrinkFromCart(orderIndex: Int) {
         drinkOrders.removeAt(orderIndex)
         calculateItemsPrice()
+
+        if(drinkOrders.isEmpty()) {
+            clearData()
+        }
     }
 
     fun setDrinkOrderQuantity(index: Int, quantity: Int) {
@@ -130,6 +154,21 @@ class CartViewModel @Inject constructor(
                 )
             )
         }
+        showBadgeOnCart()
         calculateItemsPrice()
+    }
+
+    private fun showBadgeOnCart() {
+        bottomNavItems.first { it.route == MainScreen.CartScreen.route }.hasUpdate.value = true
+    }
+
+    fun removeBadgeOnCart() {
+        bottomNavItems.first { it.route == MainScreen.CartScreen.route }.hasUpdate.value = false
+    }
+
+    private fun clearData() {
+        drinkOrders.clear()
+        isPhoneNumberValid.value = true
+        isAddressNull.value = false
     }
 }

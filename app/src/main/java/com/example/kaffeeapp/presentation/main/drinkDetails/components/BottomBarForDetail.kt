@@ -30,12 +30,6 @@ fun BottomBarForDetail(
 ) {
     Box(
         modifier = Modifier
-//            .clip(
-//                RoundedCornerShape(
-//                    topStart = dimensionResource(id = R.dimen.shape_rounded_corner_large),
-//                    topEnd = dimensionResource(id = R.dimen.shape_rounded_corner_large)
-//                )
-//            )
             .background(MaterialTheme.colorScheme.tertiary)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_medium),

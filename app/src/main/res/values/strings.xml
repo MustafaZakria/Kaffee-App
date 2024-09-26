@@ -50,4 +50,7 @@
     <string name="submit">Submit</string>
     <string name="cash">Cash</string>
     <string name="order">Order</string>
+    <string name="network_error">Network Error!</string>
+    <string name="order_success">Order Success!</string>
+    <string name="added_to_cart_successfully">Added to Cart Successfully!</string>
 </resources>

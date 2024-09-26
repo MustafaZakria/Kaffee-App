@@ -26,7 +26,7 @@ fun EmptyList(
         Icon(
             painter = painterResource(id = R.drawable.empty_icon),
             contentDescription = stringResource(id = R.string.error_img_desc),
-            tint = Color.Black
+//            tint = Color.Black
         )
         CustomizedText(
             text = message,
