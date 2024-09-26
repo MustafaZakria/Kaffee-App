@@ -4,6 +4,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
+import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.util.model.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -25,8 +26,10 @@ interface DataRepository {
         phoneNumber: String,
         totalPrice: String,
         isHomeDelivery: Boolean,
-        deliveryDetail: DeliveryMethod
-    )
-    suspend fun addOrderToUser()
-    suspend fun addOrderToServer()
+        deliveryDetail: DeliveryMethod?
+    ): Flow<Resource<Boolean>>
+
+    suspend fun addOrderToDatabase(orderId: String)
+
+    suspend fun addOrderToServer(order: Order): Resource<Boolean>
 }

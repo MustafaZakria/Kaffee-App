@@ -1,6 +1,6 @@
 package com.example.kaffeeapp.presentation.main.drinkDetails
 
-import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
@@ -78,7 +80,7 @@ fun DrinkDetailsScreen(
                 drinkDetailsViewModel.removeDrinkFromFav()
             }
         },
-        onBuyClick = {
+        onAddToCartClick = {
             cartViewModel.addDrinkToCart(drink.value, drinkSize)
             onBackClick.invoke()
         },
@@ -86,7 +88,6 @@ fun DrinkDetailsScreen(
     )
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DrinkDetailsContent(
     drink: Drink,
@@ -95,20 +96,28 @@ fun DrinkDetailsContent(
     drinkPrice: String,
     isFav: Boolean,
     onFavouriteClick: () -> Unit,
-    onBuyClick: () -> Unit
+    onAddToCartClick: () -> Unit
 ) {
-    Scaffold(containerColor = MaterialTheme.colorScheme.surface, bottomBar = {
-        BottomBarForDetail(
-            priceValue = drinkPrice
-        ) {
-            onBuyClick.invoke()
-        }
-    }, topBar = {
-        TopBarForDetail(onBackClick = { onBackClick.invoke() }, onFavouriteClick = {
-            onFavouriteClick.invoke()
-        }, isFav = isFav
-        )
-    }) { innerPadding ->
+    var addToCartState by rememberSaveable { mutableStateOf(false) }
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
+        bottomBar = {
+            BottomBarForDetail(
+                priceValue = drinkPrice
+            ) {
+                addToCartState = true
+                onAddToCartClick.invoke()
+            }
+        },
+        topBar = {
+            TopBarForDetail(
+                onBackClick = { onBackClick.invoke() },
+                onFavouriteClick = {
+                    onFavouriteClick.invoke()
+                },
+                isFav = isFav
+            )
+        }) { innerPadding ->
 
         val scrollState = rememberScrollState()
 
@@ -149,8 +158,17 @@ fun DrinkDetailsContent(
 
             }
         }
+        if (addToCartState) {
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(id = R.string.added_to_cart_successfully),
+                Toast.LENGTH_SHORT
+            ).show()
+            addToCartState = false // Reset state after showing toast
+        }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

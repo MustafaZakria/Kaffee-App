@@ -18,6 +18,7 @@ object Constants {
 
     const val DRINKS_COLLECTION = "drinks"
     const val USERS_COLLECTION = "users"
+    const val ORDERS_COLLECTION = "orders"
 
     const val FAV_DRINKS_KEY = "favourite drinks"
     const val ORDERS_KEY = "orders"
