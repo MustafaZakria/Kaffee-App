@@ -52,14 +52,10 @@ fun MainNavGraph(
                 navController.getBackStackEntry(Graph.MainGraph.route)
             }
             val viewModel: CartViewModel = hiltViewModel(parentEntry)
-            val id = navBackStackEntry.arguments?.getString(DRINK_ID_KEY)
-            id?.let { drinkId ->
-                DrinkDetailsScreen(
-                    id = drinkId,
-                    cartViewModel = viewModel
-                ) {
-                    navController.popBackStack()
-                }
+            DrinkDetailsScreen(
+                cartViewModel = viewModel
+            ) {
+                navController.popBackStack()
             }
         }
         composable(

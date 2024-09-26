@@ -932,7 +932,7 @@ fun RoundedButtonWithIcon(
         border = borderStroke
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(

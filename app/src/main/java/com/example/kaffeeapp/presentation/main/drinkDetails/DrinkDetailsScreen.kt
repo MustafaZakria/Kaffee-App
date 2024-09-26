@@ -40,12 +40,8 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 fun DrinkDetailsScreen(
     cartViewModel: CartViewModel,
     drinkDetailsViewModel: DrinkDetailsViewModel = hiltViewModel(),
-    id: String,
     onBackClick: () -> Unit
 ) {
-    LaunchedEffect(key1 = Unit) {
-        drinkDetailsViewModel.getDrinkById(id)
-    }
     val drink = drinkDetailsViewModel.drink
 
     var drinkPrice by rememberSaveable { mutableStateOf("") }
