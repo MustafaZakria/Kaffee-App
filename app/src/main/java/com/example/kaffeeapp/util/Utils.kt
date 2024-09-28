@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.example.kaffeeapp.data.entities.User
+import com.google.firebase.auth.FirebaseUser
 import java.util.UUID
 
 object Utils {
@@ -26,6 +28,14 @@ object Utils {
 
     fun generateUniqueId(): String {
         return UUID.randomUUID().toString()
+    }
+
+    fun FirebaseUser.toUser(): User {
+        return User(
+            email = email ?: "",
+            name = displayName ?: "",
+            id = uid
+        )
     }
 
 }

@@ -19,7 +19,7 @@ class DrinkSharedPreference(
 
     fun getFavDrinksIds() = getList(key)
 
-    fun addDrinkToFav(id: String) = addString(id, key)
+    fun addDrinkToFav(id: String) = appendString(id, key)
 
     fun isDrinkFav(id: String): Boolean = getFavDrinksIds().contains(id)
 

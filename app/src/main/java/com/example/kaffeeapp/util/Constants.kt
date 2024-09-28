@@ -20,8 +20,11 @@ object Constants {
     const val USERS_COLLECTION = "users"
     const val ORDERS_COLLECTION = "orders"
 
-    const val FAV_DRINKS_KEY = "favourite drinks"
+    const val FAV_DRINKS_KEY = "favouriteDrinks"
     const val ORDERS_KEY = "orders"
+    const val ID_KEY = "id"
+    const val NAME_KEY = "name"
+    const val EMAIL_KEY = "email"
 
     const val DRINK_DATABASE_NAME = "drink.db"
 
@@ -45,4 +48,13 @@ object Constants {
     const val LATITUDE = "latitude"
     const val LONGITUDE = "longitude"
     const val BRANCH_ADDRESS = "branchAddress"
+
+    //toasts
+    const val SIGNED_IN_SUCCESSFULLY = "Signed In Successfully!"
+    const val SIGNED_OUT_SUCCESSFULLY = "Signed OUT Successfully!"
+    const val SIGNED_OUT_FAILED = "Failed to Signed Out!"
+    const val NETWORK_ERROR = "Network Error!"
+    const val FAILED_TO_LOAD_DATA = "Error: Failed to Load User Data!"
+    const val DRINK_REMOVED_SUCCESSFULLY = "Drink Removed Successfully!!"
+    const val FAILED_REMOVING_DRINK = "Error: Failed to Remove the Drink!"
 }

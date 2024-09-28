@@ -15,9 +15,7 @@ interface MainRepository {
 
     suspend fun getDrinkById(id: String): Drink
 
-    suspend fun refreshFavouriteDrinks()
+    suspend fun refreshUserData(): Resource<Boolean>
 
-    suspend fun refreshOrders()
-
-    suspend fun refreshData()
+    fun signOut(): Resource<Boolean>
 }

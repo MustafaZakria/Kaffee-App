@@ -16,7 +16,5 @@ interface AuthRepository {
 
     suspend fun signInWithGoogle(credential: Credential): SignInWithGoogleResponse
 
-    suspend fun singOut()
-
-    suspend fun addUserToFirestore()
+    fun singOut(): Resource<Boolean>
 }

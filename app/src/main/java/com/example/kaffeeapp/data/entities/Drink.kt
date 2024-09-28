@@ -13,9 +13,7 @@ data class Drink(
     val price: Map<String, String> = mapOf(),
     val description: String = "",
     val ingredients: List<String> = arrayListOf(),
-    @get:PropertyName("type")
-    @set:PropertyName("type")
-    var type: DrinkType = DrinkType.HOT,
+    val type: DrinkType = DrinkType.HOT,
     val rating: String = ""
 ) {
     fun getFormattedIngredients() = ingredients.joinToString(" | ")

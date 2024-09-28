@@ -18,7 +18,7 @@ open class BaseSharedPreference(
         } ?: emptyList()
     }
 
-    protected fun addString(string: String, key: String) {
+    protected fun appendString(string: String, key: String) {
         val favList = getList(key).toMutableList()
         favList.add(string)
         insertList(favList, key)

@@ -57,11 +57,10 @@ class ViewModelModule {
 
     @Provides
     fun provideAuthRepo(
-        auth: FirebaseAuth,
+        remoteDb: DrinkRemoteDb,
         credentialManager: CredentialManager,
-        credentialRequest: GetCredentialRequest,
-        firestore: FirebaseFirestore
-    ): AuthRepository = AuthRepositoryImp(auth, credentialManager, credentialRequest, firestore)
+        credentialRequest: GetCredentialRequest
+    ): AuthRepository = AuthRepositoryImp(remoteDb, credentialManager, credentialRequest)
 
     @Provides
     fun provideDataRepository(
