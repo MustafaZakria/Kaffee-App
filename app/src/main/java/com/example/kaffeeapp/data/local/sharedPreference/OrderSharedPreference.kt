@@ -11,5 +11,5 @@ class OrderSharedPreference (
 
     fun insertOrdersList(orders: List<String>) = insertList(orders, key)
     fun getOrdersIds() = getList(key)
-    fun addOrder(id: String) = addString(id, key)
+    fun addOrder(id: String) = appendString(id, key)
 }

@@ -3,6 +3,7 @@ package com.example.kaffeeapp.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
+import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
@@ -20,6 +21,7 @@ class MainRepositoryImp @Inject constructor(
     private val drinkSharedPreference: DrinkSharedPreference,
     private val orderSharedPreference: OrderSharedPreference
 ) : MainRepository {
+
     override suspend fun refreshDrinks(): Resource<Boolean> {
         return when (val drinkResponse = drinkRemoteDb.getAllDrinks()) {
             is Resource.Success -> {
@@ -28,16 +30,10 @@ class MainRepositoryImp @Inject constructor(
                 }
                 Resource.Success(true)
             }
-
             else -> {
                 Resource.Failure(drinkResponse.exception)
             }
         }
-    }
-
-    override suspend fun refreshData() {
-        refreshFavouriteDrinks()
-        refreshOrders()
     }
 
     override fun getAllDrinks(type: SelectedType): LiveData<List<Drink>> = when (type) {
@@ -52,14 +48,17 @@ class MainRepositoryImp @Inject constructor(
 
     override suspend fun getDrinkById(id: String): Drink = drinkDao.getDrinkById(id)
 
-    override suspend fun refreshFavouriteDrinks() {
-        val ids = drinkRemoteDb.getFavDrinksIds()
-        drinkSharedPreference.insertFavDrinksList(ids)
+
+    override suspend fun refreshUserData(): Resource<Boolean> {
+        val userResponse = drinkRemoteDb.getUser()
+        if(userResponse is Resource.Success) {
+            val user = userResponse.data ?: User()
+            drinkSharedPreference.insertFavDrinksList(user.favouriteDrinks)
+            orderSharedPreference.insertOrdersList(user.orders)
+            return Resource.Success(true)
+        }
+        return Resource.Failure(userResponse.exception)
     }
 
-    override suspend fun refreshOrders() {
-        val ids = drinkRemoteDb.getOrdersIds()
-        orderSharedPreference.insertOrdersList(ids)
-    }
-
+    override fun signOut(): Resource<Boolean> = drinkRemoteDb.signOut()
 }

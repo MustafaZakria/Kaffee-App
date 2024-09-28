@@ -43,9 +43,12 @@ class DataRepositoryImp @Inject constructor(
         drinkRemoteDb.addFavDrink(id)
     }
 
-    override suspend fun removeDrinkFromFav(id: String) {
-        drinkSharedPreference.removeDrink(id)
-        drinkRemoteDb.removeFavDrink(id)
+    override suspend fun removeDrinkFromFav(id: String): Resource<Boolean> {
+        val response = drinkRemoteDb.removeFavDrink(id)
+        if(response is Resource.Success) {
+            drinkSharedPreference.removeDrink(id)
+        }
+        return response
     }
 
     override suspend fun getFavDrinks(): Flow<FavDrinksResult> = flow {

@@ -2,6 +2,7 @@ package com.example.kaffeeapp.presentation.main.favourite
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,9 +13,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +30,9 @@ import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.presentation.main.favourite.components.FavDrinkCard
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
+import com.example.kaffeeapp.util.Constants.DRINK_REMOVED_SUCCESSFULLY
+import com.example.kaffeeapp.util.Constants.FAILED_REMOVING_DRINK
+import com.example.kaffeeapp.util.Constants.FAILED_TO_LOAD_DATA
 import com.example.kaffeeapp.util.model.Resource
 
 
@@ -36,8 +42,11 @@ fun FavouriteScreen(
     navigateToDetailsScreen: (String) -> Unit
 ) {
     val favDrinks = viewModel.favDrinks.collectAsState(initial = Resource.Loading())
+    val removeDrinkResponse = viewModel.removeDrinkResponse
+
     FavouriteScreenContent(
         drinks = favDrinks.value,
+        removeDrinkResponse = removeDrinkResponse,
         onRemoveDrink = { id ->
             viewModel.removeFavDrink(id)
         },
@@ -51,6 +60,7 @@ fun FavouriteScreen(
 @Composable
 fun FavouriteScreenContent(
     drinks: Resource<List<Drink>>,
+    removeDrinkResponse: Resource<Boolean>?,
     onRemoveDrink: (String) -> Unit,
     onAddToCartClick: (String) -> Unit
 ) {
@@ -102,6 +112,14 @@ fun FavouriteScreenContent(
                 EmptyList(stringResource(id = R.string.empty_list))
             }
         }
+        val context = LocalContext.current
+        LaunchedEffect(key1 = removeDrinkResponse) {
+            if(removeDrinkResponse is Resource.Success) {
+                Toast.makeText(context, DRINK_REMOVED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
+            } else if(removeDrinkResponse is Resource.Failure) {
+                Toast.makeText(context, FAILED_REMOVING_DRINK, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
 
@@ -130,6 +148,6 @@ fun FavPreview() {
         )
     )
     KaffeeAppTheme {
-        FavouriteScreenContent(Resource.Success(drinks), {}) {}
+        FavouriteScreenContent(Resource.Success(drinks), null, {}) {}
     }
 }

@@ -40,6 +40,7 @@ import com.example.kaffeeapp.presentation.auth.sign_in.components.GradientBackgr
 import com.example.kaffeeapp.presentation.auth.sign_in.components.RequestSignIn
 import com.example.kaffeeapp.presentation.auth.sign_in.components.SignInWithGoogle
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
+import com.example.kaffeeapp.util.Constants.SIGNED_IN_SUCCESSFULLY
 import com.example.kaffeeapp.util.Fonts.sora
 
 @Composable
@@ -153,6 +154,7 @@ fun SignInScreen(
     SignInWithGoogle(
         signInState = signInState,
         onSuccess = {
+            Toast.makeText(context, SIGNED_IN_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
             navigateToMainScreen.invoke()
         },
         onError = { exception ->

@@ -23,6 +23,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,7 @@ import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.presentation.main.home.components.DrinksSection
 import com.example.kaffeeapp.presentation.main.home.components.DrinksSelectTypeSection
 import com.example.kaffeeapp.presentation.main.home.components.FilterButton
+import com.example.kaffeeapp.presentation.main.home.components.GettingRemoteDataResponse
 import com.example.kaffeeapp.presentation.main.home.components.OfferBannerSection
 import com.example.kaffeeapp.presentation.main.home.components.SearchBar
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
@@ -53,21 +55,23 @@ fun HomeScreen(
 ) {
     val drinks by homeViewModel.drinks.observeAsState(emptyList())
     val selectedType by homeViewModel.drinkSelectedType.observeAsState(SelectedType.ALL_DRINKS)
-    val drinksResponse = homeViewModel.drinkApiResponse
+    val drinksResponse = homeViewModel.drinksResponse
+    val signOutResponse = homeViewModel.signOutResponse
+    val userDataLoadingState = homeViewModel.userDataResponse
     val searchState by homeViewModel.searchValueState.observeAsState("")
 
     MainScreenContent(
         drinks = drinks,
         drinksResponse = drinksResponse,
+        userDataLoadingState = userDataLoadingState,
         onSearchValueChange = { value -> homeViewModel.onSearchValueChange(value = value) },
         searchValue = searchState,
-        logout = {
-            logout.invoke()
-            homeViewModel.signOut()
-        },
+        onLogout = { homeViewModel.signOut() },
         selectedType = selectedType,
         onDrinkTypeSelect = { type -> homeViewModel.setSelectedType(type = type) },
-        navigateToDetailScreen = { id -> navigateToDetailScreen.invoke(id) }
+        navigateToDetailScreen = { id -> navigateToDetailScreen.invoke(id) },
+        signOutResponse = signOutResponse,
+        onSignOutSuccess = { logout.invoke() }
     )
 }
 
@@ -75,12 +79,15 @@ fun HomeScreen(
 fun MainScreenContent(
     drinks: List<Drink>,
     drinksResponse: Resource<Boolean>,
+    userDataLoadingState: Resource<Boolean>?,
     onSearchValueChange: (String) -> Unit,
     searchValue: String,
-    logout: () -> Unit,
+    onLogout: () -> Unit,
     selectedType: SelectedType,
     onDrinkTypeSelect: (SelectedType) -> Unit,
-    navigateToDetailScreen: (String) -> Unit
+    navigateToDetailScreen: (String) -> Unit,
+    signOutResponse: Resource<Boolean>?,
+    onSignOutSuccess: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -106,7 +113,7 @@ fun MainScreenContent(
                 modifier = Modifier
                     .fillMaxWidth(),
                 location = "Cairo, Giza",
-                logout = { logout.invoke() }
+                logout = { onLogout.invoke() }
             )
             //spacer
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
@@ -144,8 +151,15 @@ fun MainScreenContent(
                 navigateToDetailScreen.invoke(id)
             }
         }
+        val context = LocalContext.current
+        GettingRemoteDataResponse(
+            context = context,
+            signOutResponse = signOutResponse,
+            userDataLoadingState = userDataLoadingState,
+            onSignOutSuccess = { onSignOutSuccess.invoke() })
 
     }
+
 }
 
 
@@ -261,12 +275,16 @@ fun MainPreview() {
         MainScreenContent(
             drinks,
             Resource.Loading(),
+            null,
             {},
             "",
             {},
             SelectedType.ALL_DRINKS,
+            {},
+            {},
+            null,
             {}
-        ) {}
+        )
     }
 
 }

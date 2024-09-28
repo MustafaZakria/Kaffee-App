@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.repository.interfaces.AuthRepository
 import com.example.kaffeeapp.repository.interfaces.MainRepository
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource
@@ -21,14 +20,13 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    private val authRepository: AuthRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     private val _drinkSelectedType = MutableLiveData(SelectedType.ALL_DRINKS)
     val drinkSelectedType: LiveData<SelectedType> = _drinkSelectedType
 
-    var drinkApiResponse by mutableStateOf<Resource<Boolean>>(Resource.Success(false))
+    var drinksResponse by mutableStateOf<Resource<Boolean>>(Resource.Success(false))
 
     private var _searchValueState = MutableLiveData("")
     val searchValueState: LiveData<String> = _searchValueState
@@ -54,16 +52,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun signOut() = viewModelScope.launch(dispatcherProvider.io) {
-        authRepository.singOut()
+    var signOutResponse by mutableStateOf<Resource<Boolean>?>(null)
+
+    fun signOut() {
+        signOutResponse = Resource.Loading()
+        viewModelScope.launch(dispatcherProvider.io) {
+            signOutResponse = mainRepository.signOut()
+        }
     }
 
+    var userDataResponse by mutableStateOf<Resource<Boolean>?>(null)
     init {
-        drinkApiResponse = Resource.Loading()
+        drinksResponse = Resource.Loading()
 
         viewModelScope.launch(dispatcherProvider.io) {
-            drinkApiResponse = mainRepository.refreshDrinks()
-            mainRepository.refreshData()
+            drinksResponse = mainRepository.refreshDrinks()
+            userDataResponse = mainRepository.refreshUserData()
         }
 
         drinks = drinksFromSelectType

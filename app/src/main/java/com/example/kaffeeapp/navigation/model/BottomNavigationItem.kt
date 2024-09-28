@@ -14,7 +14,7 @@ data class BottomNavigationItem(
     val route: String = "",
     val selectedIcon: Int = 0,
     val unselectedItem: Int = 0,
-    var hasUpdate: MutableState<Boolean> = mutableStateOf(false)
+    val hasUpdate: MutableState<Boolean> = mutableStateOf(false)
 )
 
 val bottomNavItems = listOf(

@@ -18,7 +18,7 @@ interface DataRepository {
 
     suspend fun addDrinkToFav(id: String)
 
-    suspend fun removeDrinkFromFav(id: String)
+    suspend fun removeDrinkFromFav(id: String): Resource<Boolean>
 
     suspend fun getFavDrinks(): Flow<FavDrinksResult>
     suspend fun addOrder(
