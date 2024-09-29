@@ -14,14 +14,14 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsScreen
 import com.example.kaffeeapp.presentation.main.favourite.FavouriteScreen
 import com.example.kaffeeapp.presentation.main.home.HomeScreen
 import com.example.kaffeeapp.presentation.main.map.MapScreen
-import com.example.kaffeeapp.presentation.main.notification.NotificationScreen
+import com.example.kaffeeapp.presentation.main.profile.ProfileScreen
 import com.example.kaffeeapp.util.Constants.CART_SCREEN
 import com.example.kaffeeapp.util.Constants.DRINK_DETAIL_SCREEN
 import com.example.kaffeeapp.util.Constants.DRINK_ID_KEY
 import com.example.kaffeeapp.util.Constants.FAVOURITE_SCREEN
 import com.example.kaffeeapp.util.Constants.HOME_SCREEN
 import com.example.kaffeeapp.util.Constants.MAP_SCREEN
-import com.example.kaffeeapp.util.Constants.NOTIFICATION_SCREEN
+import com.example.kaffeeapp.util.Constants.PROFILE_SCREEN
 
 
 @Composable
@@ -77,10 +77,10 @@ fun MainNavGraph(
             }
         }
         composable(
-            MainScreen.NotificationScreen.route
+            MainScreen.ProfileScreen.route
         ) { backStackEntry ->
 
-            NotificationScreen()
+            ProfileScreen()
         }
         composable(
             MainScreen.MapScreen.route
@@ -102,6 +102,6 @@ sealed class MainScreen(val route: String) {
     data object DrinkDetailScreen : MainScreen(DRINK_DETAIL_SCREEN)
     data object FavouriteScreen : MainScreen(FAVOURITE_SCREEN)
     data object CartScreen : MainScreen(CART_SCREEN)
-    data object NotificationScreen : MainScreen(NOTIFICATION_SCREEN)
+    data object ProfileScreen : MainScreen(PROFILE_SCREEN)
     data object MapScreen : MainScreen(MAP_SCREEN)
 }

@@ -10,7 +10,7 @@ import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
-import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
+import com.example.kaffeeapp.data.local.sharedPreference.ProfileSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.repository.interfaces.FavDrinksResult
@@ -30,7 +30,7 @@ class DataRepositoryImp @Inject constructor(
     private val drinkDao: DrinkDao,
     private val drinkRemoteDb: DrinkRemoteDb,
     private val drinkSharedPreference: DrinkSharedPreference,
-    private val orderSharedPreference: OrderSharedPreference
+    private val profileSharedPreference: ProfileSharedPreference
 ) : DataRepository {
     override suspend fun getDrinkById(id: String): Drink = drinkDao.getDrinkById(id)
 
@@ -55,7 +55,6 @@ class DataRepositoryImp @Inject constructor(
     override suspend fun getFavDrinks(): Flow<FavDrinksResult> = flow {
         emit(Resource.Loading())
         val ids = drinkSharedPreference.getFavDrinksIds()
-        Log.d("favIds", ids.toString())
         val list = ids.mapNotNull { id -> getDrinkById(id) }
         emit(Resource.Success(list))
     }
@@ -89,7 +88,7 @@ class DataRepositoryImp @Inject constructor(
     }
 
     override suspend fun addOrderToDatabase(orderId: String) {
-        orderSharedPreference.addOrder(orderId)
+        profileSharedPreference.addOrder(orderId)
     }
 
     override suspend fun addOrderToServer(order: Order) = drinkRemoteDb.addOrderToServer(order)

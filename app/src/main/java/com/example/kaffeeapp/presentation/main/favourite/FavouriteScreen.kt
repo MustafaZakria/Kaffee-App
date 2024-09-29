@@ -137,7 +137,8 @@ fun FavPreview() {
             description = "Our Hot Americano puts the oh! in Americano by combining two shots of 100% Rainforest Alliance Certified™ espresso with hot water creating a rich, robust drink.",
             ingredients = listOf("water", "coffee"),
             price = mapOf(Pair("small", "20"), Pair("medium", "30"), Pair("large", "40")),
-            type = DrinkType.HOT
+            type = DrinkType.HOT,
+            rating = "3.4"
         ),
         Drink(
             id = "2",
@@ -146,7 +147,8 @@ fun FavPreview() {
             description = "Our Hot Americano puts the oh! in Americano by combining two shots of 100% Rainforest Alliance Certified™ espresso with hot water creating a rich, robust drink.",
             ingredients = listOf("water", "coffee"),
             price = mapOf(Pair("small", "20"), Pair("medium", "30"), Pair("large", "40")),
-            type = DrinkType.COLD
+            type = DrinkType.COLD,
+            rating = "3.4"
         )
     )
     KaffeeAppTheme {

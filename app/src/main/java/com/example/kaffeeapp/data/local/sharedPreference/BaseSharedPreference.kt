@@ -23,4 +23,12 @@ open class BaseSharedPreference(
         favList.add(string)
         insertList(favList, key)
     }
+
+    protected fun addString(string: String, key: String) {
+        sharedPreferences.edit().putString(string, key).apply()
+    }
+
+    protected fun getString(key: String): String {
+        return sharedPreferences.getString(key, "").toString()
+    }
 }

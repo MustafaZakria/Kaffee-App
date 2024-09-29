@@ -7,7 +7,7 @@ import com.example.kaffeeapp.navigation.MainScreen
 import com.example.kaffeeapp.util.Constants.CART_TITLE
 import com.example.kaffeeapp.util.Constants.FAVOURITE_TITLE
 import com.example.kaffeeapp.util.Constants.HOME_TITLE
-import com.example.kaffeeapp.util.Constants.NOTIFICATIONS_TITLE
+import com.example.kaffeeapp.util.Constants.PROFILE_TITLE
 
 data class BottomNavigationItem(
     val title: String = "",
@@ -37,10 +37,10 @@ val bottomNavItems = listOf(
         unselectedItem = R.drawable.cart_outlined,
     ),
     BottomNavigationItem(
-        title = NOTIFICATIONS_TITLE,
-        route = MainScreen.NotificationScreen.route,
-        selectedIcon = R.drawable.notification_filled,
-        unselectedItem = R.drawable.notification_outlined,
+        title = PROFILE_TITLE,
+        route = MainScreen.ProfileScreen.route,
+        selectedIcon = R.drawable.profile_filled,
+        unselectedItem = R.drawable.profile_outlined,
     )
 )
 val bottomNavRoutes = bottomNavItems.map { it.route }

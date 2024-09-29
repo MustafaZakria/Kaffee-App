@@ -5,13 +5,19 @@ import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
+import com.example.kaffeeapp.util.Constants.DESCRIPTION_KEY
 import com.example.kaffeeapp.util.Constants.DRINKS_COLLECTION
 import com.example.kaffeeapp.util.Constants.EMAIL_KEY
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 import com.example.kaffeeapp.util.Constants.ID_KEY
+import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
+import com.example.kaffeeapp.util.Constants.INGREDIENTS_KEY
 import com.example.kaffeeapp.util.Constants.NAME_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_COLLECTION
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
+import com.example.kaffeeapp.util.Constants.PRICE_KEY
+import com.example.kaffeeapp.util.Constants.RATING_KEY
+import com.example.kaffeeapp.util.Constants.TYPE_KEY
 import com.example.kaffeeapp.util.Constants.USERS_COLLECTION
 import com.example.kaffeeapp.util.Utils.toUser
 import com.example.kaffeeapp.util.model.Resource
@@ -49,21 +55,21 @@ class DrinkRemoteDb @Inject constructor(
             querySnap.forEach { document ->
                 val drinkData = document.data
 
-                val price = (drinkData["price"] as? Map<*, *>)?.let { priceMap ->
+                val price = (drinkData[PRICE_KEY] as? Map<*, *>)?.let { priceMap ->
                     priceMap.mapKeys { it.key as String }
                         .mapValues { it.value as String }
                 } ?: emptyMap()
 
                 val drink = Drink(
-                    id = drinkData["id"] as? String ?: "",
-                    name = drinkData["name"] as? String ?: "",
-                    imageUrl = drinkData["imageUrl"] as? String ?: "",
-                    description = drinkData["description"] as? String ?: "",
-                    rating = drinkData["rating"] as? String ?: "",
-                    ingredients = (drinkData["ingredients"] as? List<*>)?.mapNotNull { it as? String }
+                    id = drinkData[ID_KEY] as? String ?: "",
+                    name = drinkData[NAME_KEY] as? String ?: "",
+                    imageUrl = drinkData[IMAGE_URL_KEY] as? String ?: "",
+                    description = drinkData[DESCRIPTION_KEY] as? String ?: "",
+                    rating = drinkData[RATING_KEY] as? String ?: "",
+                    ingredients = (drinkData[INGREDIENTS_KEY] as? List<*>)?.mapNotNull { it as? String }
                         ?: emptyList(),
                     price = price,
-                    type = DrinkType.fromValue(drinkData["type"] as? String ?: "")
+                    type = DrinkType.fromValue(drinkData[TYPE_KEY] as? String ?: "")
                 )
                 drinkList.add(drink)
             }
