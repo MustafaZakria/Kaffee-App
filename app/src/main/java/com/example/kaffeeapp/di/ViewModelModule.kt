@@ -6,7 +6,7 @@ import androidx.credentials.GetCredentialRequest
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
-import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
+import com.example.kaffeeapp.data.local.sharedPreference.ProfileSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.AuthRepositoryImp
 import com.example.kaffeeapp.repository.DataRepositoryImp
@@ -49,7 +49,7 @@ class ViewModelModule {
         drinkDao: DrinkDao,
         db: DrinkRemoteDb,
         drinkSharedPreference: DrinkSharedPreference,
-        orderSharedPreference: OrderSharedPreference
+        orderSharedPreference: ProfileSharedPreference
     ): MainRepository =
         MainRepositoryImp(drinkDao, db, drinkSharedPreference, orderSharedPreference)
 
@@ -65,7 +65,7 @@ class ViewModelModule {
         drinkDao: DrinkDao,
         db: DrinkRemoteDb,
         drinkSharedPreference: DrinkSharedPreference,
-        orderSharedPreference: OrderSharedPreference
+        orderSharedPreference: ProfileSharedPreference
     ): DataRepository =
         DataRepositoryImp(drinkDao, db, drinkSharedPreference, orderSharedPreference)
 }

@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,6 +30,7 @@ import com.example.kaffeeapp.components.ImageLoaderWithUrl
 import com.example.kaffeeapp.components.RoundedButton
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
+import com.example.kaffeeapp.ui.theme.gold
 
 @Composable
 fun FavDrinkCard(
@@ -61,23 +65,61 @@ fun FavDrinkCard(
             }
             //content
             Column(
-                modifier = Modifier.height(100.dp),
+                modifier = Modifier
+                    .height(100.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    CustomizedText(
-                        text = drink.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = dimensionResource(id = R.dimen.text_size_18),
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        style = MaterialTheme.typography.headlineSmall,
-                        textLines = 1
-                    )
-                    CustomizedText(
-                        text = drink.getFormattedIngredients(),
-                        fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        CustomizedText(
+                            text = drink.name,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = dimensionResource(id = R.dimen.text_size_18),
+                            color = MaterialTheme.colorScheme.onSecondary,
+                            style = MaterialTheme.typography.headlineSmall,
+                            textLines = 1
+                        )
+                        CustomizedText(
+                            text = drink.getFormattedIngredients(),
+                            fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    Card(
+                        colors = CardDefaults.cardColors().copy(
+                            containerColor = Color(0x22FF7A31)
+                        ),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small))
+
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    vertical = dimensionResource(id = R.dimen.padding_x_small),
+                                    horizontal = dimensionResource(id = R.dimen.padding_x_small)
+                                ),
+                            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.star_icon),
+                                contentDescription = "star",
+                                tint = MaterialTheme.colorScheme.gold,
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_18))
+                            )
+                            CustomizedText(
+                                text = drink.rating,
+                                fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                                color = MaterialTheme.colorScheme.gold,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
@@ -115,6 +157,7 @@ fun FavDrinkCard(
                     }
                 }
             }
+
         }
     }
 }

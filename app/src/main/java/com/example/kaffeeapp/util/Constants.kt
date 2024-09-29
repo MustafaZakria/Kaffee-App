@@ -6,7 +6,7 @@ object Constants {
     const val HOME_SCREEN = "home_screen"
     const val FAVOURITE_SCREEN = "favourite_screen"
     const val CART_SCREEN = "cart_screen"
-    const val NOTIFICATION_SCREEN = "notification_screen"
+    const val PROFILE_SCREEN = "profile_screen"
     const val DRINK_DETAIL_SCREEN = "drink_detail_screen"
     const val MAP_SCREEN = "map_screen"
 
@@ -25,13 +25,20 @@ object Constants {
     const val ID_KEY = "id"
     const val NAME_KEY = "name"
     const val EMAIL_KEY = "email"
+    const val IMAGE_URL_KEY = "imageUrl"
+
+    const val PRICE_KEY = "price"
+    const val DESCRIPTION_KEY = "description"
+    const val INGREDIENTS_KEY = "ingredients"
+    const val RATING_KEY = "rating"
+    const val TYPE_KEY = "type"
 
     const val DRINK_DATABASE_NAME = "drink.db"
 
     const val HOME_TITLE = "Home"
     const val FAVOURITE_TITLE = "Favourite"
     const val CART_TITLE = "Cart"
-    const val NOTIFICATIONS_TITLE = "Notifications"
+    const val PROFILE_TITLE = "Notifications"
 
     const val KEY_SMALL_SIZE = "small"
     const val SMALL_SHORTENED = "S"

@@ -12,27 +12,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,11 +48,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
-import com.example.kaffeeapp.components.ImageLoaderWithUrl
 import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.components.TopBarTitle
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DrinkOrder
+import com.example.kaffeeapp.presentation.main.cart.components.CartBottomBar
+import com.example.kaffeeapp.presentation.main.cart.components.OrderCard
+import com.example.kaffeeapp.presentation.main.cart.components.PaymentSummarySection
+import com.example.kaffeeapp.presentation.main.cart.components.RoundedButtonWithIcon
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
@@ -75,7 +73,7 @@ fun CartScreen(
     val drinkOrders = viewModel.drinkOrders
     val orderCost = viewModel.orderCost
     val cartDetails = viewModel.cartUiDetails
-    val orderResult = viewModel.orderResult
+    val orderResultState = viewModel.orderResult
 
     if (drinkOrders.isEmpty()) {
         viewModel.removeBadgeOnCart()
@@ -85,7 +83,7 @@ fun CartScreen(
         orders = drinkOrders,
         orderCost = orderCost,
         cartDetails = cartDetails,
-        orderResult = orderResult,
+        orderResultState = orderResultState,
 
         onDeleteOrderClick = { index -> viewModel.removeDrinkFromCart(index) },
         onChangeQuantityClick = { index, newValue ->
@@ -114,7 +112,7 @@ fun CartScreenContent(
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
     cartDetails: CartDetails,
-    orderResult: Resource<Boolean>?,
+    orderResultState: Resource<Boolean>?,
     onOrderClick: () -> Unit,
     resetOrderState: () -> Unit
 ) {
@@ -137,7 +135,7 @@ fun CartScreenContent(
                         .fillMaxSize()
                 ) {
                     //selecting pick up way
-                    SelectDeliverWay(
+                    SelectDeliverMethod(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
@@ -167,19 +165,13 @@ fun CartScreenContent(
                     ) {
                         item {
                             BeforeOrderList(
-                                isDeliveryEnabled = cartDetails.isDeliveryEnabled,
-                                deliveryMethod = cartDetails.deliveryMethod,
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
                                 onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
-                                isAddressNull = cartDetails.isAddressNull,
-                                isPhoneNumberValid = cartDetails.isPhoneNumberValid,
-                                phoneNumber = cartDetails.phoneNumberValue
+                                cartDetails = cartDetails
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.secondary,
-                            )
+                            HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
                         }
                         itemsIndexed(orders) { index, order ->
@@ -204,9 +196,7 @@ fun CartScreenContent(
                         item {
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.secondary,
-                            )
+                            HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
                             AfterOrderList(
@@ -217,7 +207,7 @@ fun CartScreenContent(
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                         }
                     }
-                    OrderBox(
+                    CartBottomBar(
                         orderCost = orderCost,
                         onOrderClick = {
                             onOrderClick.invoke()
@@ -230,7 +220,7 @@ fun CartScreenContent(
         }
     }
     OnResultState(
-        orderResult = orderResult,
+        orderResult = orderResultState,
         context = LocalContext.current,
         isAddressNull = cartDetails.isAddressNull,
         resetOrderState = { resetOrderState.invoke() }
@@ -261,87 +251,35 @@ fun OnResultState(
                 Toast.makeText(context, ORDER_SUCCESS, Toast.LENGTH_SHORT).show()
                 resetOrderState.invoke()
             }
+
             is Resource.Failure -> {
                 Toast.makeText(context, NETWORK_ERROR, Toast.LENGTH_SHORT).show()
                 resetOrderState.invoke()
             }
+
             else -> {}
         }
     }
     LaunchedEffect(key1 = isAddressNull) {
-        if(isAddressNull?.not() == true) {
+        if (isAddressNull?.not() == true) {
             Toast.makeText(context, ADDRESS_ADDED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
         }
     }
 }
 
-@Composable
-fun OrderBox(
-    orderCost: OrderCost,
-    onOrderClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.tertiary)
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.padding_medium),
-                vertical = dimensionResource(id = R.dimen.padding_medium)
-            )
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
-            ) {
-                CustomizedText(
-                    text = stringResource(id = R.string.cash),
-                    fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    fontWeight = FontWeight.Medium
-                )
-                CustomizedText(
-                    text = stringResource(id = R.string.drink_price, orderCost.getTotalCost()),
-                    fontSize = dimensionResource(id = R.dimen.text_size_18),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)))
-            Button(
-                onClick = { onOrderClick.invoke() },
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-                modifier = Modifier.weight(1f)
-            ) {
-                CustomizedText(
-                    text = stringResource(id = R.string.order),
-                    fontSize = dimensionResource(id = R.dimen.text_size_18),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small))
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun BeforeOrderList(
-    isDeliveryEnabled: Boolean,
-    deliveryMethod: DeliveryMethod?,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    isAddressNull: Boolean?,
-    isPhoneNumberValid: Boolean?,
-    phoneNumber: String
+    cartDetails: CartDetails
 ) {
     //delivery content
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         CustomizedText(
-            text = if (isDeliveryEnabled) stringResource(id = R.string.delivery_address) else stringResource(
+            text = if (cartDetails.isDeliveryEnabled) stringResource(id = R.string.delivery_address) else stringResource(
                 id = R.string.pick_up_branch
             ),
             fontSize = dimensionResource(id = R.dimen.text_size_16),
@@ -350,27 +288,30 @@ fun BeforeOrderList(
         )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
-        if (isDeliveryEnabled) {
+        if (cartDetails.isDeliveryEnabled) {
             var address = ""
-            if (deliveryMethod != null) {
-                address = (deliveryMethod as? DeliveryMethod.AddressDelivery)?.address ?: ""
+            if (cartDetails.deliveryMethod != null) {
+                address =
+                    (cartDetails.deliveryMethod as? DeliveryMethod.AddressDelivery)?.address ?: ""
             }
             DeliverySection(
                 address = address,
                 onEditAddressClick = {
                     navigateToMapScreen.invoke()
                 },
-                isAddressNull = isAddressNull,
+                isAddressNull = cartDetails.isAddressNull,
                 onAddNoteClick = {}
             )
         } else {
             var branchName = ""
-            if (deliveryMethod != null) {
-                branchName = (deliveryMethod as? DeliveryMethod.BranchDelivery)?.branchAddress ?: ""
+            if (cartDetails.deliveryMethod != null) {
+                branchName =
+                    (cartDetails.deliveryMethod as? DeliveryMethod.BranchDelivery)?.branchAddress
+                        ?: ""
             }
             PickUpSection(
                 branch = branchName,
-                isAddressNull = isAddressNull,
+                isAddressNull = cartDetails.isAddressNull,
                 onClick = {}
             )
         }
@@ -381,8 +322,8 @@ fun BeforeOrderList(
             onPhoneValueChange = { value ->
                 onPhoneValueChange.invoke(value)
             },
-            isNumberValid = isPhoneNumberValid,
-            phoneNumber = phoneNumber
+            isNumberValid = cartDetails.isPhoneNumberValid,
+            phoneNumber = cartDetails.phoneNumberValue
         )
     }
 }
@@ -400,14 +341,14 @@ fun AfterOrderList(
     Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
     //payment summary
-    PaymentSummary(
+    PaymentSummarySection(
         orderCost = orderCost,
         isDeliveryEnabled = isDeliveryEnabled
     )
 }
 
 @Composable
-fun SelectDeliverWay(
+fun SelectDeliverMethod(
     modifier: Modifier,
     isDeliveryEnabled: Boolean,
     onDeliveryClick: () -> Unit,
@@ -535,84 +476,6 @@ fun DeliverySection(
 
 
 @Composable
-fun OrderCard(
-    order: DrinkOrder,
-    orderPrice: String,
-    onDeleteClick: () -> Unit,
-    onPlusClick: () -> Unit,
-    onMinusClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = MaterialTheme.colorScheme.tertiary
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_small))
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
-        ) {
-            //image
-            Box(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                contentAlignment = Alignment.Center
-            ) {
-                ImageLoaderWithUrl(
-                    modifier = Modifier
-                        .size(85.dp)
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_6))),
-                    imageUrl = order.imageUrl
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .align(Alignment.Top)
-                    .weight(1f)
-                    .height(85.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                CustomizedText(
-                    text = order.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimensionResource(id = R.dimen.text_size_16),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    style = MaterialTheme.typography.headlineSmall,
-                    textLines = 1,
-                )
-                CustomizedText(
-                    text = order.size,
-                    fontSize = dimensionResource(id = R.dimen.text_size_16),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                CustomizedText(
-                    text = stringResource(id = R.string.drink_price, orderPrice),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimensionResource(id = R.dimen.text_size_16),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    style = MaterialTheme.typography.headlineSmall,
-                    textLines = 1,
-                )
-            }
-
-            QuantityAndCloseColumn(
-                modifier = Modifier
-                    .height(85.dp)
-                    .weight(1f),
-                quantity = order.quantity,
-                onMinusClick = { onMinusClick.invoke() },
-                onDeleteClick = { onDeleteClick.invoke() },
-                onPlusClick = { onPlusClick.invoke() }
-            )
-        }
-    }
-}
-
-
-@Composable
 fun PhoneNumberContainer(
     onPhoneValueChange: (String) -> Unit,
     isNumberValid: Boolean?,
@@ -725,236 +588,6 @@ fun PromoCodeContainer(
     }
 }
 
-
-@Composable
-fun PaymentSummary(
-    orderCost: OrderCost,
-    isDeliveryEnabled: Boolean
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = MaterialTheme.colorScheme.tertiary
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small))
-        ) {
-            //items
-            RowItemPrice(
-                item = stringResource(id = R.string.items),
-                price = stringResource(id = R.string.price_value, orderCost.itemsPrice)
-            )
-            //discount
-            RowItemPrice(
-                item = stringResource(id = R.string.discount),
-                price = stringResource(id = R.string.discount_price, orderCost.discountValue)
-            )
-            if (isDeliveryEnabled) {
-                //delivery
-                RowItemPrice(
-                    item = stringResource(id = R.string.delivery),
-                    price = if (orderCost.deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
-                        id = R.string.price_value,
-                        orderCost.deliveryFee
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
-            //total
-            RowItemPrice(
-                item = stringResource(id = R.string.total),
-                price = stringResource(id = R.string.drink_price, orderCost.getTotalCost()),
-                fontWeightItem = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-fun QuantityAndCloseColumn(
-    modifier: Modifier,
-    quantity: Int,
-    onDeleteClick: () -> Unit,
-    onPlusClick: () -> Unit,
-    onMinusClick: () -> Unit
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.End)
-                .clickable {
-                    onDeleteClick.invoke()
-                },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.close_icon),
-                contentDescription = "delete",
-                tint = MaterialTheme.colorScheme.onTertiary,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        //drink quantity
-        Row(
-            modifier = Modifier
-                .align(Alignment.End),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Card(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .size(dimensionResource(id = R.dimen.circle_size_32))
-                    .padding(dimensionResource(id = R.dimen.padding_x_small))
-                    .clickable {
-                        onMinusClick.invoke()
-                    },
-                colors = CardDefaults.cardColors().copy(
-                    containerColor = MaterialTheme.colorScheme.tertiary
-                ),
-                shape = CircleShape,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-            ) {
-                CompositionLocalProvider(
-                    LocalContentColor provides
-                            if (quantity == 1) MaterialTheme.colorScheme.onTertiary.copy(
-                                alpha = 0.2f
-                            )
-                            else MaterialTheme.colorScheme.onTertiary.copy(alpha = 1f)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.negative_icon),
-                        contentDescription = "minus",
-                        modifier = Modifier
-                            .padding(dimensionResource(id = R.dimen.padding_x_small))
-                    )
-                }
-            }
-            CustomizedText(
-                text = quantity.toString(),
-                fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                color = MaterialTheme.colorScheme.onTertiary,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
-            )
-            Card(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .size(dimensionResource(id = R.dimen.circle_size_32))
-                    .padding(dimensionResource(id = R.dimen.padding_x_small))
-                    .clickable {
-                        onPlusClick.invoke()
-                    },
-                colors = CardDefaults.cardColors().copy(
-                    containerColor = MaterialTheme.colorScheme.tertiary
-                ),
-                shape = CircleShape,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.positive_icon),
-                    contentDescription = "minus",
-                    tint = MaterialTheme.colorScheme.onTertiary,
-                    modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.padding_x_small))
-                )
-            }
-        }
-
-    }
-}
-
-@Composable
-fun RowItemPrice(
-    item: String,
-    fontWeightItem: FontWeight = FontWeight.Normal,
-    price: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        CustomizedText(
-            text = item,
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = fontWeightItem
-        )
-        CustomizedText(
-            text = price,
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
-            color = MaterialTheme.colorScheme.onTertiary,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-fun RoundedButtonWithIcon(
-    modifier: Modifier = Modifier,
-    backgroundColor: Color,
-    borderStroke: BorderStroke = BorderStroke(0.dp, Color.Transparent),
-    leadingIconId: Int,
-    leadingIconDesc: String,
-    trailingIconId: Int? = null,
-    trailingIconDesc: String = "",
-    color: Color,
-    text: String,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = modifier.clickable { onClick.invoke() },
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = backgroundColor
-        ),
-        border = borderStroke
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(
-                    vertical = dimensionResource(id = R.dimen.padding_10),
-                    horizontal = dimensionResource(id = R.dimen.padding_medium)
-                )
-        ) {
-            Icon(
-                painter = painterResource(id = leadingIconId),
-                contentDescription = leadingIconDesc,
-                tint = color,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-            )
-            CustomizedText(
-                text = text,
-                fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                fontWeight = FontWeight.Medium,
-                color = color,
-                modifier = Modifier
-            )
-            if (trailingIconId != null) {
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    painter = painterResource(id = trailingIconId),
-                    contentDescription = trailingIconDesc,
-                    tint = color,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-                )
-            }
-        }
-    }
-}
 
 @Composable
 @Preview(showBackground = true)

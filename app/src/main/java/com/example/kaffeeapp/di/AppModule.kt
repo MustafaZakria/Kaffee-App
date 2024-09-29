@@ -6,7 +6,7 @@ import android.location.LocationManager
 import androidx.room.Room
 import com.example.kaffeeapp.data.local.DrinkDatabase
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
-import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
+import com.example.kaffeeapp.data.local.sharedPreference.ProfileSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.util.Constants.DRINK_DATABASE_NAME
 import com.example.kaffeeapp.util.Constants.SHARED_PREFERENCE_NAME
@@ -102,9 +102,9 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideOrderSharedPref(
+    fun provideProfileSharedPref(
         sharedPreference: SharedPreferences
-    ): OrderSharedPreference = OrderSharedPreference(sharedPreference)
+    ): ProfileSharedPreference = ProfileSharedPreference(sharedPreference)
 
 
 }
