@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.data.remote
 
-import android.util.Log
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.data.entities.Order
@@ -75,14 +74,15 @@ class DrinkRemoteDb @Inject constructor(
     }
 
 
-    suspend fun addFavDrink(id: String) {
-        try {
+    suspend fun addFavDrink(id: String): Resource<Boolean> {
+        return try {
             currentUserId?.let {
                 firestore.collection(USERS_COLLECTION).document(it)
                     .update(FAV_DRINKS_KEY, FieldValue.arrayUnion(id)).await()
             }
+            Resource.Success(true)
         } catch (e: Exception) {
-            Log.e("Exception(FAV DRINKS):", e.message.toString())
+            Resource.Failure(e)
         }
     }
 
@@ -105,16 +105,13 @@ class DrinkRemoteDb @Inject constructor(
                 firestore.collection(USERS_COLLECTION).document(it).get().await()
             }
             val orders = (userSnapshot?.get(ORDERS_KEY) as? List<*>)?.mapNotNull { it as? String }
-                ?: emptyList()
-            val favDrinks =
-                (userSnapshot?.get(FAV_DRINKS_KEY) as? List<*>)?.mapNotNull { it as? String }
-                    ?: emptyList()
+            val favDrinks = (userSnapshot?.get(FAV_DRINKS_KEY) as? List<*>)?.mapNotNull { it as? String }
             val user = User(
                 id = userSnapshot?.get(ID_KEY) as? String ?: "",
                 name = userSnapshot?.get(NAME_KEY) as? String ?: "",
                 email = userSnapshot?.get(EMAIL_KEY) as? String ?: "",
-                orders = orders,
-                favouriteDrinks = favDrinks
+                orders = orders ?: emptyList(),
+                favouriteDrinks = favDrinks ?: emptyList()
             )
             Resource.Success(user)
         } catch (e: Exception) {
@@ -124,6 +121,7 @@ class DrinkRemoteDb @Inject constructor(
 
     suspend fun addOrderToServer(order: Order): Resource<Boolean> {
         return try {
+            order.setUserId(currentUserId ?: "")
             firestore.collection(ORDERS_COLLECTION).document(order.orderId)
                 .set(order).await()
 

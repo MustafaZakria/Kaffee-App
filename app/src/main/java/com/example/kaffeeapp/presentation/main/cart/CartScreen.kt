@@ -33,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -59,6 +60,9 @@ import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
+import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
+import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
+import com.example.kaffeeapp.util.Constants.ORDER_SUCCESS
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 
@@ -101,8 +105,9 @@ fun CartScreen(
         isPhoneNumberValid = isPhoneNumberValid.value,
         phoneNumber = phoneNumberState.value,
         totalPrice = totalPrice,
-        orderResult = orderResult.value,
-        onOrderClick = { viewModel.submitOrder() }
+        orderResult = orderResult,
+        onOrderClick = { viewModel.submitOrder() },
+        resetOrderState = { viewModel.resetOrderResponseState() }
     )
 }
 
@@ -116,14 +121,15 @@ fun CartScreenContent(
     deliveryMethod: DeliveryMethod?,
     isDeliveryEnabled: Boolean,
     onDeliveryEnableChange: (Boolean) -> Unit,
-    isAddressNull: Boolean,
+    isAddressNull: Boolean?,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    isPhoneNumberValid: Boolean,
+    isPhoneNumberValid: Boolean?,
     phoneNumber: String,
     totalPrice: String,
     orderResult: Resource<Boolean>?,
-    onOrderClick: () -> Unit
+    onOrderClick: () -> Unit,
+    resetOrderState: () -> Unit
 ) {
 
     Scaffold(
@@ -241,38 +247,47 @@ fun CartScreenContent(
     }
     OnResultState(
         orderResult = orderResult,
-        context = LocalContext.current
+        context = LocalContext.current,
+        isAddressNull = isAddressNull,
+        resetOrderState = { resetOrderState.invoke() }
     )
 }
 
 @Composable
 fun OnResultState(
     orderResult: Resource<Boolean>?,
-    context: Context
+    context: Context,
+    isAddressNull: Boolean?,
+    resetOrderState: () -> Unit
 ) {
-    when (orderResult) {
-        is Resource.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.2f)) // Dimmed background
-            ) {
-                ProgressBar(
-                    modifier = Modifier.fillMaxSize()
-                )
+    if (orderResult is Resource.Loading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White.copy(alpha = 0.35f))
+        ) {
+            ProgressBar(
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+    LaunchedEffect(key1 = orderResult) {
+        when (orderResult) {
+            is Resource.Success -> {
+                Toast.makeText(context, ORDER_SUCCESS, Toast.LENGTH_SHORT).show()
+                resetOrderState.invoke()
             }
+            is Resource.Failure -> {
+                Toast.makeText(context, NETWORK_ERROR, Toast.LENGTH_SHORT).show()
+                resetOrderState.invoke()
+            }
+            else -> {}
         }
-        is Resource.Failure -> {
-//            Toast.makeText(context, stringResource(id = R.string.network_error), Toast.LENGTH_SHORT)
-//                .show()
+    }
+    LaunchedEffect(key1 = isAddressNull) {
+        if(isAddressNull?.not() == true) {
+            Toast.makeText(context, ADDRESS_ADDED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
         }
-
-        is Resource.Success -> {
-//            Toast.makeText(context, stringResource(id = R.string.order_success), Toast.LENGTH_SHORT)
-//                .show()
-        }
-
-        else -> {}
     }
 }
 
@@ -333,8 +348,8 @@ fun BeforeOrderList(
     deliveryMethod: DeliveryMethod?,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    isAddressNull: Boolean,
-    isPhoneNumberValid: Boolean,
+    isAddressNull: Boolean?,
+    isPhoneNumberValid: Boolean?,
     phoneNumber: String
 ) {
     //delivery content
@@ -477,14 +492,14 @@ fun SelectDeliverWay(
 @Composable
 fun PickUpSection(
     branch: String,
-    isAddressNull: Boolean,
+    isAddressNull: Boolean?,
     onClick: () -> Unit
 ) {
     RoundedButtonWithIcon(
         backgroundColor = MaterialTheme.colorScheme.tertiary,
         borderStroke = BorderStroke(
             1.dp,
-            if (isAddressNull) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
+            if (isAddressNull == true) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
         ),
         leadingIconId = R.drawable.edit_icon,
         leadingIconDesc = "edit",
@@ -500,7 +515,7 @@ fun PickUpSection(
 @Composable
 fun DeliverySection(
     address: String,
-    isAddressNull: Boolean,
+    isAddressNull: Boolean?,
     onEditAddressClick: () -> Unit,
     onAddNoteClick: () -> Unit
 ) {
@@ -516,10 +531,10 @@ fun DeliverySection(
             trailingIconId = R.drawable.arrow_right_icon,
             trailingIconDesc = "arrow right",
             color = MaterialTheme.colorScheme.primary,
-            text = if (address == "") stringResource(id = R.string.edit_address) else address,
+            text = if (address == "") stringResource(id = R.string.add_address) else address,
             borderStroke = BorderStroke(
                 1.dp,
-                if (isAddressNull) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
+                if (isAddressNull == true) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
             )
         ) {
             onEditAddressClick.invoke()
@@ -622,7 +637,7 @@ fun OrderCard(
 @Composable
 fun PhoneNumberContainer(
     onPhoneValueChange: (String) -> Unit,
-    isNumberValid: Boolean,
+    isNumberValid: Boolean?,
     phoneNumber: String
 ) {
     Box(
@@ -636,7 +651,7 @@ fun PhoneNumberContainer(
             onValueChange = { value ->
                 onPhoneValueChange.invoke(value)
             },
-            isError = !isNumberValid,
+            isError = (isNumberValid?.not() == true),
             singleLine = true,
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
             placeholder = {
@@ -1001,6 +1016,7 @@ fun CartScreenPreview() {
             "",
             Resource.Loading(),
             {},
+            {}
         )
     }
 }

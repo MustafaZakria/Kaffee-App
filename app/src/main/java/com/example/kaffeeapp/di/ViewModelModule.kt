@@ -67,8 +67,7 @@ class ViewModelModule {
         drinkDao: DrinkDao,
         db: DrinkRemoteDb,
         drinkSharedPreference: DrinkSharedPreference,
-        orderSharedPreference: OrderSharedPreference,
-        firebaseAuth: FirebaseAuth
+        orderSharedPreference: OrderSharedPreference
     ): DataRepository =
-        DataRepositoryImp(drinkDao, db, drinkSharedPreference, orderSharedPreference, firebaseAuth)
+        DataRepositoryImp(drinkDao, db, drinkSharedPreference, orderSharedPreference)
 }

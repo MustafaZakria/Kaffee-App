@@ -34,7 +34,7 @@
     <string name="delivery">Delivery</string>
     <string name="pick_up">Pick Up</string>
     <string name="delivery_address">Delivery Address</string>
-    <string name="edit_address">Edit Address</string>
+    <string name="add_address">Add Address</string>
     <string name="add_your_address">Add your Address..</string>
     <string name="add_note">Add Note</string>
     <string name="pick_up_branch">Pick Up at Branch</string>

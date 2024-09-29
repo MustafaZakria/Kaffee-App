@@ -51,10 +51,15 @@ object Constants {
 
     //toasts
     const val SIGNED_IN_SUCCESSFULLY = "Signed In Successfully!"
-    const val SIGNED_OUT_SUCCESSFULLY = "Signed OUT Successfully!"
+    const val SIGNED_OUT_SUCCESSFULLY = "Signed Out Successfully!"
+    const val ADDED_TO_CART_SUCCESSFULLY = "Added to Cart Successfully!"
     const val SIGNED_OUT_FAILED = "Failed to Signed Out!"
     const val NETWORK_ERROR = "Network Error!"
     const val FAILED_TO_LOAD_DATA = "Error: Failed to Load User Data!"
-    const val DRINK_REMOVED_SUCCESSFULLY = "Drink Removed Successfully!!"
+    const val DRINK_REMOVED_SUCCESSFULLY = "Drink Removed Successfully!"
     const val FAILED_REMOVING_DRINK = "Error: Failed to Remove the Drink!"
+    const val DRINK_ADDED_SUCCESSFULLY = "Drink Added to Favourites Successfully!"
+    const val ADDRESS_ADDED_SUCCESSFULLY = "Address Added Successfully!"
+    const val FAILED_ADDING_DRINK = "Error: Failed to add the Drink!"
+    const val ORDER_SUCCESS = "Order Success!"
 }

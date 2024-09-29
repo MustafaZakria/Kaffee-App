@@ -4,4 +4,12 @@ data class OrderCost(
     var itemsPrice: String = "0.0",
     var discountValue: String = "0.0",
     var deliveryFee: String = "0.0"
-)
+) {
+    fun getTotalCost(): String {
+        val itemsPrice = itemsPrice.toDoubleOrNull() ?: 0.0
+        val discountValue = discountValue.toDoubleOrNull() ?: 0.0
+        val deliveryFee = deliveryFee.toDoubleOrNull() ?: 0.0
+
+        return (itemsPrice + deliveryFee - discountValue).toString()
+    }
+}
