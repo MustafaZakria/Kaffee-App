@@ -63,6 +63,7 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.Constants.ORDER_SUCCESS
+import com.example.kaffeeapp.util.model.CartDetails
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 
@@ -73,12 +74,7 @@ fun CartScreen(
 ) {
     val drinkOrders = viewModel.drinkOrders
     val orderCost = viewModel.orderCost
-    val totalPrice = viewModel.totalPrice.toString()
-    val deliveryMethod = viewModel.deliveryMethod
-    val isDeliveryEnabled = viewModel.isDeliveryEnabled
-    val isPhoneNumberValid = viewModel.isPhoneNumberValid
-    val phoneNumberState = viewModel.phoneNumberState
-    val isAddressNull = viewModel.isAddressNull
+    val cartDetails = viewModel.cartUiDetails
     val orderResult = viewModel.orderResult
 
     if (drinkOrders.isEmpty()) {
@@ -87,6 +83,10 @@ fun CartScreen(
 
     CartScreenContent(
         orders = drinkOrders,
+        orderCost = orderCost,
+        cartDetails = cartDetails,
+        orderResult = orderResult,
+
         onDeleteOrderClick = { index -> viewModel.removeDrinkFromCart(index) },
         onChangeQuantityClick = { index, newValue ->
             viewModel.setDrinkOrderQuantity(
@@ -95,17 +95,9 @@ fun CartScreen(
             )
         },
         onApplyPromoClick = { code -> viewModel.setPromoCode(code) },
-        orderCost = orderCost.value,
-        deliveryMethod = deliveryMethod.value,
-        isDeliveryEnabled = isDeliveryEnabled.value,
         onDeliveryEnableChange = { isEnabled -> viewModel.setDeliveryEnabledValue(isEnabled) },
-        isAddressNull = isAddressNull.value,
         navigateToMapScreen = { navigateToMapScreen.invoke() },
         onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
-        isPhoneNumberValid = isPhoneNumberValid.value,
-        phoneNumber = phoneNumberState.value,
-        totalPrice = totalPrice,
-        orderResult = orderResult,
         onOrderClick = { viewModel.submitOrder() },
         resetOrderState = { viewModel.resetOrderResponseState() }
     )
@@ -118,15 +110,10 @@ fun CartScreenContent(
     onChangeQuantityClick: (Int, Int) -> Unit,
     onApplyPromoClick: (String) -> Unit,
     orderCost: OrderCost,
-    deliveryMethod: DeliveryMethod?,
-    isDeliveryEnabled: Boolean,
     onDeliveryEnableChange: (Boolean) -> Unit,
-    isAddressNull: Boolean?,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    isPhoneNumberValid: Boolean?,
-    phoneNumber: String,
-    totalPrice: String,
+    cartDetails: CartDetails,
     orderResult: Resource<Boolean>?,
     onOrderClick: () -> Unit,
     resetOrderState: () -> Unit
@@ -157,7 +144,7 @@ fun CartScreenContent(
                                 start = dimensionResource(id = R.dimen.padding_medium),
                                 end = dimensionResource(id = R.dimen.padding_medium)
                             ),
-                        isDeliveryEnabled = isDeliveryEnabled,
+                        isDeliveryEnabled = cartDetails.isDeliveryEnabled,
                         onDeliveryClick = {
                             onDeliveryEnableChange.invoke(true)
                         },
@@ -180,13 +167,13 @@ fun CartScreenContent(
                     ) {
                         item {
                             BeforeOrderList(
-                                isDeliveryEnabled = isDeliveryEnabled,
-                                deliveryMethod = deliveryMethod,
+                                isDeliveryEnabled = cartDetails.isDeliveryEnabled,
+                                deliveryMethod = cartDetails.deliveryMethod,
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
                                 onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
-                                isAddressNull = isAddressNull,
-                                isPhoneNumberValid = isPhoneNumberValid,
-                                phoneNumber = phoneNumber
+                                isAddressNull = cartDetails.isAddressNull,
+                                isPhoneNumberValid = cartDetails.isPhoneNumberValid,
+                                phoneNumber = cartDetails.phoneNumberValue
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
@@ -223,18 +210,15 @@ fun CartScreenContent(
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
                             AfterOrderList(
-                                itemsPrice = orderCost.itemsPrice,
-                                discountValue = orderCost.discountValue,
-                                deliveryFee = orderCost.deliveryFee,
-                                totalPrice = totalPrice,
-                                isDeliveryEnabled = isDeliveryEnabled,
+                                orderCost = orderCost,
+                                isDeliveryEnabled = cartDetails.isDeliveryEnabled,
                                 onApplyPromoClick = { code -> onApplyPromoClick.invoke(code) }
                             )
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                         }
                     }
                     OrderBox(
-                        totalPrice = totalPrice,
+                        orderCost = orderCost,
                         onOrderClick = {
                             onOrderClick.invoke()
                         }
@@ -248,7 +232,7 @@ fun CartScreenContent(
     OnResultState(
         orderResult = orderResult,
         context = LocalContext.current,
-        isAddressNull = isAddressNull,
+        isAddressNull = cartDetails.isAddressNull,
         resetOrderState = { resetOrderState.invoke() }
     )
 }
@@ -293,7 +277,7 @@ fun OnResultState(
 
 @Composable
 fun OrderBox(
-    totalPrice: String,
+    orderCost: OrderCost,
     onOrderClick: () -> Unit
 ) {
     Box(
@@ -319,7 +303,7 @@ fun OrderBox(
                     fontWeight = FontWeight.Medium
                 )
                 CustomizedText(
-                    text = stringResource(id = R.string.drink_price, totalPrice),
+                    text = stringResource(id = R.string.drink_price, orderCost.getTotalCost()),
                     fontSize = dimensionResource(id = R.dimen.text_size_18),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
@@ -405,10 +389,7 @@ fun BeforeOrderList(
 
 @Composable
 fun AfterOrderList(
-    itemsPrice: String,
-    discountValue: String,
-    deliveryFee: String,
-    totalPrice: String,
+    orderCost: OrderCost,
     isDeliveryEnabled: Boolean,
     onApplyPromoClick: (String) -> Unit,
 ) {
@@ -420,10 +401,7 @@ fun AfterOrderList(
 
     //payment summary
     PaymentSummary(
-        itemsPrice = itemsPrice,
-        discountValue = discountValue,
-        deliveryFee = deliveryFee,
-        totalPrice = totalPrice,
+        orderCost = orderCost,
         isDeliveryEnabled = isDeliveryEnabled
     )
 }
@@ -750,10 +728,7 @@ fun PromoCodeContainer(
 
 @Composable
 fun PaymentSummary(
-    itemsPrice: String,
-    discountValue: String,
-    deliveryFee: String,
-    totalPrice: String,
+    orderCost: OrderCost,
     isDeliveryEnabled: Boolean
 ) {
     Card(
@@ -771,20 +746,20 @@ fun PaymentSummary(
             //items
             RowItemPrice(
                 item = stringResource(id = R.string.items),
-                price = stringResource(id = R.string.price_value, itemsPrice)
+                price = stringResource(id = R.string.price_value, orderCost.itemsPrice)
             )
             //discount
             RowItemPrice(
                 item = stringResource(id = R.string.discount),
-                price = stringResource(id = R.string.discount_price, discountValue)
+                price = stringResource(id = R.string.discount_price, orderCost.discountValue)
             )
             if (isDeliveryEnabled) {
                 //delivery
                 RowItemPrice(
                     item = stringResource(id = R.string.delivery),
-                    price = if (deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
+                    price = if (orderCost.deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
                         id = R.string.price_value,
-                        deliveryFee
+                        orderCost.deliveryFee
                     )
                 )
             }
@@ -796,7 +771,7 @@ fun PaymentSummary(
             //total
             RowItemPrice(
                 item = stringResource(id = R.string.total),
-                price = stringResource(id = R.string.drink_price, totalPrice),
+                price = stringResource(id = R.string.drink_price, orderCost.getTotalCost()),
                 fontWeightItem = FontWeight.Medium
             )
         }
@@ -1005,16 +980,11 @@ fun CartScreenPreview() {
             { _, _ -> },
             {},
             OrderCost(),
+            {},
+            {},
+            {},
+            CartDetails(),
             null,
-            true,
-            {},
-            false,
-            {},
-            {},
-            true,
-            "",
-            "",
-            Resource.Loading(),
             {},
             {}
         )

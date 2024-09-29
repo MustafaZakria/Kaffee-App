@@ -8,15 +8,13 @@ import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.OrderSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.example.kaffeeapp.repository.AuthRepositoryImp
 import com.example.kaffeeapp.repository.DataRepositoryImp
 import com.example.kaffeeapp.repository.MainRepositoryImp
 import com.example.kaffeeapp.repository.interfaces.AuthRepository
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.repository.interfaces.MainRepository
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
