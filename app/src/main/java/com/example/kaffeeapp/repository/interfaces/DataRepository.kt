@@ -16,7 +16,7 @@ interface DataRepository {
 
     fun isDrinkFav(id: String): Boolean
 
-    suspend fun addDrinkToFav(id: String)
+    suspend fun addDrinkToFav(id: String): Resource<Boolean>
 
     suspend fun removeDrinkFromFav(id: String): Resource<Boolean>
 
@@ -27,7 +27,7 @@ interface DataRepository {
         totalPrice: String,
         isHomeDelivery: Boolean,
         deliveryDetail: DeliveryMethod?
-    ): Flow<Resource<Boolean>>
+    ): Resource<Boolean>
 
     suspend fun addOrderToDatabase(orderId: String)
 

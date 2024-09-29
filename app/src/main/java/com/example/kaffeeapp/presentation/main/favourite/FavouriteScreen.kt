@@ -1,8 +1,8 @@
 package com.example.kaffeeapp.presentation.main.favourite
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,7 +32,6 @@ import com.example.kaffeeapp.presentation.main.favourite.components.FavDrinkCard
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.DRINK_REMOVED_SUCCESSFULLY
 import com.example.kaffeeapp.util.Constants.FAILED_REMOVING_DRINK
-import com.example.kaffeeapp.util.Constants.FAILED_TO_LOAD_DATA
 import com.example.kaffeeapp.util.model.Resource
 
 
@@ -42,7 +41,12 @@ fun FavouriteScreen(
     navigateToDetailsScreen: (String) -> Unit
 ) {
     val favDrinks = viewModel.favDrinks.collectAsState(initial = Resource.Loading())
-    val removeDrinkResponse = viewModel.removeDrinkResponse
+
+    LaunchedEffect(key1 = favDrinks.value.data?.size) {
+        viewModel.resetRemoveState()
+    }
+
+    val removeDrinkResponse: Resource<Boolean>? = viewModel.removeDrinkResponse
 
     FavouriteScreenContent(
         drinks = favDrinks.value,
@@ -56,7 +60,6 @@ fun FavouriteScreen(
     )
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FavouriteScreenContent(
     drinks: Resource<List<Drink>>,
@@ -82,7 +85,8 @@ fun FavouriteScreenContent(
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .animateContentSize(),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -90,7 +94,6 @@ fun FavouriteScreenContent(
                     drinks.data ?: emptyList()
                 } else emptyList()
                 if (drinksList.isNotEmpty()) {
-                    Log.d("drinksData", drinksList.toString())
                     items(drinksList) { drink ->
                         FavDrinkCard(
                             drink = drink,
@@ -114,9 +117,9 @@ fun FavouriteScreenContent(
         }
         val context = LocalContext.current
         LaunchedEffect(key1 = removeDrinkResponse) {
-            if(removeDrinkResponse is Resource.Success) {
+            if (removeDrinkResponse is Resource.Success) {
                 Toast.makeText(context, DRINK_REMOVED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-            } else if(removeDrinkResponse is Resource.Failure) {
+            } else if (removeDrinkResponse is Resource.Failure) {
                 Toast.makeText(context, FAILED_REMOVING_DRINK, Toast.LENGTH_SHORT).show()
             }
         }
@@ -148,6 +151,6 @@ fun FavPreview() {
         )
     )
     KaffeeAppTheme {
-        FavouriteScreenContent(Resource.Success(drinks), null, {}) {}
+        FavouriteScreenContent(Resource.Success(drinks), null, {}, {})
     }
 }

@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.presentation.main.favourite
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,5 +37,9 @@ class FavouriteViewModel @Inject constructor(
             removeDrinkResponse = dataRepositoryImp.removeDrinkFromFav(id)
         }
         getFavDrinks()
+    }
+
+    fun resetRemoveState() {
+        removeDrinkResponse = null
     }
 }

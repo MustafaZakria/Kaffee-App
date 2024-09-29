@@ -31,21 +31,23 @@ class DataRepositoryImp @Inject constructor(
     private val drinkDao: DrinkDao,
     private val drinkRemoteDb: DrinkRemoteDb,
     private val drinkSharedPreference: DrinkSharedPreference,
-    private val orderSharedPreference: OrderSharedPreference,
-    private val firebaseAuth: FirebaseAuth
+    private val orderSharedPreference: OrderSharedPreference
 ) : DataRepository {
     override suspend fun getDrinkById(id: String): Drink = drinkDao.getDrinkById(id)
 
     override fun isDrinkFav(id: String) = drinkSharedPreference.isDrinkFav(id)
 
-    override suspend fun addDrinkToFav(id: String) {
-        drinkSharedPreference.addDrinkToFav(id)
-        drinkRemoteDb.addFavDrink(id)
+    override suspend fun addDrinkToFav(id: String): Resource<Boolean> {
+        val response = drinkRemoteDb.addFavDrink(id)
+        if (response is Resource.Success) {
+            drinkSharedPreference.addDrinkToFav(id)
+        }
+        return response
     }
 
     override suspend fun removeDrinkFromFav(id: String): Resource<Boolean> {
         val response = drinkRemoteDb.removeFavDrink(id)
-        if(response is Resource.Success) {
+        if (response is Resource.Success) {
             drinkSharedPreference.removeDrink(id)
         }
         return response
@@ -65,30 +67,26 @@ class DataRepositoryImp @Inject constructor(
         totalPrice: String,
         isHomeDelivery: Boolean,
         deliveryDetail: DeliveryMethod?
-    ): Flow<Resource<Boolean>> {
-        return flow {
-            emit(Resource.Loading())
-            val orderId = generateUniqueId()
-            val userId = firebaseAuth.currentUser?.uid ?: 0
-            val order = Order(
-                orderId = orderId,
-                uid = userId.toString(),
-                timestamp = System.currentTimeMillis(),
-                telephoneNumber = phoneNumber,
-                isHomeDeliveryOrder = isHomeDelivery,
-                totalPrice = totalPrice,
-                deliveryDetails = toDeliveryDetailsMap(deliveryDetail),
-                drinkOrders = drinkOrders,
-            )
+    ): Resource<Boolean> {
 
-            when(addOrderToServer(order)) {
-                is Resource.Success -> {
-                    emit(Resource.Success(true))
-                    addOrderToDatabase(orderId)
-                }
-                else -> emit(Resource.Failure(null))
-            }
+        val orderId = generateUniqueId()
+        val order = Order(
+            orderId = orderId,
+            timestamp = System.currentTimeMillis(),
+            telephoneNumber = phoneNumber,
+            isHomeDeliveryOrder = isHomeDelivery,
+            totalPrice = totalPrice,
+            deliveryDetails = toDeliveryDetailsMap(deliveryDetail),
+            drinkOrders = drinkOrders,
+        )
+
+        val response = addOrderToServer(order)
+        if (response is Resource.Success) {
+            addOrderToDatabase(orderId)
+            return Resource.Success(true)
         }
+
+        return Resource.Failure(response.exception)
     }
 
     override suspend fun addOrderToDatabase(orderId: String) {
