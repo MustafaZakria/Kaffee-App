@@ -20,7 +20,6 @@ import com.example.kaffeeapp.util.Constants.LATITUDE
 import com.example.kaffeeapp.util.Constants.LONGITUDE
 import com.example.kaffeeapp.util.Utils.generateUniqueId
 import com.example.kaffeeapp.util.model.Resource
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

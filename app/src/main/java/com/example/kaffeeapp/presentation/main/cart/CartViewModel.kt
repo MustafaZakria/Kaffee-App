@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.presentation.main.cart
 
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +14,7 @@ import com.example.kaffeeapp.navigation.MainScreen
 import com.example.kaffeeapp.navigation.model.bottomNavItems
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.util.DispatcherProvider
+import com.example.kaffeeapp.util.model.CartDetails
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,24 +29,11 @@ class CartViewModel @Inject constructor(
 
     val drinkOrders = mutableStateListOf<DrinkOrder>()
 
-    private var promoCodeState = mutableStateOf("")
+    private var promoCodeState by mutableStateOf("")
 
-    var deliveryMethod = mutableStateOf<DeliveryMethod?>(null)
-    val isDeliveryEnabled = mutableStateOf(true)
-    val isAddressNull = mutableStateOf<Boolean?>(null)
+    var cartUiDetails by mutableStateOf(CartDetails())
 
-    val orderCost = mutableStateOf(OrderCost())
-
-    val isPhoneNumberValid = mutableStateOf<Boolean?>(null)
-    val phoneNumberState = mutableStateOf("")
-
-    val totalPrice by derivedStateOf {
-        val itemsPrice = orderCost.value.itemsPrice.toDoubleOrNull() ?: 0.0
-        val discountValue = orderCost.value.discountValue.toDoubleOrNull() ?: 0.0
-        val deliveryFee = orderCost.value.deliveryFee.toDoubleOrNull() ?: 0.0
-
-        itemsPrice + deliveryFee - discountValue
-    }
+    var orderCost by mutableStateOf(OrderCost())
 
     var orderResult by mutableStateOf<Resource<Boolean>?>(null)
 
@@ -56,10 +43,10 @@ class CartViewModel @Inject constructor(
             viewModelScope.launch(dispatcherProvider.io) {
                 orderResult = dataRepository.addOrder(
                     drinkOrders = drinkOrders,
-                    phoneNumber = phoneNumberState.value,
-                    totalPrice = totalPrice.toString(),
-                    isHomeDelivery = isDeliveryEnabled.value,
-                    deliveryDetail = deliveryMethod.value
+                    phoneNumber = cartUiDetails.phoneNumberValue,
+                    totalPrice = orderCost.getTotalCost(),
+                    isHomeDelivery = cartUiDetails.isDeliveryEnabled,
+                    deliveryDetail = cartUiDetails.deliveryMethod
                 )
                 if (orderResult is Resource.Success) {
                     drinkOrders.clear()
@@ -68,26 +55,28 @@ class CartViewModel @Inject constructor(
         }
     }
 
-
     private fun isOrderDetailsValid(): Boolean {
-        isAddressNull.value = deliveryMethod.value == null
-        isPhoneNumberValid.value = phoneNumberState.value.isNotBlank() &&
-                phoneNumberState.value.length > 10
+        val isDeliverMethodValid = cartUiDetails.deliveryMethod != null
+        val isPhoneNumberValid = cartUiDetails.phoneNumberValue.isNotBlank() &&
+                cartUiDetails.phoneNumberValue.length > 10
 
-        return !(isAddressNull.value)!! && (isPhoneNumberValid.value!!)
+        cartUiDetails = cartUiDetails.copy(
+            isPhoneNumberValid = isPhoneNumberValid,
+            isAddressNull = !isDeliverMethodValid
+        )
+        return isDeliverMethodValid && isPhoneNumberValid
     }
 
     fun onPhoneNumberValueChange(newValue: String) {
-        phoneNumberState.value = newValue
+        cartUiDetails = cartUiDetails.copy(phoneNumberValue = newValue)
     }
 
     fun setDeliveryEnabledValue(isEnabled: Boolean) {
-        isDeliveryEnabled.value = isEnabled
+        cartUiDetails = cartUiDetails.copy(isDeliveryEnabled = isEnabled)
     }
 
     fun setDeliveryMethod(address: DeliveryMethod) {
-        deliveryMethod.value = address
-        isAddressNull.value = false
+        cartUiDetails = cartUiDetails.copy(deliveryMethod = address, isAddressNull = false)
     }
 
     fun removeDrinkFromCart(orderIndex: Int) {
@@ -108,15 +97,14 @@ class CartViewModel @Inject constructor(
     }
 
     private fun calculateItemsPrice() {
-        var total = drinkOrders.sumOf { it.quantity * (it.price.toDoubleOrNull() ?: 0.0) }
-
-        orderCost.value = orderCost.value.copy(
+        val total = drinkOrders.sumOf { it.quantity * (it.price.toDoubleOrNull() ?: 0.0) }
+        orderCost = orderCost.copy(
             itemsPrice = total.toString()
         )
     }
 
     fun setPromoCode(value: String) {
-        promoCodeState.value = value
+        promoCodeState = value
     }
 
     fun addDrinkToCart(drink: Drink, size: DrinkSize) {
@@ -146,8 +134,7 @@ class CartViewModel @Inject constructor(
     }
 
     private fun clearStateData() {
-        isPhoneNumberValid.value = null
-        isAddressNull.value = null
+        cartUiDetails = cartUiDetails.copy(isAddressNull = null, isPhoneNumberValid = null)
     }
 
     fun resetOrderResponseState() {

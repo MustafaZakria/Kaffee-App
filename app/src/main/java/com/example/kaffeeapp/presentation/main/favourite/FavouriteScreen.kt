@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.presentation.main.favourite
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement

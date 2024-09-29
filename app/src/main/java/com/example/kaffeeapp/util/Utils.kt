@@ -3,13 +3,7 @@ package com.example.kaffeeapp.util
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RippleConfiguration
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import com.example.kaffeeapp.data.entities.User
 import com.google.firebase.auth.FirebaseUser
 import java.util.UUID

@@ -2,7 +2,6 @@ package com.example.kaffeeapp.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.firebase.firestore.PropertyName
 
 @Entity(tableName = "drinks")
 data class Drink(

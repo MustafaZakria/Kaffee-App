@@ -20,7 +20,6 @@ import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
-import com.example.kaffeeapp.util.Constants.SIGNED_OUT_SUCCESSFULLY
 import com.example.kaffeeapp.util.model.Resource
 
 @Composable

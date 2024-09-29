@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.User
@@ -30,6 +29,7 @@ class MainRepositoryImp @Inject constructor(
                 }
                 Resource.Success(true)
             }
+
             else -> {
                 Resource.Failure(drinkResponse.exception)
             }
@@ -51,7 +51,7 @@ class MainRepositoryImp @Inject constructor(
 
     override suspend fun refreshUserData(): Resource<Boolean> {
         val userResponse = drinkRemoteDb.getUser()
-        if(userResponse is Resource.Success) {
+        if (userResponse is Resource.Success) {
             val user = userResponse.data ?: User()
             drinkSharedPreference.insertFavDrinksList(user.favouriteDrinks)
             orderSharedPreference.insertOrdersList(user.orders)
