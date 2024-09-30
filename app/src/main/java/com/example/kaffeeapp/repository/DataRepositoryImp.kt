@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.repository
 
-import android.util.Log
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DeliveryMethod.AddressDelivery
@@ -66,7 +65,6 @@ class DataRepositoryImp @Inject constructor(
         isHomeDelivery: Boolean,
         deliveryDetail: DeliveryMethod?
     ): Resource<Boolean> {
-
         val orderId = generateUniqueId()
         val order = Order(
             orderId = orderId,
@@ -74,7 +72,7 @@ class DataRepositoryImp @Inject constructor(
             telephoneNumber = phoneNumber,
             isHomeDeliveryOrder = isHomeDelivery,
             totalPrice = totalPrice,
-            deliveryDetails = toDeliveryDetailsMap(deliveryDetail),
+            deliveryDetails = deliveryDetail?.toMap() ?: mapOf(),
             drinkOrders = drinkOrders,
         )
 
@@ -87,24 +85,10 @@ class DataRepositoryImp @Inject constructor(
         return Resource.Failure(response.exception)
     }
 
-    override suspend fun addOrderToDatabase(orderId: String) {
-        profileSharedPreference.addOrder(orderId)
-    }
+    override suspend fun addOrderToDatabase(orderId: String) = profileSharedPreference.addOrder(orderId)
 
     override suspend fun addOrderToServer(order: Order) = drinkRemoteDb.addOrderToServer(order)
 
-    private fun toDeliveryDetailsMap(deliveryMethod: DeliveryMethod?): Map<String, String> {
-        return if (deliveryMethod is AddressDelivery) {
-            mapOf(
-                ADDRESS to deliveryMethod.address.toString(),
-                LATITUDE to deliveryMethod.latitude.toString(),
-                LONGITUDE to deliveryMethod.longitude.toString()
-            )
-        } else {
-            mapOf(
-                BRANCH_ADDRESS to (deliveryMethod as BranchDelivery).branchAddress.toString()
-            )
-        }
-    }
+
 
 }

@@ -26,7 +26,8 @@ class ProfileViewModel @Inject constructor(
     var points by mutableIntStateOf(0)
 
 
-    init {
+
+    fun getOrders() {
         viewModelScope.launch(dispatcherProvider.io) {
             orders = profileRepository.getAllResources()
         }

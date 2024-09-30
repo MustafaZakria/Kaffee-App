@@ -36,6 +36,18 @@ class HomeViewModel @Inject constructor(
     private val drinksFromSelectType: LiveData<List<Drink>> = _drinkSelectedType.switchMap { type ->
         mainRepository.getAllDrinks(type)
     }
+    var userDataResponse by mutableStateOf<Resource<Boolean>?>(null)
+
+    init {
+        drinksResponse = Resource.Loading()
+
+        viewModelScope.launch(dispatcherProvider.io) {
+            drinksResponse = mainRepository.refreshDrinks()
+            userDataResponse = mainRepository.refreshUserData()
+        }
+
+        drinks = drinksFromSelectType
+    }
 
     fun setSelectedType(type: SelectedType) {
         _drinkSelectedType.value = type
@@ -61,15 +73,5 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    var userDataResponse by mutableStateOf<Resource<Boolean>?>(null)
-    init {
-        drinksResponse = Resource.Loading()
 
-        viewModelScope.launch(dispatcherProvider.io) {
-            drinksResponse = mainRepository.refreshDrinks()
-            userDataResponse = mainRepository.refreshUserData()
-        }
-
-        drinks = drinksFromSelectType
-    }
 }

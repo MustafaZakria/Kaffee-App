@@ -64,7 +64,6 @@ fun DrinkDetailsScreen(
         isFavDrink = drinkDetailsViewModel.isDrinkFav()
     }
 
-
     DrinkDetailsContent(
         drink = drink.value,
         onBackClick = {
@@ -131,13 +130,12 @@ fun DrinkDetailsContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
                     .verticalScroll(scrollState)
-
             ) {
                 //image
                 DrinkImageSection(imageUrl = drink.imageUrl)

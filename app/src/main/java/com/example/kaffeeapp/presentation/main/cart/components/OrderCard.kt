@@ -54,7 +54,7 @@ fun OrderCard(
             ) {
                 ImageLoaderWithUrl(
                     modifier = Modifier
-                        .size(85.dp)
+                        .size(dimensionResource(id = R.dimen.image_size_85))
                         .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_6))),
                     imageUrl = order.imageUrl
                 )
@@ -63,14 +63,14 @@ fun OrderCard(
                 modifier = Modifier
                     .align(Alignment.Top)
                     .weight(1f)
-                    .height(85.dp),
+                    .height(dimensionResource(id = R.dimen.image_size_85)),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 CustomizedText(
                     text = order.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.text_size_16),
-                    color = MaterialTheme.colorScheme.onSecondary,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     style = MaterialTheme.typography.headlineSmall,
                     textLines = 1,
                 )
@@ -83,7 +83,7 @@ fun OrderCard(
                     text = stringResource(id = R.string.drink_price, orderPrice),
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.text_size_16),
-                    color = MaterialTheme.colorScheme.onSecondary,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     style = MaterialTheme.typography.headlineSmall,
                     textLines = 1,
                 )

@@ -21,7 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val fusedLocationProviderClient: FusedLocationProviderClient,
-    private val locationManager: LocationManager,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 

@@ -25,7 +25,7 @@ open class BaseSharedPreference(
     }
 
     protected fun addString(string: String, key: String) {
-        sharedPreferences.edit().putString(string, key).apply()
+        sharedPreferences.edit().putString(key, string).apply()
     }
 
     protected fun getString(key: String): String {

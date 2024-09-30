@@ -9,8 +9,7 @@ object Constants {
     const val PROFILE_SCREEN = "profile_screen"
     const val DRINK_DETAIL_SCREEN = "drink_detail_screen"
     const val MAP_SCREEN = "map_screen"
-
-    const val DRINK_ID_KEY = "id"
+    const val MY_ORDERS_SCREEN = "my_orders_screen"
 
     const val MAIN_GRAPH = "main_graph"
     const val AUTH_GRAPH = "auth_graph"
@@ -32,6 +31,16 @@ object Constants {
     const val INGREDIENTS_KEY = "ingredients"
     const val RATING_KEY = "rating"
     const val TYPE_KEY = "type"
+
+    const val ORDER_ID_KEY = "orderId"
+    const val UID_KEY = "uid"
+    const val TIMESTAMP_KEY = "timestamp"
+    const val PHONE_NUMBER_KEY = "telephoneNumber"
+    const val IS_HOME_DELIVERY_KEY = "isHomeDeliveryOrder"
+    const val TOTAL_PRICE_KEY = "totalPrice"
+    const val NOTE_KEY = "note"
+    const val DELIVERY_DETAILS_KEY = "deliveryDetails"
+    const val DRINK_ORDERS_LIST_KEY = "drinkOrders"
 
     const val DRINK_DATABASE_NAME = "drink.db"
 
