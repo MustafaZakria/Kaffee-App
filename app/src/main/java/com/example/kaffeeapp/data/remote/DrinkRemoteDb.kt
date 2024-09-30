@@ -1,23 +1,15 @@
 package com.example.kaffeeapp.data.remote
 
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.entities.User
+import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
-import com.example.kaffeeapp.util.Constants.DESCRIPTION_KEY
 import com.example.kaffeeapp.util.Constants.DRINKS_COLLECTION
-import com.example.kaffeeapp.util.Constants.EMAIL_KEY
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
-import com.example.kaffeeapp.util.Constants.ID_KEY
-import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
-import com.example.kaffeeapp.util.Constants.INGREDIENTS_KEY
-import com.example.kaffeeapp.util.Constants.NAME_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_COLLECTION
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
-import com.example.kaffeeapp.util.Constants.PRICE_KEY
-import com.example.kaffeeapp.util.Constants.RATING_KEY
-import com.example.kaffeeapp.util.Constants.TYPE_KEY
+import com.example.kaffeeapp.util.Constants.UID_KEY
 import com.example.kaffeeapp.util.Constants.USERS_COLLECTION
 import com.example.kaffeeapp.util.Utils.toUser
 import com.example.kaffeeapp.util.model.Resource
@@ -51,34 +43,14 @@ class DrinkRemoteDb @Inject constructor(
         return try {
             val drinkList = mutableListOf<Drink>()
             val querySnap = firestore.collection(DRINKS_COLLECTION).get().await()
-
-            querySnap.forEach { document ->
-                val drinkData = document.data
-
-                val price = (drinkData[PRICE_KEY] as? Map<*, *>)?.let { priceMap ->
-                    priceMap.mapKeys { it.key as String }
-                        .mapValues { it.value as String }
-                } ?: emptyMap()
-
-                val drink = Drink(
-                    id = drinkData[ID_KEY] as? String ?: "",
-                    name = drinkData[NAME_KEY] as? String ?: "",
-                    imageUrl = drinkData[IMAGE_URL_KEY] as? String ?: "",
-                    description = drinkData[DESCRIPTION_KEY] as? String ?: "",
-                    rating = drinkData[RATING_KEY] as? String ?: "",
-                    ingredients = (drinkData[INGREDIENTS_KEY] as? List<*>)?.mapNotNull { it as? String }
-                        ?: emptyList(),
-                    price = price,
-                    type = DrinkType.fromValue(drinkData[TYPE_KEY] as? String ?: "")
-                )
-                drinkList.add(drink)
+            querySnap.documents.forEach { document ->
+                drinkList.add(Drink.getFromSnapshot(document))
             }
             Resource.Success(drinkList)
         } catch (e: Exception) {
             Resource.Failure(e)
         }
     }
-
 
     suspend fun addFavDrink(id: String): Resource<Boolean> {
         return try {
@@ -104,21 +76,12 @@ class DrinkRemoteDb @Inject constructor(
         }
     }
 
-
     suspend fun getUser(): Resource<User> {
         return try {
             val userSnapshot = currentUserId?.let {
                 firestore.collection(USERS_COLLECTION).document(it).get().await()
             }
-            val orders = (userSnapshot?.get(ORDERS_KEY) as? List<*>)?.mapNotNull { it as? String }
-            val favDrinks = (userSnapshot?.get(FAV_DRINKS_KEY) as? List<*>)?.mapNotNull { it as? String }
-            val user = User(
-                id = userSnapshot?.get(ID_KEY) as? String ?: "",
-                name = userSnapshot?.get(NAME_KEY) as? String ?: "",
-                email = userSnapshot?.get(EMAIL_KEY) as? String ?: "",
-                orders = orders ?: emptyList(),
-                favouriteDrinks = favDrinks ?: emptyList()
-            )
+            val user = User.getFromSnapshot(userSnapshot)
             Resource.Success(user)
         } catch (e: Exception) {
             Resource.Failure(e)
@@ -135,13 +98,11 @@ class DrinkRemoteDb @Inject constructor(
                 firestore.collection(USERS_COLLECTION).document(it)
                     .update(ORDERS_KEY, FieldValue.arrayUnion(order.orderId)).await()
             }
-
             Resource.Success(true)
         } catch (e: Exception) {
             Resource.Failure(e)
         }
     }
-
 
     fun signOut(): Resource<Boolean> {
         return try {
@@ -165,5 +126,21 @@ class DrinkRemoteDb @Inject constructor(
         } catch (e: Exception) {
             Resource.Failure(e)
         }
+    }
+
+    suspend fun getOrders(): OrdersResponse {
+        return try {
+            val orders: MutableList<Order> = mutableListOf()
+            val orderSnapshots = firestore.collection(ORDERS_COLLECTION)
+                .whereEqualTo(UID_KEY, currentUserId).get().await()
+
+            orderSnapshots.documents.forEach { orderSnapshot ->
+                orders.add(Order.getFromSnapshot(orderSnapshot))
+            }
+            Resource.Success(orders)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+
     }
 }

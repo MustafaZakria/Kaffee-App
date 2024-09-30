@@ -45,7 +45,8 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    navigateToMyOrdersScreen: () -> Unit
 ) {
     val userInfo = viewModel.user
     val points = viewModel.points.toString()
@@ -54,7 +55,7 @@ fun ProfileScreen(
         userInfo = userInfo,
         points = points,
         onChangeImageClick = {},
-        onMyOrderClick = {}
+        onMyOrderClick = { navigateToMyOrdersScreen.invoke() }
     )
 }
 
@@ -117,19 +118,19 @@ fun ProfileScreenContent(
                         }
                         Box(
                             modifier = Modifier
-//                                .padding(dimensionResource(id = R.dimen.padding_x_small))
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
+//                                .border(1.dp, MaterialTheme.colorScheme.outline)
                                 .align(Alignment.BottomEnd)
-                                .border(1.dp, MaterialTheme.colorScheme.outline),
+                            ,
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.camera_icon),
                                 contentDescription = "",
                                 modifier = Modifier
-//                                    .padding(dimensionResource(id = R.dimen.padding_x_small))
-                                    .size(dimensionResource(id = R.dimen.icon_size))
+                                    .size(dimensionResource(id = R.dimen.circle_size_32))
+                                    .padding(dimensionResource(id = R.dimen.padding_x_small))
                             )
                         }
                     }

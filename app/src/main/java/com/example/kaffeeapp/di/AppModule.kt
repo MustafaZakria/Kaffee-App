@@ -46,12 +46,6 @@ class AppModule {
         @ApplicationContext context: Context
     ): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
-    @Singleton
-    @Provides
-    fun provideLocationManager(
-        @ApplicationContext context: Context
-    ): LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
     @Provides
     @Singleton
     fun provideDrinkDatabase(

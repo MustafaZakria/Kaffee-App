@@ -11,9 +11,11 @@ import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.AuthRepositoryImp
 import com.example.kaffeeapp.repository.DataRepositoryImp
 import com.example.kaffeeapp.repository.MainRepositoryImp
+import com.example.kaffeeapp.repository.ProfileRepositoryImp
 import com.example.kaffeeapp.repository.interfaces.AuthRepository
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.repository.interfaces.MainRepository
+import com.example.kaffeeapp.repository.interfaces.ProfileRepository
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import dagger.Module
 import dagger.Provides
@@ -68,4 +70,10 @@ class ViewModelModule {
         orderSharedPreference: ProfileSharedPreference
     ): DataRepository =
         DataRepositoryImp(drinkDao, db, drinkSharedPreference, orderSharedPreference)
+
+    @Provides
+    fun provideProfileRepository(
+        remoteDb: DrinkRemoteDb,
+        preference: ProfileSharedPreference
+    ): ProfileRepository = ProfileRepositoryImp(remoteDb, preference)
 }

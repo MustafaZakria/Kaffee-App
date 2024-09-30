@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.User
@@ -59,6 +60,7 @@ class MainRepositoryImp @Inject constructor(
                 email = user.email,
                 imageUrl = user.imageUrl
             )
+            Log.d("name", profileSharedPreference.getUserName())
             return Resource.Success(true)
         }
         return Resource.Failure(userResponse.exception)

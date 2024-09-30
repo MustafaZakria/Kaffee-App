@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.repository.interfaces.DataRepository
-import com.example.kaffeeapp.util.Constants.DRINK_ID_KEY
+import com.example.kaffeeapp.util.Constants.ID_KEY
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +31,7 @@ class DrinkDetailsViewModel @Inject constructor(
     var addFavDrinkResponse by mutableStateOf<Resource<Boolean>?>(null)
 
     init {
-        val id = savedStateHandle.get<String>(DRINK_ID_KEY)
+        val id = savedStateHandle.get<String>(ID_KEY)
         if (id != null) {
             viewModelScope.launch(dispatcherProvider.io) {
                 _drink.value = dataRepository.getDrinkById(id)

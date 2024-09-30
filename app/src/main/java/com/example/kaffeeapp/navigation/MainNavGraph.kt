@@ -14,13 +14,15 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.DrinkDetailsScreen
 import com.example.kaffeeapp.presentation.main.favourite.FavouriteScreen
 import com.example.kaffeeapp.presentation.main.home.HomeScreen
 import com.example.kaffeeapp.presentation.main.map.MapScreen
+import com.example.kaffeeapp.presentation.main.orders.MyOrdersScreen
 import com.example.kaffeeapp.presentation.main.profile.ProfileScreen
 import com.example.kaffeeapp.util.Constants.CART_SCREEN
 import com.example.kaffeeapp.util.Constants.DRINK_DETAIL_SCREEN
-import com.example.kaffeeapp.util.Constants.DRINK_ID_KEY
 import com.example.kaffeeapp.util.Constants.FAVOURITE_SCREEN
 import com.example.kaffeeapp.util.Constants.HOME_SCREEN
+import com.example.kaffeeapp.util.Constants.ID_KEY
 import com.example.kaffeeapp.util.Constants.MAP_SCREEN
+import com.example.kaffeeapp.util.Constants.MY_ORDERS_SCREEN
 import com.example.kaffeeapp.util.Constants.PROFILE_SCREEN
 
 
@@ -37,7 +39,7 @@ fun MainNavGraph(
 //        modifier = modifier
     ) {
         composable(
-            MainScreen.HomeScreen.route
+            route = MainScreen.HomeScreen.route
         ) {
             HomeScreen(
                 logout = { logout.invoke() }
@@ -46,7 +48,7 @@ fun MainNavGraph(
             }
         }
         composable(
-            route = "${MainScreen.DrinkDetailScreen.route}/{$DRINK_ID_KEY}"
+            route = "${MainScreen.DrinkDetailScreen.route}/{$ID_KEY}"
         ) { navBackStackEntry ->
             val parentEntry = remember(navBackStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
@@ -59,37 +61,46 @@ fun MainNavGraph(
             }
         }
         composable(
-            MainScreen.FavouriteScreen.route
+            route = MainScreen.FavouriteScreen.route
         ) {
-            FavouriteScreen() { id ->
+            FavouriteScreen { id ->
                 navController.navigate("${MainScreen.DrinkDetailScreen.route}/$id")
             }
         }
         composable(
-            MainScreen.CartScreen.route
+            route = MainScreen.CartScreen.route
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
             }
             val viewModel: CartViewModel = hiltViewModel(parentEntry)
+
             CartScreen(viewModel = viewModel) {
                 navController.navigate(MainScreen.MapScreen.route)
             }
         }
         composable(
-            MainScreen.ProfileScreen.route
-        ) { backStackEntry ->
-
-            ProfileScreen()
+            route = MainScreen.ProfileScreen.route
+        ) {
+            ProfileScreen() {
+                navController.navigate(MainScreen.MyOrdersScreen.route)
+            }
         }
         composable(
-            MainScreen.MapScreen.route
+            route = MainScreen.MapScreen.route
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
             }
             val viewModel: CartViewModel = hiltViewModel(parentEntry)
             MapScreen(orderDetailsViewModel = viewModel) {
+                navController.popBackStack()
+            }
+        }
+        composable(
+            route = MainScreen.MyOrdersScreen.route
+        ) {
+            MyOrdersScreen() {
                 navController.popBackStack()
             }
         }
@@ -104,4 +115,5 @@ sealed class MainScreen(val route: String) {
     data object CartScreen : MainScreen(CART_SCREEN)
     data object ProfileScreen : MainScreen(PROFILE_SCREEN)
     data object MapScreen : MainScreen(MAP_SCREEN)
+    data object MyOrdersScreen : MainScreen(MY_ORDERS_SCREEN)
 }
