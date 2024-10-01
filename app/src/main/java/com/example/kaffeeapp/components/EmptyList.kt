@@ -3,6 +3,7 @@ package com.example.kaffeeapp.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,7 +28,8 @@ fun EmptyList(
         Icon(
             painter = painterResource(id = R.drawable.empty_icon),
             contentDescription = stringResource(id = R.string.error_img_desc),
-            tint = MaterialTheme.colorScheme.onTertiary
+            tint = MaterialTheme.colorScheme.onTertiary,
+            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_large))
         )
         CustomizedText(
             text = message,

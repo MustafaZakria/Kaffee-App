@@ -159,6 +159,7 @@ fun DrinkDetailsContent(
                 Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium)))
                 //description
                 DrinkDescriptionSection(drinkDescription = drink.description)
+                Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
             }
         }

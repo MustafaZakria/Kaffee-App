@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.repository
 
+import android.util.Log
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.kaffeeapp.data.entities.DeliveryMethod
 import com.example.kaffeeapp.data.entities.DeliveryMethod.AddressDelivery

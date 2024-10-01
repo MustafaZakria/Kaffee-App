@@ -18,6 +18,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,12 +35,13 @@ import javax.inject.Singleton
 class AppModule {
 
     @Provides
-    @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
     @Provides
-    @Singleton
     fun provideFirestoreInstance(): FirebaseFirestore = Firebase.firestore
+
+    @Provides
+    fun provideFirebaseStorage(): FirebaseStorage = Firebase.storage
 
     @Singleton
     @Provides
@@ -64,8 +67,9 @@ class AppModule {
     @Singleton
     fun provideDrinkRemoteDb(
         firestore: FirebaseFirestore,
-        firebaseAuth: FirebaseAuth
-    ) = DrinkRemoteDb(firestore, firebaseAuth)
+        firebaseAuth: FirebaseAuth,
+        firebaseStorage: FirebaseStorage
+    ) = DrinkRemoteDb(firestore, firebaseAuth, firebaseStorage)
 
 
     @Singleton
