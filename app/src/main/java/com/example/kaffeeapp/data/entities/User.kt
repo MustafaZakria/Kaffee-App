@@ -3,6 +3,7 @@ package com.example.kaffeeapp.data.entities
 import com.example.kaffeeapp.util.Constants.EMAIL_KEY
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 import com.example.kaffeeapp.util.Constants.ID_KEY
+import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
 import com.example.kaffeeapp.util.Constants.NAME_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
 import com.google.firebase.firestore.DocumentSnapshot
@@ -25,7 +26,8 @@ data class User(
                 name = userSnapshot?.get(NAME_KEY) as? String ?: "",
                 email = userSnapshot?.get(EMAIL_KEY) as? String ?: "",
                 orders = orders ?: emptyList(),
-                favouriteDrinks = favDrinks ?: emptyList()
+                favouriteDrinks = favDrinks ?: emptyList(),
+                imageUrl = userSnapshot?.get(IMAGE_URL_KEY) as? String ?: ""
             )
         }
     }

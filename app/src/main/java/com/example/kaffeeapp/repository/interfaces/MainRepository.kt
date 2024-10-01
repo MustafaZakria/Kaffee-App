@@ -13,8 +13,6 @@ interface MainRepository {
 
     fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>>
 
-    suspend fun getDrinkById(id: String): Drink
-
     suspend fun refreshUserData(): Resource<Boolean>
 
     fun signOut(): Resource<Boolean>

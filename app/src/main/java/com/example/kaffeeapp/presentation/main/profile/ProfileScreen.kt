@@ -1,8 +1,11 @@
 package com.example.kaffeeapp.presentation.main.profile
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -23,10 +28,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,25 +48,52 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.ImageLoaderWithUrl
+import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.presentation.main.profile.components.ProfileRowItem
 import com.example.kaffeeapp.presentation.main.profile.components.StatisticItem
 import com.example.kaffeeapp.presentation.main.profile.components.TopBarProfileScreen
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
+import com.example.kaffeeapp.util.Constants.FAILURE_PROFILE_PICTURE
+import com.example.kaffeeapp.util.Constants.SUCCESS_PROFILE_PICTURE
+import com.example.kaffeeapp.util.model.Resource
 
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navigateToMyOrdersScreen: () -> Unit
 ) {
-    val userInfo = viewModel.user
+    val userInfo = viewModel.user.collectAsState(initial = User())
     val points = viewModel.points.toString()
+    val uploadingImageState = viewModel.uploadingImageState
+    var userImageUrl by rememberSaveable { mutableStateOf(userInfo.value.imageUrl) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        viewModel.setUserImage(uri)
+    }
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = uploadingImageState) {
+        if (uploadingImageState is Resource.Success) {
+            userImageUrl = uploadingImageState.data.toString()
+            Toast.makeText(context, SUCCESS_PROFILE_PICTURE, Toast.LENGTH_SHORT).show()
+        } else if (uploadingImageState is Resource.Failure) {
+            Toast.makeText(context, FAILURE_PROFILE_PICTURE, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.resetImageState()
+    }
 
     ProfileScreenContent(
-        userInfo = userInfo,
+        userInfo = userInfo.value,
+        imageUrl = userImageUrl,
+        uploadingImageState = uploadingImageState,
         points = points,
-        onChangeImageClick = {},
+        onChangeImageClick = {
+            galleryLauncher.launch("image/*")
+        },
         onMyOrderClick = { navigateToMyOrdersScreen.invoke() }
     )
 }
@@ -62,6 +101,8 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenContent(
     userInfo: User,
+    imageUrl: String,
+    uploadingImageState: Resource<String>?,
     points: String,
     onChangeImageClick: () -> Unit,
     onMyOrderClick: () -> Unit
@@ -85,9 +126,11 @@ fun ProfileScreenContent(
                     end = dimensionResource(id = R.dimen.padding_medium)
                 )
         ) {
+            val scrollState = rememberScrollState()
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
             ) {
                 //profile Info
                 Row(
@@ -112,17 +155,27 @@ fun ProfileScreenContent(
                         ) {
                             ImageLoaderWithUrl(
                                 modifier = Modifier,
-                                imageUrl = userInfo.imageUrl,
+                                imageUrl = imageUrl,
                                 placeholder = R.drawable.profile_picture
                             )
+                        }
+                        if (uploadingImageState is Resource.Loading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                                    .background(color = Color.White.copy(alpha = 0.35f))
+                            ) {
+                                ProgressBar(
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
                         }
                         Box(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
-//                                .border(1.dp, MaterialTheme.colorScheme.outline)
-                                .align(Alignment.BottomEnd)
-                            ,
+                                .align(Alignment.BottomEnd),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -135,8 +188,9 @@ fun ProfileScreenContent(
                         }
                     }
                     Column(
-                        modifier = Modifier.height(dimensionResource(id = R.dimen.profile_image_size)),
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.profile_image_size)),
+                        verticalArrangement = Arrangement.Center,
                     ) {
                         CustomizedText(
                             text = userInfo.name,
@@ -211,6 +265,8 @@ fun ProfilePreview() {
                 imageUrl = ""
             ),
             "0",
+            null,
+            "",
             {},
             {}
         )

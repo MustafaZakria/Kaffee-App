@@ -1,5 +1,7 @@
 package com.example.kaffeeapp.data.remote
 
+import android.net.Uri
+import android.util.Log
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.entities.User
@@ -7,16 +9,21 @@ import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
 import com.example.kaffeeapp.util.Constants.DRINKS_COLLECTION
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
+import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_COLLECTION
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
+import com.example.kaffeeapp.util.Constants.TIMESTAMP_KEY
 import com.example.kaffeeapp.util.Constants.UID_KEY
 import com.example.kaffeeapp.util.Constants.USERS_COLLECTION
+import com.example.kaffeeapp.util.Utils.generateUniqueId
 import com.example.kaffeeapp.util.Utils.toUser
 import com.example.kaffeeapp.util.model.Resource
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,9 +33,10 @@ typealias DrinksResponse = Resource<List<Drink>>
 @Singleton
 class DrinkRemoteDb @Inject constructor(
     private val firestore: FirebaseFirestore,
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseStorage: FirebaseStorage
 ) {
-    private var currentUserId: String? = null
+    private var currentUserId: String? = firebaseAuth.currentUser?.uid
     var isUserAuthenticated = false
         private set
 
@@ -132,6 +140,7 @@ class DrinkRemoteDb @Inject constructor(
         return try {
             val orders: MutableList<Order> = mutableListOf()
             val orderSnapshots = firestore.collection(ORDERS_COLLECTION)
+                .orderBy(TIMESTAMP_KEY, Query.Direction.DESCENDING)
                 .whereEqualTo(UID_KEY, currentUserId).get().await()
 
             orderSnapshots.documents.forEach { orderSnapshot ->
@@ -141,6 +150,22 @@ class DrinkRemoteDb @Inject constructor(
         } catch (e: Exception) {
             Resource.Failure(e)
         }
+    }
 
+    suspend fun uploadUserImage(uri: Uri): Resource<String> {
+        return try {
+            val fileName = "profileImages/${currentUserId}.jpg"
+            val imageRef = firebaseStorage.reference.child(fileName)
+            imageRef.putFile(uri).await()
+            val url = imageRef.downloadUrl.await()
+
+            currentUserId?.let {
+                firestore.collection(USERS_COLLECTION).document(it).update(IMAGE_URL_KEY, url).await()
+            }
+
+            Resource.Success(url.toString())
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
     }
 }

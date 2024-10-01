@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
@@ -58,14 +60,10 @@ fun MyOrdersScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navigateBackToProfileScreen: () -> Unit
 ) {
-    val ordersResponse = viewModel.orders
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.getOrders()
-    }
+    val ordersResponse = viewModel.orders.collectAsState(initial = Resource.Loading())
 
     MyOrdersScreenContent(
-        ordersResponse = ordersResponse,
+        ordersResponse = ordersResponse.value,
         navigateBack = { navigateBackToProfileScreen.invoke() }
     )
 }
@@ -90,7 +88,7 @@ fun MyOrdersScreenContent(
                 .fillMaxSize()
                 .padding(
                     top = innerPadding.calculateTopPadding(),
-                    bottom = dimensionResource(id = R.dimen.padding_bottom_navigation),
+                    bottom = 0.dp,
                     start = dimensionResource(id = R.dimen.padding_medium),
                     end = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -282,7 +280,7 @@ fun DateAndLocationSection(date: String, location: String?) {
             painter = painterResource(id = R.drawable.calendar_icon),
             contentDescription = "",
             tint = MaterialTheme.colorScheme.onTertiary,
-            modifier = Modifier
+            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
         )
         CustomizedText(
             text = date,
@@ -302,7 +300,7 @@ fun DateAndLocationSection(date: String, location: String?) {
             painter = painterResource(id = R.drawable.location_icon),
             contentDescription = "",
             tint = MaterialTheme.colorScheme.onTertiary,
-            modifier = Modifier
+            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
         )
         CustomizedText(
             text = location.toString(),

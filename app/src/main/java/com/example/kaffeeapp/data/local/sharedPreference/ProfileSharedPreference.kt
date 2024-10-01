@@ -10,19 +10,19 @@ class ProfileSharedPreference (
     sharedPreferences: SharedPreferences
 ) : BaseSharedPreference(sharedPreferences = sharedPreferences) {
 
-    fun insertOrdersList(orders: List<String>) = insertList(orders, ORDERS_KEY)
     fun getOrdersIds() = getList(ORDERS_KEY)
     fun addOrder(id: String) = appendString(id, ORDERS_KEY)
-
 
     fun addUserInfo(
         name: String,
         email: String,
-        imageUrl: String
+        imageUrl: String,
+        orders: List<String>
     ) {
         addString(name, NAME_KEY)
         addString(email, EMAIL_KEY)
         addString(imageUrl, IMAGE_URL_KEY)
+        insertList(orders, ORDERS_KEY)
     }
 
     fun getUserName() = getString(NAME_KEY)
@@ -30,4 +30,6 @@ class ProfileSharedPreference (
     fun getUserEmail() = getString(EMAIL_KEY)
 
     fun getUserPicture() = getString(IMAGE_URL_KEY)
+
+    fun setUserPicture(url: String) = addString(url, IMAGE_URL_KEY)
 }

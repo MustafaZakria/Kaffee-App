@@ -47,20 +47,18 @@ class MainRepositoryImp @Inject constructor(
     override fun getAllDrinksBySearch(drink: String): LiveData<List<Drink>> =
         drinkDao.getDrinksBySearch("%$drink%")
 
-    override suspend fun getDrinkById(id: String): Drink = drinkDao.getDrinkById(id)
-
     override suspend fun refreshUserData(): Resource<Boolean> {
         val userResponse = drinkRemoteDb.getUser()
         if (userResponse is Resource.Success) {
             val user = userResponse.data ?: User()
             drinkSharedPreference.insertFavDrinksList(user.favouriteDrinks)
-            profileSharedPreference.insertOrdersList(user.orders)
             profileSharedPreference.addUserInfo(
                 name = user.name,
                 email = user.email,
-                imageUrl = user.imageUrl
+                imageUrl = user.imageUrl,
+                orders = user.orders
             )
-            Log.d("name", profileSharedPreference.getUserName())
+            Log.d("DATAUSER", user.toString())
             return Resource.Success(true)
         }
         return Resource.Failure(userResponse.exception)
