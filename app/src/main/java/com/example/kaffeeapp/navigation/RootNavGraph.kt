@@ -1,6 +1,7 @@
 package com.example.kaffeeapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,12 +10,14 @@ import com.example.kaffeeapp.presentation.main.MainScreen
 
 @Composable
 fun RootNavGraph(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    modifier: Modifier
 ) {
     NavHost(
         navController = navHostController,
         startDestination = Graph.MainGraph.route,
-        route = Graph.RootGraph.route
+        route = Graph.RootGraph.route,
+        modifier = Modifier
     ) {
         authNavGraph(navHostController = navHostController)
         composable(route = Graph.MainGraph.route) {

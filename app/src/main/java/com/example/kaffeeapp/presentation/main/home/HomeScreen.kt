@@ -23,7 +23,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -151,15 +150,11 @@ fun MainScreenContent(
                 navigateToDetailScreen.invoke(id)
             }
         }
-        val context = LocalContext.current
         GettingRemoteDataResponse(
-            context = context,
             signOutResponse = signOutResponse,
             userDataLoadingState = userDataLoadingState,
             onSignOutSuccess = { onSignOutSuccess.invoke() })
-
     }
-
 }
 
 

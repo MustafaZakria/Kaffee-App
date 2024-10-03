@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.presentation.main.drinkDetails
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,11 +33,8 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.components.DrinkSize
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.TopBarForDetail
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDED_TO_CART_SUCCESSFULLY
-import com.example.kaffeeapp.util.Constants.DRINK_ADDED_SUCCESSFULLY
-import com.example.kaffeeapp.util.Constants.DRINK_REMOVED_SUCCESSFULLY
-import com.example.kaffeeapp.util.Constants.FAILED_ADDING_DRINK
-import com.example.kaffeeapp.util.Constants.FAILED_REMOVING_DRINK
-import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
+import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 
 @Composable
 fun DrinkDetailsScreen(
@@ -48,8 +43,6 @@ fun DrinkDetailsScreen(
     onBackClick: () -> Unit
 ) {
     val drink = drinkDetailsViewModel.drink
-    val removeFavDrinkResponse = drinkDetailsViewModel.removeFavDrinkResponse
-    val addFavDrinkResponse = drinkDetailsViewModel.addFavDrinkResponse
 
     var drinkPrice by rememberSaveable { mutableStateOf("") }
 
@@ -86,8 +79,6 @@ fun DrinkDetailsScreen(
             cartViewModel.addDrinkToCart(drink.value, drinkSize)
             onBackClick.invoke()
         },
-        addFavDrinkResponse = addFavDrinkResponse,
-        removeFavDrinkResponse = removeFavDrinkResponse,
         isFav = isFavDrink
     )
 }
@@ -100,12 +91,9 @@ fun DrinkDetailsContent(
     drinkPrice: String,
     isFav: Boolean,
     onFavouriteClick: () -> Unit,
-    removeFavDrinkResponse: Resource<Boolean>?,
-    addFavDrinkResponse: Resource<Boolean>?,
     onAddToCartClick: () -> Unit
 ) {
     var addedToCartState by rememberSaveable { mutableStateOf(false) }
-    val context = LocalContext.current
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -160,30 +148,15 @@ fun DrinkDetailsContent(
                 //description
                 DrinkDescriptionSection(drinkDescription = drink.description)
                 Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
-
             }
         }
         LaunchedEffect(key1 = addedToCartState) {
             if (addedToCartState) {
-                Toast.makeText(
-                    context,
-                    ADDED_TO_CART_SUCCESSFULLY,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-        LaunchedEffect(key1 = removeFavDrinkResponse) {
-            if (removeFavDrinkResponse is Resource.Success) {
-                Toast.makeText(context, DRINK_REMOVED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-            } else if (removeFavDrinkResponse is Resource.Failure) {
-                Toast.makeText(context, FAILED_REMOVING_DRINK, Toast.LENGTH_SHORT).show()
-            }
-        }
-        LaunchedEffect(key1 = addFavDrinkResponse) {
-            if (addFavDrinkResponse is Resource.Success) {
-                Toast.makeText(context, DRINK_ADDED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-            } else if (addFavDrinkResponse is Resource.Failure) {
-                Toast.makeText(context, FAILED_ADDING_DRINK, Toast.LENGTH_SHORT).show()
+                SnackbarController.sendEvent(
+                    SnackbsrEvent(
+                        message = ADDED_TO_CART_SUCCESSFULLY
+                    )
+                )
             }
         }
     }
@@ -204,6 +177,6 @@ fun DrinkDetailsPreview() {
             type = DrinkType.HOT,
             rating = "3.4"
         )
-        DrinkDetailsContent(drink, {}, {}, "", false, {}, null, null, {})
+        DrinkDetailsContent(drink, {}, {}, "", false, {}, {})
     }
 }

@@ -1,7 +1,6 @@
 package com.example.kaffeeapp.presentation.main.profile
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -38,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,8 +53,6 @@ import com.example.kaffeeapp.presentation.main.profile.components.ProfileRowItem
 import com.example.kaffeeapp.presentation.main.profile.components.StatisticItem
 import com.example.kaffeeapp.presentation.main.profile.components.TopBarProfileScreen
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.util.Constants.FAILURE_PROFILE_PICTURE
-import com.example.kaffeeapp.util.Constants.SUCCESS_PROFILE_PICTURE
 import com.example.kaffeeapp.util.model.Resource
 
 @Composable
@@ -75,15 +71,10 @@ fun ProfileScreen(
         viewModel.setUserImage(uri)
     }
 
-    val context = LocalContext.current
     LaunchedEffect(key1 = uploadingImageState) {
         if (uploadingImageState is Resource.Success) {
             userImageUrl = uploadingImageState.data.toString()
-            Toast.makeText(context, SUCCESS_PROFILE_PICTURE, Toast.LENGTH_SHORT).show()
-        } else if (uploadingImageState is Resource.Failure) {
-            Toast.makeText(context, FAILURE_PROFILE_PICTURE, Toast.LENGTH_SHORT).show()
         }
-        viewModel.resetImageState()
     }
 
     ProfileScreenContent(

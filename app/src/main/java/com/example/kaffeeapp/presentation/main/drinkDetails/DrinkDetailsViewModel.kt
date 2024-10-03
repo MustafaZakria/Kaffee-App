@@ -1,18 +1,22 @@
 package com.example.kaffeeapp.presentation.main.drinkDetails
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.repository.interfaces.DataRepository
+import com.example.kaffeeapp.util.Constants.DRINK_ADDED_SUCCESSFULLY
+import com.example.kaffeeapp.util.Constants.DRINK_REMOVED_SUCCESSFULLY
+import com.example.kaffeeapp.util.Constants.FAILED_ADDING_DRINK
+import com.example.kaffeeapp.util.Constants.FAILED_REMOVING_DRINK
 import com.example.kaffeeapp.util.Constants.ID_KEY
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
+import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,8 +31,6 @@ class DrinkDetailsViewModel @Inject constructor(
     private var _drink = mutableStateOf(Drink())
     val drink: State<Drink> = _drink
 
-    var removeFavDrinkResponse by mutableStateOf<Resource<Boolean>?>(null)
-    var addFavDrinkResponse by mutableStateOf<Resource<Boolean>?>(null)
 
     init {
         val id = savedStateHandle.get<String>(ID_KEY)
@@ -46,10 +48,36 @@ class DrinkDetailsViewModel @Inject constructor(
     fun isDrinkFav() = dataRepository.isDrinkFav(_drink.value.id)
 
     fun addDrinkToFav() = viewModelScope.launch(dispatcherProvider.io) {
-        addFavDrinkResponse = dataRepository.addDrinkToFav(_drink.value.id)
+        val response = dataRepository.addDrinkToFav(_drink.value.id)
+        if (response is Resource.Success) {
+            SnackbarController.sendEvent(
+                SnackbsrEvent(
+                    message = DRINK_ADDED_SUCCESSFULLY
+                )
+            )
+        } else if (response is Resource.Failure) {
+            SnackbarController.sendEvent(
+                SnackbsrEvent(
+                    message = FAILED_ADDING_DRINK
+                )
+            )
+        }
     }
 
     fun removeDrinkFromFav() = viewModelScope.launch(dispatcherProvider.io) {
-        removeFavDrinkResponse = dataRepository.removeDrinkFromFav(_drink.value.id)
+        val response = dataRepository.removeDrinkFromFav(_drink.value.id)
+        if (response is Resource.Success) {
+            SnackbarController.sendEvent(
+                SnackbsrEvent(
+                    message = DRINK_REMOVED_SUCCESSFULLY
+                )
+            )
+        } else if (response is Resource.Failure) {
+            SnackbarController.sendEvent(
+                SnackbsrEvent(
+                    message = FAILED_REMOVING_DRINK
+                )
+            )
+        }
     }
 }
