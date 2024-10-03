@@ -1,7 +1,6 @@
 package com.example.kaffeeapp.presentation.auth.sign_in
 
 import android.app.Activity.RESULT_OK
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -20,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,8 +40,12 @@ import com.example.kaffeeapp.presentation.auth.sign_in.components.GradientBackgr
 import com.example.kaffeeapp.presentation.auth.sign_in.components.RequestSignIn
 import com.example.kaffeeapp.presentation.auth.sign_in.components.SignInWithGoogle
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
+import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.Constants.SIGNED_IN_SUCCESSFULLY
 import com.example.kaffeeapp.util.Fonts.sora
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
+import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
@@ -149,21 +153,31 @@ fun SignInScreen(
         ProgressBar(modifier = Modifier.fillMaxSize())
     }
 
-
+    val scope = rememberCoroutineScope()
 
     SignInWithGoogle(
         signInState = signInState,
         onSuccess = {
-            Toast.makeText(context, SIGNED_IN_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
+            scope.launch {
+                SnackbarController.sendEvent(
+                    SnackbsrEvent(
+                        message = SIGNED_IN_SUCCESSFULLY
+                    )
+                )
+            }
             navigateToMainScreen.invoke()
         },
         onError = { exception ->
-            Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+            scope.launch {
+                SnackbarController.sendEvent(
+                    SnackbsrEvent(
+                        message = exception.message ?: NETWORK_ERROR
+                    )
+                )
+            }
         }) {
         ProgressBar(modifier = Modifier.fillMaxSize())
     }
-
-
 }
 
 
@@ -171,6 +185,6 @@ fun SignInScreen(
 @Composable
 fun GreetingPreview() {
     KaffeeAppTheme {
-        SignInScreen() {}
+        SignInScreen {}
     }
 }

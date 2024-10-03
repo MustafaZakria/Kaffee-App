@@ -1,7 +1,5 @@
 package com.example.kaffeeapp.presentation.main.cart
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,11 +56,11 @@ import com.example.kaffeeapp.presentation.main.cart.components.RoundedButtonWith
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
-import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
-import com.example.kaffeeapp.util.Constants.ORDER_SUCCESS
 import com.example.kaffeeapp.util.model.CartDetails
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
+import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 
 @Composable
 fun CartScreen(
@@ -97,7 +94,6 @@ fun CartScreen(
         navigateToMapScreen = { navigateToMapScreen.invoke() },
         onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
         onOrderClick = { viewModel.submitOrder() },
-        resetOrderState = { viewModel.resetOrderResponseState() }
     )
 }
 
@@ -114,7 +110,6 @@ fun CartScreenContent(
     cartDetails: CartDetails,
     orderResultState: Resource<Boolean>?,
     onOrderClick: () -> Unit,
-    resetOrderState: () -> Unit
 ) {
 
     Scaffold(
@@ -221,18 +216,14 @@ fun CartScreenContent(
     }
     OnResultState(
         orderResult = orderResultState,
-        context = LocalContext.current,
         isAddressNull = cartDetails.isAddressNull,
-        resetOrderState = { resetOrderState.invoke() }
     )
 }
 
 @Composable
 fun OnResultState(
     orderResult: Resource<Boolean>?,
-    context: Context,
     isAddressNull: Boolean?,
-    resetOrderState: () -> Unit
 ) {
     if (orderResult is Resource.Loading) {
         Box(
@@ -245,24 +236,13 @@ fun OnResultState(
             )
         }
     }
-    LaunchedEffect(key1 = orderResult) {
-        when (orderResult) {
-            is Resource.Success -> {
-                Toast.makeText(context, ORDER_SUCCESS, Toast.LENGTH_SHORT).show()
-                resetOrderState.invoke()
-            }
-
-            is Resource.Failure -> {
-                Toast.makeText(context, NETWORK_ERROR, Toast.LENGTH_SHORT).show()
-                resetOrderState.invoke()
-            }
-
-            else -> {}
-        }
-    }
     LaunchedEffect(key1 = isAddressNull) {
         if (isAddressNull?.not() == true) {
-            Toast.makeText(context, ADDRESS_ADDED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
+            SnackbarController.sendEvent(
+                SnackbsrEvent(
+                    message = ADDRESS_ADDED_SUCCESSFULLY
+                )
+            )
         }
     }
 }
@@ -618,7 +598,6 @@ fun CartScreenPreview() {
             {},
             CartDetails(),
             null,
-            {},
             {}
         )
     }

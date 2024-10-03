@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.presentation.main.orders
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +52,8 @@ import com.example.kaffeeapp.util.Constants.ADDRESS
 import com.example.kaffeeapp.util.Constants.BRANCH_ADDRESS
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.model.Resource
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
+import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 
 @Composable
 fun MyOrdersScreen(
@@ -109,7 +109,6 @@ fun MyOrdersScreenContent(
                     )
                 }
             }
-            val context = LocalContext.current
             if (ordersResponse is Resource.Loading) {
                 ProgressBar(
                     modifier = Modifier.fillMaxSize()
@@ -119,7 +118,11 @@ fun MyOrdersScreenContent(
             }
             LaunchedEffect(key1 = ordersResponse) {
                 if (ordersResponse is Resource.Failure) {
-                    Toast.makeText(context, NETWORK_ERROR, Toast.LENGTH_SHORT).show()
+                    SnackbarController.sendEvent(
+                        SnackbsrEvent(
+                            message = NETWORK_ERROR
+                        )
+                    )
                 }
             }
         }
@@ -155,8 +158,9 @@ fun MyOrderCard(
             order.drinkOrders.forEach { drinkOrder ->
                 SingleDrinkOrderCard(order = drinkOrder)
             }
-            HorizontalDivider(modifier = Modifier
-                .padding(vertical = dimensionResource(id = R.dimen.padding_x_small))
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_x_small))
             )
             TotalPriceSection(
                 totalPrice = order.totalPrice
@@ -256,7 +260,10 @@ fun SingleDrinkOrderCard(order: DrinkOrder) {
                     .align(Alignment.CenterVertically)
             )
             CustomizedText(
-                text = stringResource(id = R.string.drink_price, (order.price.toDouble() * order.quantity)),
+                text = stringResource(
+                    id = R.string.drink_price,
+                    (order.price.toDouble() * order.quantity)
+                ),
                 fontSize = dimensionResource(id = R.dimen.text_size_medium),
                 color = MaterialTheme.colorScheme.onTertiary,
                 modifier = Modifier

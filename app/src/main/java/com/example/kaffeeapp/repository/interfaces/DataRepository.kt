@@ -21,6 +21,7 @@ interface DataRepository {
     suspend fun removeDrinkFromFav(id: String): Resource<Boolean>
 
     suspend fun getFavDrinks(): Flow<FavDrinksResult>
+
     suspend fun addOrder(
         drinkOrders: SnapshotStateList<DrinkOrder>,
         phoneNumber: String,
