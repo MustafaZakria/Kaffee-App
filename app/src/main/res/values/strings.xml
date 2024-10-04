@@ -34,12 +34,12 @@
     <string name="remove">Remove</string>
     <string name="delivery">Delivery</string>
     <string name="pick_up">Pick Up</string>
-    <string name="delivery_address">Delivery Address</string>
+    <string name="home_address">Home Address</string>
     <string name="add_address">Add Address</string>
     <string name="add_your_address">Add your Address..</string>
     <string name="add_note">Add Note</string>
-    <string name="pick_up_branch">Pick Up at Branch</string>
-    <string name="pick_up_nearby_branch">Pick Up a Nearby Branch</string>
+    <string name="pick_up_branch">Pick Up at</string>
+    <string name="select_nearby_branch">Select a Nearby Branch</string>
     <string name="no_orders">No Orders!</string>
     <string name="phone_hint">Telephone Number</string>
     <string name="promo_hint">Promo Code</string>

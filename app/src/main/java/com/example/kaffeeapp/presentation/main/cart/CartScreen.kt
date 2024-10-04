@@ -47,16 +47,17 @@ import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.components.TopBarTitle
-import com.example.kaffeeapp.data.entities.DeliveryMethod
+import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.cart.components.CartBottomBar
 import com.example.kaffeeapp.presentation.main.cart.components.OrderCard
 import com.example.kaffeeapp.presentation.main.cart.components.PaymentSummarySection
 import com.example.kaffeeapp.presentation.main.cart.components.RoundedButtonWithIcon
+import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
+import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
-import com.example.kaffeeapp.util.model.CartDetails
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
@@ -67,21 +68,20 @@ fun CartScreen(
     viewModel: CartViewModel,
     navigateToMapScreen: () -> Unit
 ) {
-    val drinkOrders = viewModel.drinkOrders
     val orderCost = viewModel.orderCost
-    val cartDetails = viewModel.cartUiDetails
-    val orderResultState = viewModel.orderResult
+    val cartDetails = viewModel.cartDetails
+    val orderResultState = viewModel.orderResponse
+    val inputsHandler = viewModel.cartInputsHandler
 
-    if (drinkOrders.isEmpty()) {
+    if (cartDetails.drinkOrders.isEmpty()) {
         viewModel.removeBadgeOnCart()
     }
 
     CartScreenContent(
-        orders = drinkOrders,
         orderCost = orderCost,
         cartDetails = cartDetails,
         orderResultState = orderResultState,
-
+        inputsHandler = inputsHandler,
         onDeleteOrderClick = { index -> viewModel.removeDrinkFromCart(index) },
         onChangeQuantityClick = { index, newValue ->
             viewModel.setDrinkOrderQuantity(
@@ -99,7 +99,6 @@ fun CartScreen(
 
 @Composable
 fun CartScreenContent(
-    orders: List<DrinkOrder>,
     onDeleteOrderClick: (Int) -> Unit,
     onChangeQuantityClick: (Int, Int) -> Unit,
     onApplyPromoClick: (String) -> Unit,
@@ -108,6 +107,7 @@ fun CartScreenContent(
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
     cartDetails: CartDetails,
+    inputsHandler: CartInputsHandler,
     orderResultState: Resource<Boolean>?,
     onOrderClick: () -> Unit,
 ) {
@@ -124,7 +124,7 @@ fun CartScreenContent(
                     bottom = dimensionResource(id = R.dimen.padding_bottom_navigation),
                 )
         ) {
-            if (orders.isNotEmpty()) {
+            if (cartDetails.drinkOrders.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -162,14 +162,15 @@ fun CartScreenContent(
                             BeforeOrderList(
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
                                 onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
-                                cartDetails = cartDetails
+                                cartDetails = cartDetails,
+                                errorHandler = inputsHandler
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                             HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
                         }
-                        itemsIndexed(orders) { index, order ->
+                        itemsIndexed(cartDetails.drinkOrders) { index, order ->
                             OrderCard(
                                 order = order,
                                 orderPrice = (order.price.toDouble() * order.quantity).toString(),
@@ -216,14 +217,14 @@ fun CartScreenContent(
     }
     OnResultState(
         orderResult = orderResultState,
-        isAddressNull = cartDetails.isAddressNull,
+        deliveryDetail = cartDetails.deliveryValue,
     )
 }
 
 @Composable
 fun OnResultState(
     orderResult: Resource<Boolean>?,
-    isAddressNull: Boolean?,
+    deliveryDetail: DeliveryType?,
 ) {
     if (orderResult is Resource.Loading) {
         Box(
@@ -236,8 +237,8 @@ fun OnResultState(
             )
         }
     }
-    LaunchedEffect(key1 = isAddressNull) {
-        if (isAddressNull?.not() == true) {
+    LaunchedEffect(key1 = deliveryDetail) {
+        if (deliveryDetail != null) {
             SnackbarController.sendEvent(
                 SnackbsrEvent(
                     message = ADDRESS_ADDED_SUCCESSFULLY
@@ -252,14 +253,15 @@ fun OnResultState(
 fun BeforeOrderList(
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    cartDetails: CartDetails
+    cartDetails: CartDetails,
+    errorHandler: CartInputsHandler
 ) {
     //delivery content
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         CustomizedText(
-            text = if (cartDetails.isDeliveryEnabled) stringResource(id = R.string.delivery_address) else stringResource(
+            text = if (cartDetails.isDeliveryEnabled) stringResource(id = R.string.home_address) else stringResource(
                 id = R.string.pick_up_branch
             ),
             fontSize = dimensionResource(id = R.dimen.text_size_16),
@@ -270,28 +272,28 @@ fun BeforeOrderList(
 
         if (cartDetails.isDeliveryEnabled) {
             var address = ""
-            if (cartDetails.deliveryMethod != null) {
+            if (cartDetails.deliveryValue != null) {
                 address =
-                    (cartDetails.deliveryMethod as? DeliveryMethod.AddressDelivery)?.address ?: ""
+                    (cartDetails.deliveryValue as? DeliveryType.HomeDelivery)?.address ?: ""
             }
             DeliverySection(
                 address = address,
                 onEditAddressClick = {
                     navigateToMapScreen.invoke()
                 },
-                isAddressNull = cartDetails.isAddressNull,
+                addressErrorValue = errorHandler.addressErrorValue,
                 onAddNoteClick = {}
             )
         } else {
             var branchName = ""
-            if (cartDetails.deliveryMethod != null) {
+            if (cartDetails.deliveryValue != null) {
                 branchName =
-                    (cartDetails.deliveryMethod as? DeliveryMethod.BranchDelivery)?.branchAddress
+                    (cartDetails.deliveryValue as? DeliveryType.BranchDelivery)?.branchAddress
                         ?: ""
             }
             PickUpSection(
                 branch = branchName,
-                isAddressNull = cartDetails.isAddressNull,
+                addressErrorValue = errorHandler.addressErrorValue,
                 onClick = {}
             )
         }
@@ -302,7 +304,7 @@ fun BeforeOrderList(
             onPhoneValueChange = { value ->
                 onPhoneValueChange.invoke(value)
             },
-            isNumberValid = cartDetails.isPhoneNumberValid,
+            phoneErrorValue = errorHandler.phoneErrorValue,
             phoneNumber = cartDetails.phoneNumberValue
         )
     }
@@ -391,65 +393,86 @@ fun SelectDeliverMethod(
 @Composable
 fun PickUpSection(
     branch: String,
-    isAddressNull: Boolean?,
+    addressErrorValue: String,
     onClick: () -> Unit
 ) {
-    RoundedButtonWithIcon(
-        backgroundColor = MaterialTheme.colorScheme.tertiary,
-        borderStroke = BorderStroke(
-            1.dp,
-            if (isAddressNull == true) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
-        ),
-        leadingIconId = R.drawable.edit_icon,
-        leadingIconDesc = "edit",
-        trailingIconId = R.drawable.arrow_right_icon,
-        trailingIconDesc = "arrow right",
-        color = MaterialTheme.colorScheme.primary,
-        text = if (branch == "") stringResource(id = R.string.pick_up_nearby_branch) else branch
-    ) {
-        onClick.invoke()
-    }
-}
-
-@Composable
-fun DeliverySection(
-    address: String,
-    isAddressNull: Boolean?,
-    onEditAddressClick: () -> Unit,
-    onAddNoteClick: () -> Unit
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Column {
         RoundedButtonWithIcon(
-            modifier = Modifier.weight(1f),
             backgroundColor = MaterialTheme.colorScheme.tertiary,
+            borderStroke = BorderStroke(
+                1.dp,
+                if (addressErrorValue.isNotBlank()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
+            ),
             leadingIconId = R.drawable.edit_icon,
             leadingIconDesc = "edit",
             trailingIconId = R.drawable.arrow_right_icon,
             trailingIconDesc = "arrow right",
             color = MaterialTheme.colorScheme.primary,
-            text = if (address == "") stringResource(id = R.string.add_address) else address,
-            borderStroke = BorderStroke(
-                1.dp,
-                if (isAddressNull == true) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
-            )
+            text = if (branch == "") stringResource(id = R.string.select_nearby_branch) else branch
         ) {
-            onEditAddressClick.invoke()
+            onClick.invoke()
         }
-        RoundedButtonWithIcon(
-            backgroundColor = MaterialTheme.colorScheme.tertiary,
-            leadingIconId = R.drawable.document_icon,
-            leadingIconDesc = "add",
-            color = MaterialTheme.colorScheme.primary,
-            text = stringResource(id = R.string.add_note),
-            borderStroke = BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.outline
+        if(addressErrorValue.isNotBlank()) {
+            CustomizedText(
+                text = addressErrorValue,
+                fontSize = dimensionResource(id = R.dimen.text_size_small),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             )
+        }
+    }
+
+}
+
+@Composable
+fun DeliverySection(
+    address: String,
+    addressErrorValue: String,
+    onEditAddressClick: () -> Unit,
+    onAddNoteClick: () -> Unit
+) {
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            onAddNoteClick.invoke()
+            RoundedButtonWithIcon(
+                modifier = Modifier.weight(1f),
+                backgroundColor = MaterialTheme.colorScheme.tertiary,
+                leadingIconId = R.drawable.edit_icon,
+                leadingIconDesc = "edit",
+                trailingIconId = R.drawable.arrow_right_icon,
+                trailingIconDesc = "arrow right",
+                color = MaterialTheme.colorScheme.primary,
+                text = if (address == "") stringResource(id = R.string.add_address) else address,
+                borderStroke = BorderStroke(
+                    1.dp,
+                    if (addressErrorValue.isNotBlank()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
+                )
+            ) {
+                onEditAddressClick.invoke()
+            }
+            RoundedButtonWithIcon(
+                backgroundColor = MaterialTheme.colorScheme.tertiary,
+                leadingIconId = R.drawable.document_icon,
+                leadingIconDesc = "add",
+                color = MaterialTheme.colorScheme.primary,
+                text = stringResource(id = R.string.add_note),
+                borderStroke = BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline
+                )
+            ) {
+                onAddNoteClick.invoke()
+            }
+        }
+        if(addressErrorValue.isNotBlank()) {
+            CustomizedText(
+                text = addressErrorValue,
+                fontSize = dimensionResource(id = R.dimen.text_size_small),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            )
         }
     }
 }
@@ -458,52 +481,63 @@ fun DeliverySection(
 @Composable
 fun PhoneNumberContainer(
     onPhoneValueChange: (String) -> Unit,
-    isNumberValid: Boolean?,
+    phoneErrorValue: String,
     phoneNumber: String
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
-            .background(MaterialTheme.colorScheme.tertiary),
-    ) {
-        TextField(
-            value = phoneNumber,
-            onValueChange = { value ->
-                onPhoneValueChange.invoke(value)
-            },
-            isError = (isNumberValid?.not() == true),
-            singleLine = true,
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-            placeholder = {
-                CustomizedText(
-                    text = stringResource(id = R.string.phone_hint),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = dimensionResource(id = R.dimen.text_size_medium)
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Phone
-            ),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.phone_icon),
-                    contentDescription = "Phone",
-                    tint = MaterialTheme.colorScheme.onTertiary,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-                )
-            },
-            colors = TextFieldDefaults.colors().copy(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onTertiary
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
+                .background(MaterialTheme.colorScheme.tertiary),
+        ) {
+            TextField(
+                value = phoneNumber,
+                onValueChange = { value ->
+                    onPhoneValueChange.invoke(value)
+                },
+                isError = (phoneErrorValue.isNotBlank()),
+                singleLine = true,
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+                placeholder = {
+                    CustomizedText(
+                        text = stringResource(id = R.string.phone_hint),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = dimensionResource(id = R.dimen.text_size_medium)
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Phone
+                ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.phone_icon),
+                        contentDescription = "Phone",
+                        tint = MaterialTheme.colorScheme.onTertiary,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
+                    )
+                },
+                colors = TextFieldDefaults.colors().copy(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    errorContainerColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onTertiary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if(phoneErrorValue.isNotBlank()) {
+            CustomizedText(
+                text = phoneErrorValue,
+                fontSize = dimensionResource(id = R.dimen.text_size_small),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            )
+        }
     }
+
 }
 
 
@@ -572,7 +606,7 @@ fun PromoCodeContainer(
 @Composable
 @Preview(showBackground = true)
 fun CartScreenPreview() {
-    val orders = listOf(
+    val orders = mutableListOf(
         DrinkOrder(
             name = "Americano",
             id = "1",
@@ -586,9 +620,9 @@ fun CartScreenPreview() {
             price = "35.0"
         )
     )
+    val cartDetails = CartDetails(drinkOrders = orders)
     KaffeeAppTheme {
         CartScreenContent(
-            orders,
             {},
             { _, _ -> },
             {},
@@ -596,7 +630,8 @@ fun CartScreenPreview() {
             {},
             {},
             {},
-            CartDetails(),
+            cartDetails,
+            CartInputsHandler(),
             null,
             {}
         )

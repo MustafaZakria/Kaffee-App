@@ -1,23 +1,24 @@
 package com.example.kaffeeapp.presentation.main.cart
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kaffeeapp.data.entities.DeliveryMethod
+import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.navigation.MainScreen
 import com.example.kaffeeapp.navigation.model.bottomNavItems
+import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
+import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.repository.interfaces.DataRepository
-import com.example.kaffeeapp.util.Constants.DRINK_REMOVED_SUCCESSFULLY
 import com.example.kaffeeapp.util.Constants.FAILED_REMOVING_DRINK
 import com.example.kaffeeapp.util.Constants.ORDER_SUCCESS
 import com.example.kaffeeapp.util.DispatcherProvider
-import com.example.kaffeeapp.util.model.CartDetails
+import com.example.kaffeeapp.util.Utils.validateDeliveryDetail
+import com.example.kaffeeapp.util.Utils.validatePhoneNumber
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
@@ -32,26 +33,21 @@ class CartViewModel @Inject constructor(
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
-    val drinkOrders = mutableStateListOf<DrinkOrder>()
+    var cartDetails by mutableStateOf(CartDetails())
 
-    private var promoCodeState by mutableStateOf("")
-
-    var cartUiDetails by mutableStateOf(CartDetails())
+    var cartInputsHandler by mutableStateOf(CartInputsHandler())
 
     var orderCost by mutableStateOf(OrderCost())
 
-    var orderResult by mutableStateOf<Resource<Boolean>?>(null)
+    var orderResponse by mutableStateOf<Resource<Boolean>?>(null)
 
     fun submitOrder() {
         if (isOrderDetailsValid()) {
-            orderResult = Resource.Loading()
+            orderResponse = Resource.Loading()
             viewModelScope.launch(dispatcherProvider.io) {
-                orderResult = dataRepository.addOrder(
-                    drinkOrders = drinkOrders,
-                    phoneNumber = cartUiDetails.phoneNumberValue,
+                orderResponse = dataRepository.addOrder(
+                    cartDetails = cartDetails,
                     totalPrice = orderCost.getTotalCost(),
-                    isHomeDelivery = cartUiDetails.isDeliveryEnabled,
-                    deliveryDetail = cartUiDetails.deliveryMethod
                 )
                 onOrderResult()
             }
@@ -60,14 +56,14 @@ class CartViewModel @Inject constructor(
 
     private fun onOrderResult() {
         viewModelScope.launch {
-            if (orderResult is Resource.Success) {
-                drinkOrders.clear()
+            if (orderResponse is Resource.Success) {
+                cartDetails = cartDetails.copy(drinkOrders = mutableListOf())
                 SnackbarController.sendEvent(
                     SnackbsrEvent(
                         message = ORDER_SUCCESS
                     )
                 )
-            } else if (orderResult is Resource.Failure) {
+            } else if (orderResponse is Resource.Failure) {
                 SnackbarController.sendEvent(
                     SnackbsrEvent(
                         message = FAILED_REMOVING_DRINK
@@ -78,71 +74,52 @@ class CartViewModel @Inject constructor(
     }
 
     private fun isOrderDetailsValid(): Boolean {
-        val isDeliverMethodValid = cartUiDetails.deliveryMethod != null
-        val isPhoneNumberValid = cartUiDetails.phoneNumberValue.isNotBlank() &&
-                cartUiDetails.phoneNumberValue.length > 10
-
-        cartUiDetails = cartUiDetails.copy(
-            isPhoneNumberValid = isPhoneNumberValid,
-            isAddressNull = !isDeliverMethodValid
+        cartInputsHandler = cartInputsHandler.copy(
+            addressErrorValue = validateDeliveryDetail(cartDetails.deliveryValue),
+            phoneErrorValue = validatePhoneNumber(cartDetails.phoneNumberValue)
         )
-        return isDeliverMethodValid && isPhoneNumberValid
+        return cartInputsHandler.isValuesValid()
     }
 
     fun onPhoneNumberValueChange(newValue: String) {
-        cartUiDetails = cartUiDetails.copy(phoneNumberValue = newValue)
+        cartDetails = cartDetails.copy(phoneNumberValue = newValue)
     }
 
     fun setDeliveryEnabledValue(isEnabled: Boolean) {
-        cartUiDetails = cartUiDetails.copy(isDeliveryEnabled = isEnabled)
+        cartDetails = cartDetails.copy(isDeliveryEnabled = isEnabled)
     }
 
-    fun setDeliveryMethod(address: DeliveryMethod) {
-        cartUiDetails = cartUiDetails.copy(deliveryMethod = address, isAddressNull = false)
+    fun setDeliveryMethod(address: DeliveryType) {
+        cartDetails = cartDetails.copy(deliveryValue = address)
     }
 
     fun removeDrinkFromCart(orderIndex: Int) {
-        drinkOrders.removeAt(orderIndex)
+        cartDetails.removeOrder(orderIndex)
         calculateItemsPrice()
 
-        if (drinkOrders.isEmpty()) {
+        if (cartDetails.drinkOrders.isEmpty()) {
             clearStateData()
         }
     }
 
     fun setDrinkOrderQuantity(index: Int, quantity: Int) {
-        val newDrinkOrder = drinkOrders[index].copy(
-            quantity = quantity
-        )
-        drinkOrders[index] = newDrinkOrder
+        cartDetails.setOrderQuantity(index, quantity)
         calculateItemsPrice()
     }
 
     private fun calculateItemsPrice() {
-        val total = drinkOrders.sumOf { it.quantity * (it.price.toDoubleOrNull() ?: 0.0) }
+        val total = cartDetails.calculateOrdersCost()
         orderCost = orderCost.copy(
-            itemsPrice = total.toString()
+            itemsPrice = total
         )
     }
 
     fun setPromoCode(value: String) {
-        promoCodeState = value
+        cartDetails = cartDetails.copy(promoCodeValue = value)
     }
 
     fun addDrinkToCart(drink: Drink, size: DrinkSize) {
-        drink.apply {
-            val price = price[size.key] ?: "0"
-            drinkOrders.add(
-                DrinkOrder(
-                    name = name,
-                    id = id,
-                    size = size.shortened,
-                    price = price,
-                    imageUrl = imageUrl,
-                    quantity = 1
-                )
-            )
-        }
+        cartDetails.addOrder(drink, size)
         showBadgeOnCart()
         calculateItemsPrice()
     }
@@ -156,6 +133,6 @@ class CartViewModel @Inject constructor(
     }
 
     private fun clearStateData() {
-        cartUiDetails = cartUiDetails.copy(isAddressNull = null, isPhoneNumberValid = null)
+        cartInputsHandler = cartInputsHandler.copy(phoneErrorValue = "", addressErrorValue = "")
     }
 }
