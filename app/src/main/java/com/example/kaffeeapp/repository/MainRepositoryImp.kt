@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.data.local.DrinkDao
+import com.example.kaffeeapp.data.local.sharedPreference.MainSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.MainRepository
@@ -16,7 +17,8 @@ import javax.inject.Singleton
 class MainRepositoryImp @Inject constructor(
     private val drinkDao: DrinkDao,
     private val drinkRemoteDb: DrinkRemoteDb,
-    private val userSharedPreference: UserSharedPreference
+    private val userSharedPreference: UserSharedPreference,
+    private val mainSharedPreference: MainSharedPreference
 ) : MainRepository {
 
     override suspend fun refreshDrinks(): Resource<Boolean> {
@@ -58,6 +60,15 @@ class MainRepositoryImp @Inject constructor(
             return Resource.Success(true)
         }
         return Resource.Failure(userResponse.exception)
+    }
+
+    override suspend fun refreshMainData(): Resource<Boolean> {
+        val promoResponse = drinkRemoteDb.getPromoCodes()
+        if (promoResponse is Resource.Success) {
+            mainSharedPreference.insertPromoCodes(promoResponse.data ?: mapOf())
+            return Resource.Success(true)
+        }
+        return Resource.Failure(promoResponse.exception)
     }
 
     override fun signOut(): Resource<Boolean> = drinkRemoteDb.signOut()

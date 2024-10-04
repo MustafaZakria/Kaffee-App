@@ -5,6 +5,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.local.DrinkDao
+import com.example.kaffeeapp.data.local.sharedPreference.MainSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.AuthRepositoryImp
@@ -49,9 +50,10 @@ class ViewModelModule {
     fun provideMainRepository(
         drinkDao: DrinkDao,
         db: DrinkRemoteDb,
-        userSharedPreference: UserSharedPreference
+        userSharedPreference: UserSharedPreference,
+        mainSharedPreference: MainSharedPreference
     ): MainRepository =
-        MainRepositoryImp(drinkDao, db, userSharedPreference)
+        MainRepositoryImp(drinkDao, db, userSharedPreference, mainSharedPreference)
 
     @Provides
     fun provideAuthRepo(
@@ -64,9 +66,10 @@ class ViewModelModule {
     fun provideDataRepository(
         drinkDao: DrinkDao,
         db: DrinkRemoteDb,
-        userSharedPreference: UserSharedPreference
+        userSharedPreference: UserSharedPreference,
+        mainSharedPreference: MainSharedPreference
     ): DataRepository =
-        DataRepositoryImp(drinkDao, db, userSharedPreference)
+        DataRepositoryImp(drinkDao, db, userSharedPreference, mainSharedPreference)
 
     @Provides
     fun provideProfileRepository(

@@ -15,16 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.Order
-import com.example.kaffeeapp.util.Constants.ADDRESS
-import com.example.kaffeeapp.util.Constants.BRANCH_ADDRESS
+import com.example.kaffeeapp.util.Constants.ADDRESS_KEY
+import com.example.kaffeeapp.util.Constants.NAME_KEY
 
 @Composable
 fun MyOrderCard(
     order: Order
 ) {
     val location = if (order.isHomeDeliveryOrder)
-        order.deliveryDetails[ADDRESS]
-    else order.deliveryDetails[BRANCH_ADDRESS]
+        order.deliveryDetails[ADDRESS_KEY]
+    else order.deliveryDetails[NAME_KEY]
     val date = order.getFormattedDate()
     Card(
         modifier = Modifier.fillMaxWidth(),

@@ -29,7 +29,7 @@ import com.example.kaffeeapp.presentation.main.orders.components.TopBarMyOrdersS
 import com.example.kaffeeapp.presentation.main.profile.ProfileViewModel
 import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.util.Constants.ADDRESS
+import com.example.kaffeeapp.util.Constants.ADDRESS_KEY
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
@@ -131,7 +131,7 @@ fun MyOrdersScreenPreview() {
         isHomeDeliveryOrder = true,
         drinkOrders = orders,
         totalPrice = "101.0",
-        deliveryDetails = mapOf(ADDRESS to "23 Dokki St.")
+        deliveryDetails = mapOf(ADDRESS_KEY to "23 Dokki St.")
     )
     KaffeeAppTheme {
         MyOrdersScreenContent(

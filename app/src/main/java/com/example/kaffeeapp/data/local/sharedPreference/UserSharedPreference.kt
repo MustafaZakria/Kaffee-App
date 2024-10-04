@@ -46,6 +46,4 @@ class UserSharedPreference (
     fun getFavDrinksIds() = getList(FAV_DRINKS_KEY)
 
     fun addDrinkToFav(id: String) = appendString(id, FAV_DRINKS_KEY)
-
-    fun isDrinkFav(id: String): Boolean = getFavDrinksIds().contains(id)
 }

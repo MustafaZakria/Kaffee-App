@@ -119,6 +119,7 @@ fun ProfileScreenContent(
                     userInfo = userInfo
                 )
                 Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)))
+
                 SettingItems(
                     onMyOrderClick = { onMyOrderClick.invoke() }
                 )
