@@ -53,6 +53,10 @@
     <string name="order">Order</string>
     <string name="orders">Orders</string>
     <string name="points">Points</string>
+    <string name="save">Save</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="leave_note">Leave a Note..</string>
+    <string name="note">Note</string>
     <string name="my_orders">My Orders</string>
     <string name="about_us">About Us</string>
     <string name="privacy_policy">Privacy Policy</string>
