@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.DrinkSize
 import com.example.kaffeeapp.navigation.MainScreen
 import com.example.kaffeeapp.navigation.model.bottomNavItems
@@ -116,6 +115,10 @@ class CartViewModel @Inject constructor(
 
     fun setPromoCode(value: String) {
         cartDetails = cartDetails.copy(promoCodeValue = value)
+    }
+
+    fun setNoteValue(value: String) {
+        cartDetails = cartDetails.copy(note = value)
     }
 
     fun addDrinkToCart(drink: Drink, size: DrinkSize) {

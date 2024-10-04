@@ -1,9 +1,6 @@
 package com.example.kaffeeapp.repository
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
@@ -78,10 +75,10 @@ class DataRepositoryImp @Inject constructor(
         return Resource.Failure(response.exception)
     }
 
-    override suspend fun addOrderToDatabase(orderId: String) = profileSharedPreference.addOrder(orderId)
+    override suspend fun addOrderToDatabase(orderId: String) =
+        profileSharedPreference.addOrder(orderId)
 
     override suspend fun addOrderToServer(order: Order) = drinkRemoteDb.addOrderToServer(order)
-
 
 
 }

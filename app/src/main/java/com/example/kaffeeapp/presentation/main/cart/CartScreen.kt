@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -23,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -94,6 +96,7 @@ fun CartScreen(
         navigateToMapScreen = { navigateToMapScreen.invoke() },
         onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
         onOrderClick = { viewModel.submitOrder() },
+        onSaveNote = { value -> viewModel.setNoteValue(value) }
     )
 }
 
@@ -110,7 +113,9 @@ fun CartScreenContent(
     inputsHandler: CartInputsHandler,
     orderResultState: Resource<Boolean>?,
     onOrderClick: () -> Unit,
+    onSaveNote: (String) -> Unit
 ) {
+    var showDialog by rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -160,10 +165,11 @@ fun CartScreenContent(
                     ) {
                         item {
                             BeforeOrderList(
+                                cartDetails = cartDetails,
+                                errorHandler = inputsHandler,
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
                                 onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
-                                cartDetails = cartDetails,
-                                errorHandler = inputsHandler
+                                onAddNoteClick = { showDialog = true }
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
@@ -209,6 +215,15 @@ fun CartScreenContent(
                             onOrderClick.invoke()
                         }
                     )
+                    if (showDialog) {
+                        NoteDialog(
+                            onDismiss = { showDialog = false },
+                            onSave = {
+                                value -> onSaveNote.invoke(value)
+                                showDialog = false
+                            }
+                        )
+                    }
                 }
             } else {
                 EmptyList(message = stringResource(id = R.string.no_orders))
@@ -251,10 +266,11 @@ fun OnResultState(
 
 @Composable
 fun BeforeOrderList(
+    cartDetails: CartDetails,
+    errorHandler: CartInputsHandler,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    cartDetails: CartDetails,
-    errorHandler: CartInputsHandler
+    onAddNoteClick: () -> Unit
 ) {
     //delivery content
     Column(
@@ -282,7 +298,7 @@ fun BeforeOrderList(
                     navigateToMapScreen.invoke()
                 },
                 addressErrorValue = errorHandler.addressErrorValue,
-                onAddNoteClick = {}
+                onAddNoteClick = { onAddNoteClick.invoke() }
             )
         } else {
             var branchName = ""
@@ -412,7 +428,7 @@ fun PickUpSection(
         ) {
             onClick.invoke()
         }
-        if(addressErrorValue.isNotBlank()) {
+        if (addressErrorValue.isNotBlank()) {
             CustomizedText(
                 text = addressErrorValue,
                 fontSize = dimensionResource(id = R.dimen.text_size_small),
@@ -422,6 +438,78 @@ fun PickUpSection(
         }
     }
 
+}
+
+@Composable
+fun NoteDialog(
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    var noteValue by rememberSaveable { mutableStateOf("") }
+
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.tertiary,
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+        title = {
+            CustomizedText(
+                text = stringResource(id = R.string.note),
+                fontSize = dimensionResource(id = R.dimen.text_size_16),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onTertiary,
+            )
+        },
+        text = {
+            TextField(
+                value = noteValue,
+                onValueChange = { value -> noteValue = value },
+                placeholder = {
+                    CustomizedText(
+                        text = stringResource(id = R.string.leave_note),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = dimensionResource(id = R.dimen.text_size_medium)
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors().copy(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onTertiary
+                ),
+                minLines = 2
+            )
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss.invoke()
+                }
+            ) {
+                CustomizedText(
+                    text = stringResource(id = R.string.dismiss),
+                    fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        },
+        onDismissRequest = { onDismiss.invoke() },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onSave.invoke(noteValue)
+                }
+            ) {
+                CustomizedText(
+                    text = stringResource(id = R.string.save),
+                    fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    )
 }
 
 @Composable
@@ -466,7 +554,7 @@ fun DeliverySection(
                 onAddNoteClick.invoke()
             }
         }
-        if(addressErrorValue.isNotBlank()) {
+        if (addressErrorValue.isNotBlank()) {
             CustomizedText(
                 text = addressErrorValue,
                 fontSize = dimensionResource(id = R.dimen.text_size_small),
@@ -528,7 +616,7 @@ fun PhoneNumberContainer(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        if(phoneErrorValue.isNotBlank()) {
+        if (phoneErrorValue.isNotBlank()) {
             CustomizedText(
                 text = phoneErrorValue,
                 fontSize = dimensionResource(id = R.dimen.text_size_small),
@@ -633,6 +721,7 @@ fun CartScreenPreview() {
             cartDetails,
             CartInputsHandler(),
             null,
+            {},
             {}
         )
     }
