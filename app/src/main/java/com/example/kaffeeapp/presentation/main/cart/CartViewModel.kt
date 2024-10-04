@@ -38,13 +38,13 @@ class CartViewModel @Inject constructor(
 
     var orderCost by mutableStateOf(OrderCost())
 
-    var orderResponse by mutableStateOf<Resource<Boolean>?>(null)
+    var submitOrderResponse by mutableStateOf<Resource<Boolean>?>(null)
 
     fun submitOrder() {
         if (isOrderDetailsValid()) {
-            orderResponse = Resource.Loading()
+            submitOrderResponse = Resource.Loading()
             viewModelScope.launch(dispatcherProvider.io) {
-                orderResponse = dataRepository.addOrder(
+                submitOrderResponse = dataRepository.addOrder(
                     cartDetails = cartDetails,
                     totalPrice = orderCost.getTotalCost(),
                 )
@@ -55,14 +55,14 @@ class CartViewModel @Inject constructor(
 
     private fun onOrderResult() {
         viewModelScope.launch {
-            if (orderResponse is Resource.Success) {
+            if (submitOrderResponse is Resource.Success) {
                 cartDetails = cartDetails.copy(drinkOrders = mutableListOf())
                 SnackbarController.sendEvent(
                     SnackbsrEvent(
                         message = ORDER_SUCCESS
                     )
                 )
-            } else if (orderResponse is Resource.Failure) {
+            } else if (submitOrderResponse is Resource.Failure) {
                 SnackbarController.sendEvent(
                     SnackbsrEvent(
                         message = FAILED_REMOVING_DRINK
