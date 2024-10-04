@@ -5,17 +5,17 @@ import com.example.kaffeeapp.util.Constants.BRANCH_ADDRESS
 import com.example.kaffeeapp.util.Constants.LATITUDE
 import com.example.kaffeeapp.util.Constants.LONGITUDE
 
-sealed class DeliveryMethod {
-    data class AddressDelivery(
+sealed class DeliveryType {
+    data class HomeDelivery(
         val address: String?,
         val latitude: Double?,
         val longitude: Double?
-    ) : DeliveryMethod()
+    ) : DeliveryType()
 
-    data class BranchDelivery(val branchAddress: String?) : DeliveryMethod()
+    data class BranchDelivery(val branchAddress: String?) : DeliveryType()
 
     fun toMap(): Map<String, String> {
-        return if (this is AddressDelivery) {
+        return if (this is HomeDelivery) {
             mapOf(
                 ADDRESS to this.address.toString(),
                 LATITUDE to this.latitude.toString(),

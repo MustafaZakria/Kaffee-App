@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.presentation.main.home.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -27,13 +29,13 @@ fun OfferBannerSection(
     Box(
         modifier = modifier
     ) {
-        AsyncImage(
-            model = R.drawable.img_offer_banner,
-            contentDescription = stringResource(id = R.string.offer_img_desc),
-            contentScale = ContentScale.Crop,
+        Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium))),
+            painter = painterResource(id = R.drawable.img_offer_banner),
+            contentDescription = stringResource(id = R.string.offer_img_desc),
+            contentScale = ContentScale.Crop
 //                .height(maxHeight * 0.29f)
         )
         Column(

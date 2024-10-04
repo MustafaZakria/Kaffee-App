@@ -80,4 +80,7 @@ object Constants {
     const val ORDER_SUCCESS = "Order Success!"
     const val SUCCESS_PROFILE_PICTURE = "Success: Added Profile Picture!"
     const val FAILURE_PROFILE_PICTURE = "Error: Failed Adding Profile Picture!"
+
+    const val NULL_VALUE = "field is required."
+    const val INVALID_VALUE = "invalid value."
 }

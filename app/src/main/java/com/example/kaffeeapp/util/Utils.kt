@@ -4,7 +4,10 @@ import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RippleConfiguration
 import androidx.compose.ui.graphics.Color
+import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.User
+import com.example.kaffeeapp.util.Constants.INVALID_VALUE
+import com.example.kaffeeapp.util.Constants.NULL_VALUE
 import com.google.firebase.auth.FirebaseUser
 import java.util.UUID
 
@@ -30,6 +33,22 @@ object Utils {
             name = displayName ?: "",
             id = uid
         )
+    }
+
+    fun validatePhoneNumber(value: String): String {
+        if(value.isBlank()) {
+            return NULL_VALUE
+        } else if (value.length < 10) {
+            return INVALID_VALUE
+        }
+        return ""
+    }
+
+    fun validateDeliveryDetail(value: DeliveryType?): String {
+        if(value == null) {
+            return NULL_VALUE
+        }
+        return ""
     }
 
 }

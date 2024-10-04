@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.data.entities.DeliveryMethod
+import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.presentation.main.cart.CartViewModel
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.util.Constants.MAP_ZOOM
@@ -88,7 +88,7 @@ fun MapScreen(
                         MaterialTheme.colorScheme.primary
                     )
                     .clickable {
-                        val address = DeliveryMethod.AddressDelivery(
+                        val address = DeliveryType.HomeDelivery(
                             title,
                             location.latitude,
                             location.longitude
