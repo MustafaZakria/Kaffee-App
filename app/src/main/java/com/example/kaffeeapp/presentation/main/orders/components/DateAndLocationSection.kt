@@ -13,48 +13,21 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
+import com.example.kaffeeapp.components.TextWithLeadingIcon
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 
 @Composable
 fun DateAndLocationSection(date: String, location: String?) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.calendar_icon),
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.onTertiary,
-            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-        )
-        CustomizedText(
-            text = date,
-            fontWeight = FontWeight.Medium,
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
-            color = MaterialTheme.colorScheme.onTertiary,
-            style = MaterialTheme.typography.headlineSmall,
-            textLines = 1,
-        )
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_x_small)),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.location_icon),
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.onTertiary,
-            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-        )
-        CustomizedText(
-            text = location.toString(),
-            fontWeight = FontWeight.Medium,
-            fontSize = dimensionResource(id = R.dimen.text_size_16),
-            color = MaterialTheme.colorScheme.onTertiary,
-            style = MaterialTheme.typography.headlineSmall,
-            textLines = 1,
-        )
-    }
+    TextWithLeadingIcon(
+        text = date,
+        icon = R.drawable.calendar_icon,
+        textSize = dimensionResource(id = R.dimen.text_size_16),
+        fontWeight = FontWeight.Medium
+    )
+    TextWithLeadingIcon(
+        text = location.toString(),
+        icon = R.drawable.location_icon,
+        textSize = dimensionResource(id = R.dimen.text_size_16),
+        fontWeight = FontWeight.Medium
+    )
 }

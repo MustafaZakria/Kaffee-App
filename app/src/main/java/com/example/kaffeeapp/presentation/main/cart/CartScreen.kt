@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.presentation.main.cart
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,29 +9,34 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,8 +53,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
+import com.example.kaffeeapp.components.ErrorImage
 import com.example.kaffeeapp.components.ProgressBar
+import com.example.kaffeeapp.components.TextWithLeadingIcon
 import com.example.kaffeeapp.components.TopBarTitle
+import com.example.kaffeeapp.data.entities.BranchDetails
 import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.cart.components.CartBottomBar
@@ -58,12 +67,15 @@ import com.example.kaffeeapp.presentation.main.cart.components.RoundedButtonWith
 import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
 import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
+import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
+import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
 import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import kotlinx.coroutines.launch
 
 @Composable
 fun CartScreen(
@@ -74,7 +86,9 @@ fun CartScreen(
     val cartDetails = viewModel.cartDetails
     val orderResultState = viewModel.submitOrderResponse
     val inputsHandler = viewModel.cartInputsHandler
+    val branches = viewModel.branches.value
 
+    Log.d("branches", branches.data.toString())
     if (cartDetails.drinkOrders.isEmpty()) {
         viewModel.removeBadgeOnCart()
     }
@@ -96,10 +110,17 @@ fun CartScreen(
         navigateToMapScreen = { navigateToMapScreen.invoke() },
         onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
         onOrderClick = { viewModel.submitOrder() },
-        onSaveNote = { value -> viewModel.setNoteValue(value) }
+        onSaveNote = { value -> viewModel.setNoteValue(value) },
+        branches = branches,
+        onSelectBranch = { branch ->
+            viewModel.setDeliveryMethod(
+                DeliveryType.BranchDelivery(branch.name, branch.address)
+            )
+        }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreenContent(
     onDeleteOrderClick: (Int) -> Unit,
@@ -113,13 +134,29 @@ fun CartScreenContent(
     inputsHandler: CartInputsHandler,
     orderResultState: Resource<Boolean>?,
     onOrderClick: () -> Unit,
-    onSaveNote: (String) -> Unit
+    onSaveNote: (String) -> Unit,
+    branches: BranchesResult,
+    onSelectBranch: (BranchDetails) -> Unit
 ) {
-    var showDialog by rememberSaveable { mutableStateOf(true) }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+    val scaffoldState = rememberBottomSheetScaffoldState()
+    val scope = rememberCoroutineScope()
 
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
+    BottomSheetScaffold(
         topBar = { TopBarTitle(title = stringResource(id = R.string.cart)) },
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.surface,
+        sheetContainerColor = MaterialTheme.colorScheme.tertiary,
+        sheetContent = {
+            BottomSheetContent(
+                branchesResult = branches,
+                onSelectBranch = { branch -> onSelectBranch.invoke(branch) }
+            )
+        },
+        sheetPeekHeight = 0.dp,
+        scaffoldState = scaffoldState,
+//        sheetDragHandle = {}
+
     ) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -169,7 +206,12 @@ fun CartScreenContent(
                                 errorHandler = inputsHandler,
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
                                 onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
-                                onAddNoteClick = { showDialog = true }
+                                onAddNoteClick = { showDialog = true },
+                                onSelectBranchClick = {
+                                    scope.launch {
+                                        scaffoldState.bottomSheetState.expand()
+                                    }
+                                }
                             )
                             //spacer
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
@@ -203,6 +245,7 @@ fun CartScreenContent(
 
                             AfterOrderList(
                                 orderCost = orderCost,
+                                errorHandler = inputsHandler,
                                 isDeliveryEnabled = cartDetails.isDeliveryEnabled,
                                 onApplyPromoClick = { code -> onApplyPromoClick.invoke(code) }
                             )
@@ -217,11 +260,15 @@ fun CartScreenContent(
                     )
                     if (showDialog) {
                         NoteDialog(
-                            onDismiss = { showDialog = false },
-                            onSave = {
-                                value -> onSaveNote.invoke(value)
+                            noteValue = cartDetails.note,
+                            onNoteValueChange = { value ->
+                                onSaveNote.invoke(value)
+                            },
+                            onDismiss = {
+                                onSaveNote.invoke("")
                                 showDialog = false
-                            }
+                            },
+                            onSaveNote = { showDialog = false }
                         )
                     }
                 }
@@ -235,6 +282,117 @@ fun CartScreenContent(
         deliveryDetail = cartDetails.deliveryValue,
     )
 }
+
+@Composable
+fun BottomSheetContent(
+    branchesResult: BranchesResult,
+    onSelectBranch: (BranchDetails) -> Unit
+) {
+    var selectedBranch by rememberSaveable { mutableStateOf("") }
+
+    Surface(
+        modifier = Modifier.fillMaxHeight(0.8f),
+        color = MaterialTheme.colorScheme.tertiary
+    ) {
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+
+        ) {
+            item {
+                CustomizedText(
+                    text = stringResource(id = R.string.branches),
+                    fontSize = dimensionResource(id = R.dimen.text_size_16),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
+                HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
+                Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
+            }
+
+            if (branchesResult is Resource.Success) {
+                val branches = branchesResult.data ?: listOf()
+                items(branches) { branch ->
+                    BranchItem(
+                        branch = branch,
+                        selectedBranch = selectedBranch,
+                        onSelectBranch = {
+                            selectedBranch = branch.name
+                            onSelectBranch.invoke(branch)
+                        }
+                    )
+                }
+            }
+        }
+        if (branchesResult is Resource.Loading) {
+            ProgressBar(modifier = Modifier.fillMaxSize())
+        } else if (branchesResult is Resource.Failure) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                ErrorImage()
+                CustomizedText(
+                    text = NETWORK_ERROR,
+                    fontSize = dimensionResource(id = R.dimen.text_size_small),
+                    color = MaterialTheme.colorScheme.onTertiary
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BranchItem(
+    branch: BranchDetails,
+    selectedBranch: String,
+    onSelectBranch: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelectBranch.invoke() }
+            .padding(vertical = dimensionResource(id = R.dimen.padding_small))
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+        ) {
+            CustomizedText(
+                text = branch.name,
+                fontSize = dimensionResource(id = R.dimen.text_size_16),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onTertiary,
+                style = MaterialTheme.typography.headlineSmall
+            )
+            TextWithLeadingIcon(
+                text = branch.address,
+                icon = R.drawable.location_icon,
+                textSize = dimensionResource(id = R.dimen.text_size_medium),
+                fontWeight = FontWeight.Medium
+            )
+            TextWithLeadingIcon(
+                text = branch.workHours,
+                icon = R.drawable.time_icon,
+                textSize = dimensionResource(id = R.dimen.text_size_medium),
+                fontWeight = FontWeight.Medium
+            )
+        }
+        if (selectedBranch == branch.name) {
+            Icon(
+                painter = painterResource(id = R.drawable.check_icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.icon_size))
+                    .align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun OnResultState(
@@ -270,7 +428,8 @@ fun BeforeOrderList(
     errorHandler: CartInputsHandler,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
-    onAddNoteClick: () -> Unit
+    onAddNoteClick: () -> Unit,
+    onSelectBranchClick: () -> Unit
 ) {
     //delivery content
     Column(
@@ -304,13 +463,13 @@ fun BeforeOrderList(
             var branchName = ""
             if (cartDetails.deliveryValue != null) {
                 branchName =
-                    (cartDetails.deliveryValue as? DeliveryType.BranchDelivery)?.branchAddress
+                    (cartDetails.deliveryValue as? DeliveryType.BranchDelivery)?.branchName
                         ?: ""
             }
             PickUpSection(
                 branch = branchName,
                 addressErrorValue = errorHandler.addressErrorValue,
-                onClick = {}
+                onClick = { onSelectBranchClick.invoke() }
             )
         }
 
@@ -329,12 +488,14 @@ fun BeforeOrderList(
 @Composable
 fun AfterOrderList(
     orderCost: OrderCost,
+    errorHandler: CartInputsHandler,
     isDeliveryEnabled: Boolean,
     onApplyPromoClick: (String) -> Unit,
 ) {
     //promo code
     PromoCodeContainer(
-        onApplyClick = { code -> onApplyPromoClick.invoke(code) }
+        onApplyClick = { code -> onApplyPromoClick.invoke(code) },
+        promoErrorValue = errorHandler.promoErrorValue
     )
     Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
@@ -442,10 +603,11 @@ fun PickUpSection(
 
 @Composable
 fun NoteDialog(
+    noteValue: String,
+    onNoteValueChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onSave: (String) -> Unit
+    onSaveNote: () -> Unit
 ) {
-    var noteValue by rememberSaveable { mutableStateOf("") }
 
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.tertiary,
@@ -461,7 +623,7 @@ fun NoteDialog(
         text = {
             TextField(
                 value = noteValue,
-                onValueChange = { value -> noteValue = value },
+                onValueChange = { value -> onNoteValueChange.invoke(value) },
                 placeholder = {
                     CustomizedText(
                         text = stringResource(id = R.string.leave_note),
@@ -498,7 +660,7 @@ fun NoteDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    onSave.invoke(noteValue)
+                    onSaveNote.invoke()
                 }
             ) {
                 CustomizedText(
@@ -631,62 +793,73 @@ fun PhoneNumberContainer(
 
 @Composable
 fun PromoCodeContainer(
-    onApplyClick: (String) -> Unit
+    onApplyClick: (String) -> Unit,
+    promoErrorValue: String
 ) {
     var code by rememberSaveable { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
-            .background(MaterialTheme.colorScheme.tertiary),
-    ) {
-        TextField(
-            value = code,
-            onValueChange = { value ->
-                code = value
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
-            placeholder = {
-                CustomizedText(
-                    text = stringResource(id = R.string.promo_hint),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = dimensionResource(id = R.dimen.text_size_medium)
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text
-            ),
-            trailingIcon = {
-                CustomizedText(
-                    text = stringResource(id = R.string.apply),
-                    fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier
-                        .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-                        .clickable { onApplyClick.invoke(code) }
-                )
-            },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.discount_icon),
-                    contentDescription = "Phone",
-                    tint = MaterialTheme.colorScheme.onTertiary,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-                )
-            },
-            colors = TextFieldDefaults.colors().copy(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onTertiary
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
+                .background(MaterialTheme.colorScheme.tertiary),
+        ) {
+            TextField(
+                value = code,
+                onValueChange = { value ->
+                    code = value
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
+                placeholder = {
+                    CustomizedText(
+                        text = stringResource(id = R.string.promo_hint),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = dimensionResource(id = R.dimen.text_size_medium)
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text
+                ),
+                trailingIcon = {
+                    CustomizedText(
+                        text = stringResource(id = R.string.apply),
+                        fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+                            .clickable { onApplyClick.invoke(code) }
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.discount_icon),
+                        contentDescription = "Phone",
+                        tint = MaterialTheme.colorScheme.onTertiary,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
+                    )
+                },
+                colors = TextFieldDefaults.colors().copy(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    errorContainerColor = Color.Transparent,
+                    focusedTextColor = MaterialTheme.colorScheme.onTertiary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (promoErrorValue.isNotBlank()) {
+            CustomizedText(
+                text = promoErrorValue,
+                fontSize = dimensionResource(id = R.dimen.text_size_small),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            )
+        }
     }
 }
 
@@ -722,6 +895,8 @@ fun CartScreenPreview() {
             CartInputsHandler(),
             null,
             {},
+            {},
+            Resource.Loading(),
             {}
         )
     }

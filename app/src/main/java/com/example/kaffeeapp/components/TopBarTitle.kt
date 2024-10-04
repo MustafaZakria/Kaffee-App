@@ -21,13 +21,14 @@ fun TopBarTitle(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
             .padding(
                 top = dimensionResource(id = R.dimen.padding_x_large),
                 start = dimensionResource(id = R.dimen.padding_medium),
                 end = dimensionResource(id = R.dimen.padding_medium),
                 bottom = dimensionResource(id = R.dimen.padding_medium),
             )
-            .background(Color.Transparent),
+
     ) {
         CustomizedText(
             text = title,

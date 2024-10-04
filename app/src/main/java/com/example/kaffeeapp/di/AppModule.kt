@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.kaffeeapp.data.local.DrinkDatabase
+import com.example.kaffeeapp.data.local.sharedPreference.MainSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.util.Constants.DRINK_DATABASE_NAME
@@ -96,4 +97,10 @@ class AppModule {
     fun provideUserSharedPref(
         sharedPreference: SharedPreferences
     ): UserSharedPreference = UserSharedPreference(sharedPreference)
+
+    @Singleton
+    @Provides
+    fun provideMainSharedPref(
+        sharedPreference: SharedPreferences
+    ): MainSharedPreference = MainSharedPreference(sharedPreference)
 }

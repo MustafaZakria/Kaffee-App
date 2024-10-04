@@ -18,12 +18,12 @@ fun SettingItems(
     )
     Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_10)))
     ProfileRowItem(
-        text = stringResource(id = R.string.about_us),
+        text = stringResource(id = R.string.rewards),
         onClick = {}
     )
     Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_10)))
     ProfileRowItem(
-        text = stringResource(id = R.string.privacy_policy),
+        text = stringResource(id = R.string.about_us),
         onClick = {}
     )
     Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_10)))

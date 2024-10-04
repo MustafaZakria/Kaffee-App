@@ -18,6 +18,8 @@ object Constants {
     const val DRINKS_COLLECTION = "drinks"
     const val USERS_COLLECTION = "users"
     const val ORDERS_COLLECTION = "orders"
+    const val PROMO_CODES_COLLECTION = "promo_codes"
+    const val BRANCHES_COLLECTION = "branches"
 
     const val FAV_DRINKS_KEY = "favouriteDrinks"
     const val ORDERS_KEY = "orders"
@@ -31,6 +33,7 @@ object Constants {
     const val INGREDIENTS_KEY = "ingredients"
     const val RATING_KEY = "rating"
     const val TYPE_KEY = "type"
+    const val PROMO_CODES_KEY = "codes"
 
     const val ORDER_ID_KEY = "orderId"
     const val UID_KEY = "uid"
@@ -41,6 +44,11 @@ object Constants {
     const val NOTE_KEY = "note"
     const val DELIVERY_DETAILS_KEY = "deliveryDetails"
     const val DRINK_ORDERS_LIST_KEY = "drinkOrders"
+
+    const val ADDRESS_KEY = "address"
+    const val WORK_HOURS_KEY = "workHours"
+    const val LONGITUDE_KEY = "longitude"
+    const val LATITUDE_KEY = "latitude"
 
     const val DRINK_DATABASE_NAME = "drink.db"
 
@@ -60,11 +68,6 @@ object Constants {
 
     const val MAP_ZOOM = 15f
 
-    const val ADDRESS = "address"
-    const val LATITUDE = "latitude"
-    const val LONGITUDE = "longitude"
-    const val BRANCH_ADDRESS = "branchAddress"
-
     //toasts
     const val SIGNED_IN_SUCCESSFULLY = "Signed In Successfully!"
     const val SIGNED_OUT_SUCCESSFULLY = "Signed Out Successfully!"
@@ -80,7 +83,9 @@ object Constants {
     const val ORDER_SUCCESS = "Order Success!"
     const val SUCCESS_PROFILE_PICTURE = "Success: Added Profile Picture!"
     const val FAILURE_PROFILE_PICTURE = "Error: Failed Adding Profile Picture!"
+    const val SUCCESS_PROMO_CODE = "Success: Added PromoCode!"
 
     const val NULL_VALUE = "field is required."
     const val INVALID_VALUE = "invalid value."
+    const val PROMO_EXPIRED_VALUE = "code may be expired or wrong."
 }

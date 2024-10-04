@@ -15,5 +15,7 @@ interface MainRepository {
 
     suspend fun refreshUserData(): Resource<Boolean>
 
+    suspend fun refreshMainData(): Resource<Boolean>
+
     fun signOut(): Resource<Boolean>
 }

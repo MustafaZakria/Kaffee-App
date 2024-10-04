@@ -2,16 +2,20 @@ package com.example.kaffeeapp.data.remote
 
 import android.net.Uri
 import android.util.Log
+import com.example.kaffeeapp.data.entities.BranchDetails
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.repository.interfaces.SignInWithGoogleResponse
+import com.example.kaffeeapp.util.Constants.BRANCHES_COLLECTION
 import com.example.kaffeeapp.util.Constants.DRINKS_COLLECTION
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_COLLECTION
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
+import com.example.kaffeeapp.util.Constants.PROMO_CODES_COLLECTION
+import com.example.kaffeeapp.util.Constants.PROMO_CODES_KEY
 import com.example.kaffeeapp.util.Constants.TIMESTAMP_KEY
 import com.example.kaffeeapp.util.Constants.UID_KEY
 import com.example.kaffeeapp.util.Constants.USERS_COLLECTION
@@ -164,6 +168,33 @@ class DrinkRemoteDb @Inject constructor(
             }
 
             Resource.Success(url.toString())
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+    suspend fun getPromoCodes(): Resource<Map<String, String>> {
+        return try {
+            val snapshot = firestore.collection(PROMO_CODES_COLLECTION).get().await()
+            var result = mapOf<String, String>()
+            snapshot.documents.forEach { document ->
+                result = document[PROMO_CODES_KEY] as? Map<String, String> ?: mapOf()
+            }
+            Resource.Success(result)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+    suspend fun getBranches(): Resource<List<BranchDetails>> {
+        return try {
+            val snapshot = firestore.collection(BRANCHES_COLLECTION).get().await()
+            var branches = mutableListOf<BranchDetails>()
+            snapshot.documents.forEach { document ->
+                val branch = BranchDetails.getFromSnapshot(document)
+                branches.add(branch)
+            }
+            Resource.Success(branches)
         } catch (e: Exception) {
             Resource.Failure(e)
         }

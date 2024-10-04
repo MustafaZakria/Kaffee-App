@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.io) {
             drinksResponse = mainRepository.refreshDrinks()
             userDataResponse = mainRepository.refreshUserData()
+            mainRepository.refreshMainData()
         }
 
         drinks = drinksFromSelectType
