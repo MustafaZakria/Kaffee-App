@@ -1,9 +1,8 @@
 package com.example.kaffeeapp.repository
 
 import android.net.Uri
-import androidx.collection.emptyIntSet
 import com.example.kaffeeapp.data.entities.User
-import com.example.kaffeeapp.data.local.sharedPreference.ProfileSharedPreference
+import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.repository.interfaces.ProfileRepository
@@ -15,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class ProfileRepositoryImp(
     private val drinkRemoteDb: DrinkRemoteDb,
-    private val profileSharedPreference: ProfileSharedPreference
+    private val userSharedPreference: UserSharedPreference
 ) : ProfileRepository {
 
     override suspend fun getAllResources(): Flow<OrdersResponse> = flow {
@@ -26,10 +25,10 @@ class ProfileRepositoryImp(
 
     override fun getUser(): Flow<User> = flow {
         val user = User(
-            name = profileSharedPreference.getUserName(),
-            email = profileSharedPreference.getUserEmail(),
-            imageUrl = profileSharedPreference.getUserPicture(),
-            orders = profileSharedPreference.getOrdersIds()
+            name = userSharedPreference.getUserName(),
+            email = userSharedPreference.getUserEmail(),
+            imageUrl = userSharedPreference.getUserPicture(),
+            orders = userSharedPreference.getOrdersIds()
         )
         emit(user)
     }
@@ -38,7 +37,7 @@ class ProfileRepositoryImp(
         val uploadingResponse = uri?.let { drinkRemoteDb.uploadUserImage(it) }
         if(uploadingResponse is Resource.Success) {
             val url = uploadingResponse.data ?: ""
-            profileSharedPreference.setUserPicture(url)
+            userSharedPreference.setUserPicture(url)
             return Resource.Success(url)
         }
         return Resource.Failure(uploadingResponse?.exception)

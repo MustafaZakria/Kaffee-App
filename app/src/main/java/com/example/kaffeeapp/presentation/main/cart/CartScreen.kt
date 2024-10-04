@@ -72,7 +72,7 @@ fun CartScreen(
 ) {
     val orderCost = viewModel.orderCost
     val cartDetails = viewModel.cartDetails
-    val orderResultState = viewModel.orderResponse
+    val orderResultState = viewModel.submitOrderResponse
     val inputsHandler = viewModel.cartInputsHandler
 
     if (cartDetails.drinkOrders.isEmpty()) {

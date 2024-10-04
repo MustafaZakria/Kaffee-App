@@ -2,11 +2,9 @@ package com.example.kaffeeapp.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.location.LocationManager
 import androidx.room.Room
 import com.example.kaffeeapp.data.local.DrinkDatabase
-import com.example.kaffeeapp.data.local.sharedPreference.DrinkSharedPreference
-import com.example.kaffeeapp.data.local.sharedPreference.ProfileSharedPreference
+import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.util.Constants.DRINK_DATABASE_NAME
 import com.example.kaffeeapp.util.Constants.SHARED_PREFERENCE_NAME
@@ -92,17 +90,10 @@ class AppModule {
     ): SharedPreferences =
         context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
-    @Singleton
-    @Provides
-    fun provideDrinkSharedPref(
-        sharedPreference: SharedPreferences
-    ): DrinkSharedPreference = DrinkSharedPreference(sharedPreference)
 
     @Singleton
     @Provides
-    fun provideProfileSharedPref(
+    fun provideUserSharedPref(
         sharedPreference: SharedPreferences
-    ): ProfileSharedPreference = ProfileSharedPreference(sharedPreference)
-
-
+    ): UserSharedPreference = UserSharedPreference(sharedPreference)
 }
