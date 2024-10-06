@@ -27,6 +27,9 @@ object Constants {
     const val NAME_KEY = "name"
     const val EMAIL_KEY = "email"
     const val IMAGE_URL_KEY = "imageUrl"
+    const val POINTS_KEY = "points"
+
+    const val POINTS_ADDED_PER_ORDER = 10
 
     const val PRICE_KEY = "price"
     const val DESCRIPTION_KEY = "description"

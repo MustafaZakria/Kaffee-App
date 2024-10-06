@@ -6,6 +6,7 @@ import com.example.kaffeeapp.util.Constants.ID_KEY
 import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
 import com.example.kaffeeapp.util.Constants.NAME_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
+import com.example.kaffeeapp.util.Constants.POINTS_KEY
 import com.google.firebase.firestore.DocumentSnapshot
 
 data class User(
@@ -14,7 +15,8 @@ data class User(
     val id: String = "",
     val imageUrl: String = "",
     val favouriteDrinks: List<String> = arrayListOf(),
-    val orders: List<String> = arrayListOf()
+    val orders: List<String> = arrayListOf(),
+    val points: String = ""
 ) {
     companion object {
         fun getFromSnapshot(userSnapshot: DocumentSnapshot?): User {
@@ -27,7 +29,8 @@ data class User(
                 email = userSnapshot?.get(EMAIL_KEY) as? String ?: "",
                 orders = orders ?: emptyList(),
                 favouriteDrinks = favDrinks ?: emptyList(),
-                imageUrl = userSnapshot?.get(IMAGE_URL_KEY) as? String ?: ""
+                imageUrl = userSnapshot?.get(IMAGE_URL_KEY) as? String ?: "",
+                points = userSnapshot?.get(POINTS_KEY) as? String ?: ""
             )
         }
     }

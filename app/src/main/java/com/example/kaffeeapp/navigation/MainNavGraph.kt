@@ -1,5 +1,12 @@
 package com.example.kaffeeapp.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -36,19 +43,40 @@ fun MainNavGraph(
         navController = navController,
         startDestination = MainScreen.HomeScreen.route,
         route = Graph.MainGraph.route,
-//        modifier = modifier
     ) {
         composable(
             route = MainScreen.HomeScreen.route
         ) {
             HomeScreen(
-                logout = { logout.invoke() }
+                logout = {
+                    logout.invoke()
+                }
             ) { id ->
                 navController.navigate("${MainScreen.DrinkDetailScreen.route}/$id")
             }
         }
         composable(
-            route = "${MainScreen.DrinkDetailScreen.route}/{$ID_KEY}"
+            route = "${MainScreen.DrinkDetailScreen.route}/{$ID_KEY}",
+            enterTransition = {
+                fadeIn(
+                    animationSpec = tween(
+                        300, easing = LinearEasing
+                    )
+                ) + slideIntoContainer(
+                    animationSpec = tween(300, easing = EaseIn),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start
+                )
+            },
+            exitTransition = {
+                fadeOut(
+                    animationSpec = tween(
+                        300, easing = LinearEasing
+                    )
+                ) + slideOutOfContainer(
+                    animationSpec = tween(300, easing = EaseOut),
+                    towards = AnimatedContentTransitionScope.SlideDirection.End
+                )
+            }
         ) { navBackStackEntry ->
             val parentEntry = remember(navBackStackEntry) {
                 navController.getBackStackEntry(Graph.MainGraph.route)
@@ -82,7 +110,7 @@ fun MainNavGraph(
         composable(
             route = MainScreen.ProfileScreen.route
         ) {
-            ProfileScreen() {
+            ProfileScreen {
                 navController.navigate(MainScreen.MyOrdersScreen.route)
             }
         }
@@ -100,7 +128,7 @@ fun MainNavGraph(
         composable(
             route = MainScreen.MyOrdersScreen.route
         ) {
-            MyOrdersScreen() {
+            MyOrdersScreen {
                 navController.popBackStack()
             }
         }

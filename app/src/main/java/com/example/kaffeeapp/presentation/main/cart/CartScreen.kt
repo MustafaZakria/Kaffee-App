@@ -88,7 +88,6 @@ fun CartScreen(
     val inputsHandler = viewModel.cartInputsHandler
     val branches = viewModel.branches.value
 
-    Log.d("branches", branches.data.toString())
     if (cartDetails.drinkOrders.isEmpty()) {
         viewModel.removeBadgeOnCart()
     }

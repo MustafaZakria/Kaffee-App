@@ -1,7 +1,6 @@
 package com.example.kaffeeapp.presentation.main.profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -14,12 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,10 +31,9 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navigateToMyOrdersScreen: () -> Unit
 ) {
-    val userInfo = viewModel.user.collectAsState(initial = User())
-    val points = viewModel.points.toString()
+    val userInfo = viewModel.user
+
     val uploadingImageState = viewModel.uploadingImageState
-    var userImageUrl by rememberSaveable { mutableStateOf("") }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -49,21 +41,9 @@ fun ProfileScreen(
         viewModel.setUserImage(uri)
     }
 
-    LaunchedEffect(key1 = uploadingImageState) {
-        if (uploadingImageState is Resource.Success) {
-            userImageUrl = uploadingImageState.data.toString()
-        }
-    }
-
-    LaunchedEffect(key1 = userInfo) {
-        userImageUrl = userInfo.value.imageUrl
-    }
-
     ProfileScreenContent(
-        userInfo = userInfo.value,
-        imageUrl = userImageUrl,
+        userInfo = userInfo,
         uploadingImageState = uploadingImageState,
-        points = points,
         onChangeImageClick = {
             galleryLauncher.launch("image/*")
         },
@@ -74,9 +54,7 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenContent(
     userInfo: User,
-    imageUrl: String,
     uploadingImageState: Resource<String>?,
-    points: String,
     onChangeImageClick: () -> Unit,
     onMyOrderClick: () -> Unit
 ) {
@@ -108,14 +86,14 @@ fun ProfileScreenContent(
                 //profile Info
                 UserInfoSection(
                     userInfo = userInfo,
-                    imageUrl = imageUrl,
+                    imageUrl = userInfo.imageUrl,
                     uploadingImageState = uploadingImageState,
                     onChangeImageClick = { onChangeImageClick.invoke() }
                 )
                 Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)))
                 //orders count and points
                 UserStatisticalSection(
-                    points = points,
+                    points = userInfo.points,
                     userInfo = userInfo
                 )
                 Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)))
@@ -139,9 +117,7 @@ fun ProfilePreview() {
                 email = "Mustafa.zakria21@gmail.com",
                 imageUrl = ""
             ),
-            "0",
             null,
-            "",
             {},
             {}
         )

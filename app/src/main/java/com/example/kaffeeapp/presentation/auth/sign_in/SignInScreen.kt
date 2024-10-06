@@ -1,17 +1,15 @@
 package com.example.kaffeeapp.presentation.auth.sign_in
 
 import android.app.Activity.RESULT_OK
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.Credential
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
@@ -43,6 +43,7 @@ import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.Constants.SIGNED_IN_SUCCESSFULLY
 import com.example.kaffeeapp.util.Fonts.sora
+import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
 import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 import kotlinx.coroutines.launch
@@ -53,21 +54,34 @@ fun SignInScreen(
     navigateToMainScreen: () -> Unit
 ) {
 
-    LaunchedEffect(key1 = Unit) {
-        if (viewModel.isUserAuthenticated) {
-            navigateToMainScreen.invoke()
-        }
-    }
-
-    val isDarkTheme = isSystemInDarkTheme()
     val context = LocalContext.current
-    val signInState = viewModel.signInWithGoogleResponse
-    val requestState = viewModel.signInRequest
+    val signInState by viewModel.signInWithGoogleResponse
+    val requestState by viewModel.signInRequest
 
+
+    SignInScreenContent(
+        signInState = signInState,
+        requestState = requestState,
+        navigateToMainScreen = { navigateToMainScreen.invoke() },
+        requestSignIn = { viewModel.requestSignIn(context) },
+        signInWithGoogle = { cred -> viewModel.signInWithGoogle(cred) },
+        addGoogleAccountIntent = viewModel.getAddGoogleAccountIntent()
+    )
+}
+
+@Composable
+fun SignInScreenContent(
+    signInState: Resource<Boolean>,
+    requestState: Resource<Credential>,
+    navigateToMainScreen: () -> Unit,
+    requestSignIn: () -> Unit,
+    signInWithGoogle: (Credential) -> Unit,
+    addGoogleAccountIntent: Intent
+) {
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                viewModel.requestSignIn(context)
+                requestSignIn.invoke()
             }
         }
 
@@ -76,16 +90,15 @@ fun SignInScreen(
             .fillMaxSize()
             .gradientBackground(listOf(Color.Black, MaterialTheme.colorScheme.secondary), 45f)
     ) {
-        BoxWithConstraints(
+        Box(
             contentAlignment = Alignment.TopCenter
         ) {
             Image(
-                painter = painterResource(R.drawable.main_background),
+                painter = painterResource(R.drawable.home_background),
                 contentDescription = stringResource(id = R.string.coffee_img_desc),
-                contentScale = ContentScale.FillHeight,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(maxHeight * 0.7f)
+                    .fillMaxSize()
             )
         }
         Box(
@@ -128,10 +141,8 @@ fun SignInScreen(
                     textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(25.dp))
-                GoogleButton(
-                    isDarkTheme
-                ) {
-                    viewModel.requestSignIn(context)
+                GoogleButton {
+                    requestSignIn.invoke()
                 }
                 Spacer(modifier = Modifier.height(15.dp))
             }
@@ -142,12 +153,11 @@ fun SignInScreen(
     RequestSignIn(
         requestState = requestState,
         onSuccess = { cred ->
-            viewModel.signInWithGoogle(cred)
+            signInWithGoogle.invoke(cred)
         },
         onError = { exception ->
             if (exception is NoCredentialException) {
-                val intent = viewModel.getAddGoogleAccountIntent()
-                launcher.launch(intent)
+                launcher.launch(addGoogleAccountIntent)
             }
         }) {
         ProgressBar(modifier = Modifier.fillMaxSize())
@@ -185,6 +195,13 @@ fun SignInScreen(
 @Composable
 fun GreetingPreview() {
     KaffeeAppTheme {
-        SignInScreen {}
+        SignInScreenContent(
+            signInState = Resource.Loading(),
+            requestState = Resource.Loading(),
+            navigateToMainScreen = { },
+            requestSignIn = { },
+            signInWithGoogle = {},
+            addGoogleAccountIntent = Intent()
+        )
     }
 }

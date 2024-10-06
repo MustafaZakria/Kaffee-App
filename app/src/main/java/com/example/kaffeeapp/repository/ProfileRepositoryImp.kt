@@ -8,6 +8,7 @@ import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.repository.interfaces.ProfileRepository
 import com.example.kaffeeapp.util.model.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import javax.inject.Singleton
 
@@ -23,15 +24,22 @@ class ProfileRepositoryImp(
         emit(response)
     }
 
-    override fun getUser(): Flow<User> = flow {
-        val user = User(
-            name = userSharedPreference.getUserName(),
-            email = userSharedPreference.getUserEmail(),
-            imageUrl = userSharedPreference.getUserPicture(),
-            orders = userSharedPreference.getOrdersIds()
-        )
-        emit(user)
-    }
+    override suspend fun getUser(): Flow<User> =
+        combine(
+            userSharedPreference.getUserNameFlow(),
+            userSharedPreference.getUserEmailFlow(),
+            userSharedPreference.getUserPictureFlow(),
+            userSharedPreference.getOrdersIdsFlow(),
+            userSharedPreference.getUserPointsFlow(),
+        ) { name, email, imageUrl, orders, points ->
+            User(
+                name = name,
+                email = email,
+                imageUrl = imageUrl,
+                orders = orders.split(","),
+                points = points)
+        }
+
 
     override suspend fun setUserImage(uri: Uri?): Resource<String> {
         val uploadingResponse = uri?.let { drinkRemoteDb.uploadUserImage(it) }

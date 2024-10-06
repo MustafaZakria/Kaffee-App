@@ -26,17 +26,14 @@ class HomeViewModel @Inject constructor(
     private val _drinkSelectedType = MutableLiveData(SelectedType.ALL_DRINKS)
     val drinkSelectedType: LiveData<SelectedType> = _drinkSelectedType
 
-    var drinksResponse by mutableStateOf<Resource<Boolean>>(Resource.Success(false))
-
-    private var _searchValueState = MutableLiveData("")
-    val searchValueState: LiveData<String> = _searchValueState
-
     var drinks: LiveData<List<Drink>> = MutableLiveData()
 
     private val drinksFromSelectType: LiveData<List<Drink>> = _drinkSelectedType.switchMap { type ->
         mainRepository.getAllDrinks(type)
     }
+
     var userDataResponse by mutableStateOf<Resource<Boolean>?>(null)
+    var drinksResponse by mutableStateOf<Resource<Boolean>>(Resource.Success(false))
 
     init {
         drinksResponse = Resource.Loading()
@@ -53,6 +50,9 @@ class HomeViewModel @Inject constructor(
     fun setSelectedType(type: SelectedType) {
         _drinkSelectedType.value = type
     }
+
+    private var _searchValueState = MutableLiveData("")
+    val searchValueState: LiveData<String> = _searchValueState
 
     fun onSearchValueChange(value: String) {
         value.let {
@@ -73,6 +73,4 @@ class HomeViewModel @Inject constructor(
             signOutResponse = mainRepository.signOut()
         }
     }
-
-
 }

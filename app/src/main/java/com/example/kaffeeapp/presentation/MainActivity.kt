@@ -69,17 +69,12 @@ fun KaffeeApp(navHostController: NavHostController) {
             }
         }
     }
-    val backStackEntry by navHostController.currentBackStackEntryAsState()
-    val currentDestination = backStackEntry?.destination
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = {
             SnackbarHost(
-                modifier = Modifier.padding(
-                    bottom = if (currentDestination?.hierarchy?.any { it.route == Graph.MainGraph.route } == true)
-                        dimensionResource(id = R.dimen.padding_bottom_navigation)
-                    else 0.dp),
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_bottom_navigation)),
                 hostState = snackbarHostState
             ) {
                 Snackbar(

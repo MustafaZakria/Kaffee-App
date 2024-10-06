@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.data.entities
+package com.example.kaffeeapp.util.model
 
 import com.example.kaffeeapp.util.Constants.KEY_LARGE_SIZE
 import com.example.kaffeeapp.util.Constants.KEY_MEDIUM_SIZE

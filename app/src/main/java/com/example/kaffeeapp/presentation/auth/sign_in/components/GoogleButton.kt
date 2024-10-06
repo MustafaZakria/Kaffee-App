@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,11 +31,10 @@ import com.example.kaffeeapp.util.Fonts.roboto
 
 @Composable
 fun GoogleButton(
-    isDarkTheme: Boolean,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
     onclickSignIn: () -> Unit
 ) {
     Surface(
-//        shape = CircleShape,
         color = when (isDarkTheme) {
             true -> Color(0xFF131314)
             false -> Color(0xFFFFFFFF)
