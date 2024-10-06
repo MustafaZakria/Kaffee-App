@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.data.entities.DrinkSize
+import com.example.kaffeeapp.util.model.DrinkSize
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.util.Constants.DRINK_ADDED_SUCCESSFULLY
 import com.example.kaffeeapp.util.Constants.DRINK_REMOVED_SUCCESSFULLY

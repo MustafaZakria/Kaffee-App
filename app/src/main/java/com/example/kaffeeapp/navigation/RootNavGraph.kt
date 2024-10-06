@@ -15,7 +15,7 @@ fun RootNavGraph(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Graph.MainGraph.route,
+        startDestination = Graph.AuthGraph.route,
         route = Graph.RootGraph.route,
         modifier = Modifier
     ) {
@@ -24,7 +24,7 @@ fun RootNavGraph(
             MainScreen(
                 logout = {
                     navHostController.navigate(AuthScreen.SignInScreen.route) {
-                        popUpTo(navHostController.graph.startDestinationId) {
+                        popUpTo(navHostController.graph.id) {
                             inclusive = true
                         }
                     }

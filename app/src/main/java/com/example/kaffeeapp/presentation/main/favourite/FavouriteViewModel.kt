@@ -1,5 +1,8 @@
 package com.example.kaffeeapp.presentation.main.favourite
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.repository.interfaces.DataRepository
@@ -11,7 +14,6 @@ import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
 import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,14 +23,14 @@ class FavouriteViewModel @Inject constructor(
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
-    var favDrinks = flowOf<FavDrinksResult>()
+    var favDrinks by mutableStateOf<FavDrinksResult>(Resource.Loading())
 
     init {
-        getFavDrinks()
-    }
-
-    private fun getFavDrinks() = viewModelScope.launch(dispatcherProvider.io) {
-        favDrinks = dataRepositoryImp.getFavDrinks()
+        viewModelScope.launch(dispatcherProvider.io) {
+            dataRepositoryImp.getFavDrinks().collect { favourites ->
+                favDrinks = favourites
+            }
+        }
     }
 
     fun removeFavDrink(id: String) {
@@ -48,6 +50,5 @@ class FavouriteViewModel @Inject constructor(
                 )
             }
         }
-        getFavDrinks()
     }
 }

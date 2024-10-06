@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.repository.interfaces.OrdersResponse
 import com.example.kaffeeapp.repository.interfaces.ProfileRepository
 import com.example.kaffeeapp.util.Constants.FAILURE_PROFILE_PICTURE
@@ -16,6 +17,7 @@ import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
 import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,14 +29,18 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     var orders = flowOf<OrdersResponse>()
-    var user = profileRepository.getUser()
-    var points by mutableIntStateOf(0)
+
+    var user by mutableStateOf(User())
 
     var uploadingImageState by mutableStateOf<Resource<String>?>(null)
 
     init {
         viewModelScope.launch(dispatcherProvider.io) {
             orders = profileRepository.getAllResources()
+
+            profileRepository.getUser().collect { value ->
+                user = value
+            }
         }
     }
 

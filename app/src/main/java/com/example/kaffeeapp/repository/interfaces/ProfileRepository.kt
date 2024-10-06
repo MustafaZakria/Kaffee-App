@@ -11,7 +11,7 @@ typealias OrdersResponse = Resource<List<Order>>
 interface ProfileRepository {
     suspend fun getAllResources(): Flow<OrdersResponse>
 
-    fun getUser(): Flow<User>
+    suspend fun getUser(): Flow<User>
 
     suspend fun setUserImage(uri: Uri?): Resource<String>
 }

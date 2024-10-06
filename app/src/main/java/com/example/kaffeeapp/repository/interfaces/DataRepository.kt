@@ -37,4 +37,6 @@ interface DataRepository {
     fun getPromoCodeValue(promoCode: String): String?
 
     suspend fun getBranchesDetails(): Flow<BranchesResult>
+
+    suspend fun updateUserPoints()
 }

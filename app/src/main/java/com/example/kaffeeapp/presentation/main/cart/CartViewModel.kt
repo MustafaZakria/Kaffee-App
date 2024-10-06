@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.data.entities.DrinkSize
+import com.example.kaffeeapp.util.model.DrinkSize
 import com.example.kaffeeapp.navigation.MainScreen
 import com.example.kaffeeapp.navigation.model.bottomNavItems
 import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
@@ -27,9 +27,8 @@ import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
 import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,6 +72,9 @@ class CartViewModel @Inject constructor(
     private fun onOrderResult() {
         viewModelScope.launch {
             if (submitOrderResponse is Resource.Success) {
+                withContext(dispatcherProvider.io) {
+                    dataRepository.updateUserPoints()
+                }
                 cartDetails = cartDetails.copy(drinkOrders = mutableListOf())
                 SnackbarController.sendEvent(
                     SnackbsrEvent(

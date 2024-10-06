@@ -17,7 +17,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ProgressBar
@@ -34,11 +33,10 @@ fun FavouriteScreen(
     viewModel: FavouriteViewModel = hiltViewModel(),
     navigateToDetailsScreen: (String) -> Unit
 ) {
-    val favDrinks =
-        viewModel.favDrinks.collectAsStateWithLifecycle(initialValue = Resource.Loading())
+    val favDrinks = viewModel.favDrinks
 
     FavouriteScreenContent(
-        drinks = favDrinks.value,
+        drinks = favDrinks,
         onRemoveDrink = { id ->
             viewModel.removeFavDrink(id)
         },

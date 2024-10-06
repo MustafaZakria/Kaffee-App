@@ -21,9 +21,13 @@ fun NavGraphBuilder.authNavGraph(
             AuthScreen.SplashScreen.route
         ) {
             SplashScreen(
-                navigateToHomeScreen = {
+                navigateToSignInScreen = {
                     navHostController.popBackStack()
                     navHostController.navigate(AuthScreen.SignInScreen.route)
+                },
+                navigateToMainGraph = {
+                    navHostController.popBackStack()
+                    navHostController.navigate(Graph.MainGraph.route)
                 }
             )
         }

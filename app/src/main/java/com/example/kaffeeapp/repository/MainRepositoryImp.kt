@@ -55,7 +55,8 @@ class MainRepositoryImp @Inject constructor(
                 email = user.email,
                 imageUrl = user.imageUrl,
                 orders = user.orders,
-                favourites = user.favouriteDrinks
+                favourites = user.favouriteDrinks,
+                points = user.points
             )
             return Resource.Success(true)
         }

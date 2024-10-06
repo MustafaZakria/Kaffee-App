@@ -14,6 +14,7 @@ import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 import com.example.kaffeeapp.util.Constants.IMAGE_URL_KEY
 import com.example.kaffeeapp.util.Constants.ORDERS_COLLECTION
 import com.example.kaffeeapp.util.Constants.ORDERS_KEY
+import com.example.kaffeeapp.util.Constants.POINTS_KEY
 import com.example.kaffeeapp.util.Constants.PROMO_CODES_COLLECTION
 import com.example.kaffeeapp.util.Constants.PROMO_CODES_KEY
 import com.example.kaffeeapp.util.Constants.TIMESTAMP_KEY
@@ -41,7 +42,7 @@ class DrinkRemoteDb @Inject constructor(
     private val firebaseStorage: FirebaseStorage
 ) {
     private var currentUserId: String? = firebaseAuth.currentUser?.uid
-    var isUserAuthenticated = false
+    var isUserAuthenticated = currentUserId != null
         private set
 
     init {
@@ -195,6 +196,18 @@ class DrinkRemoteDb @Inject constructor(
                 branches.add(branch)
             }
             Resource.Success(branches)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
+    suspend fun setUserPoints(points: String) : Resource<Boolean> {
+        return try {
+            currentUserId?.let {
+                firestore.collection(USERS_COLLECTION).document(it)
+                    .update(POINTS_KEY, points).await()
+            }
+            Resource.Success(true)
         } catch (e: Exception) {
             Resource.Failure(e)
         }

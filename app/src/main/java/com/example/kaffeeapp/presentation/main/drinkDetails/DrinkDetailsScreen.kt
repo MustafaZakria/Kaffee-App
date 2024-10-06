@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.Drink
-import com.example.kaffeeapp.data.entities.DrinkSize
+import com.example.kaffeeapp.util.model.DrinkSize
 import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.presentation.main.cart.CartViewModel
 import com.example.kaffeeapp.presentation.main.drinkDetails.components.BottomBarForDetail

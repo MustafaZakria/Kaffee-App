@@ -3,7 +3,7 @@ package com.example.kaffeeapp.presentation.main.cart.models
 import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
-import com.example.kaffeeapp.data.entities.DrinkSize
+import com.example.kaffeeapp.util.model.DrinkSize
 
 data class CartDetails(
     val deliveryValue: DeliveryType? = null,

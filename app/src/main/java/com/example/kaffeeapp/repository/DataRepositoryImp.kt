@@ -1,7 +1,5 @@
 package com.example.kaffeeapp.repository
 
-import android.util.Log
-import com.example.kaffeeapp.data.entities.BranchDetails
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.Order
 import com.example.kaffeeapp.data.local.DrinkDao
@@ -12,9 +10,11 @@ import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
 import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.repository.interfaces.FavDrinksResult
+import com.example.kaffeeapp.util.Constants.POINTS_ADDED_PER_ORDER
 import com.example.kaffeeapp.util.Utils.generateUniqueId
 import com.example.kaffeeapp.util.model.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -49,10 +49,14 @@ class DataRepositoryImp @Inject constructor(
 
     override suspend fun getFavDrinks(): Flow<FavDrinksResult> = flow {
         emit(Resource.Loading())
-        Log.d("flow", "emitting")
-        val ids = userSharedPreference.getFavDrinksIds()
-        val list = ids.mapNotNull { id -> getDrinkById(id) }
-        emit(Resource.Success(list))
+        userSharedPreference.getUserFavFlow()
+            .distinctUntilChanged()
+            .collect { value ->
+
+                val list = value.split(",").mapNotNull { id -> getDrinkById(id) }
+
+                emit(Resource.Success(list))
+            }
     }
 
     override suspend fun addOrder(
@@ -87,7 +91,7 @@ class DataRepositoryImp @Inject constructor(
 
     override fun getPromoCodeValue(promoCode: String): String? {
         val map = mainSharedPreference.getPromoCodes()
-        if(map.containsKey(promoCode)) {
+        if (map.containsKey(promoCode)) {
             return map[promoCode]
         }
         return null
@@ -96,5 +100,14 @@ class DataRepositoryImp @Inject constructor(
     override suspend fun getBranchesDetails(): Flow<BranchesResult> = flow {
         emit(Resource.Loading())
         emit(drinkRemoteDb.getBranches())
+    }
+
+    override suspend fun updateUserPoints() {
+        val points = userSharedPreference.getUserPoints()?.toInt() ?: 0
+        val updatedPoints = points + POINTS_ADDED_PER_ORDER
+        val response = drinkRemoteDb.setUserPoints(updatedPoints.toString())
+        if (response is Resource.Success) {
+            userSharedPreference.setUserPoints(updatedPoints.toString())
+        }
     }
 }
