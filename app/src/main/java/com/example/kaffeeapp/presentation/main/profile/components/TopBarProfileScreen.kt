@@ -62,7 +62,7 @@ fun TopBarProfileScreen(
                     id = R.drawable.moon_filled
                 ),
                 contentDescription = stringResource(id = R.string.heart_img_desc),
-                tint = MaterialTheme.colorScheme.primary,
+                tint = if (isDarkMode) Color.White else Color.Black,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
             )
         }

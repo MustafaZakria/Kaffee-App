@@ -12,11 +12,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = Color.White,
-    tertiary = Pink80,
-    surface = NormalWhite,
-    onBackground = NormalWhiteActive
+    primary = Color(0xFFd39e76),
+    onPrimary = Color.White,
+
+    secondary = Color(0x5E323C48),
+    onSecondary = Color.White,
+
+    tertiary = Color(0xFF323C48),
+    onTertiary = Color.White,
+
+    surface = Color(0xFF222831),
+    onSurface = Color.White,
+
+    outline = Color(0x4F4E5E75),
+
+    surfaceVariant = Color(0x7741576F),
+
+    onBackground = Color(0x8DFDFDFD),
+
+    error = ErrorColor,
+
+    surfaceContainer = BannerDarkColorStart,
+    surfaceContainerHigh = BannerDarkColorCenter,
+    surfaceContainerHighest = BannerDarkColorEnd,
+
+    surfaceContainerLow = SearchBackgroundDarkColor
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -34,7 +54,14 @@ private val LightColorScheme = lightColorScheme(
 
     onBackground = LightGrey,
     error = ErrorColor,
-    outline = LightBrown
+    outline = LightBrown,
+    surfaceVariant = LightWhite,
+
+    surfaceContainer = BannerColorStart,
+    surfaceContainerHigh = BannerColorCenter,
+    surfaceContainerHighest = BannerColorEnd,
+
+    surfaceContainerLow = SearchBackgroundColor
     /* Other default colors to override
 
     surface = Color(0xFFFFFBFE),
@@ -48,7 +75,8 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun KaffeeAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+//    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

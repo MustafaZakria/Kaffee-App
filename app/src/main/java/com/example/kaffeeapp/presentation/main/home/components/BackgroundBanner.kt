@@ -1,5 +1,6 @@
 package com.example.kaffeeapp.presentation.main.home.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,9 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.kaffeeapp.presentation.auth.sign_in.components.GradientBackground.gradientBackground
-import com.example.kaffeeapp.ui.theme.bannerColorCenter
-import com.example.kaffeeapp.ui.theme.bannerColorEnd
-import com.example.kaffeeapp.ui.theme.bannerColorStart
 
 @Composable
 fun BackgroundBanner() {
@@ -24,11 +22,12 @@ fun BackgroundBanner() {
             modifier = Modifier
                 .height(maxHeight * 0.3f)
                 .fillMaxWidth()
+//                .background(MaterialTheme.colorScheme.surface)
                 .gradientBackground(
                     listOf(
-                        MaterialTheme.colorScheme.bannerColorStart,
-                        MaterialTheme.colorScheme.bannerColorCenter,
-                        MaterialTheme.colorScheme.bannerColorEnd
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        MaterialTheme.colorScheme.surfaceContainerHigh,
+                        MaterialTheme.colorScheme.surfaceContainerHighest
                     ), 240f
                 )
         ) {}

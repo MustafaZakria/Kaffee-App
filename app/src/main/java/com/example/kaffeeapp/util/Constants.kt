@@ -91,4 +91,6 @@ object Constants {
     const val NULL_VALUE = "field is required."
     const val INVALID_VALUE = "invalid value."
     const val PROMO_EXPIRED_VALUE = "code may be expired or wrong."
+
+    const val DARK_MODE_KEY = "dark_mode"
 }
