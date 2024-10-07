@@ -14,4 +14,7 @@ interface ProfileRepository {
     suspend fun getUser(): Flow<User>
 
     suspend fun setUserImage(uri: Uri?): Resource<String>
+    suspend fun isSystemOnDarkMode(): Flow<Boolean>
+    fun changeSystemMode()
+    fun getIsSystemOnDarkMode(): Boolean
 }

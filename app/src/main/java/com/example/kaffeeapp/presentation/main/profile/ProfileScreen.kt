@@ -1,6 +1,7 @@
 package com.example.kaffeeapp.presentation.main.profile
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,8 @@ fun ProfileScreen(
 
     val uploadingImageState = viewModel.uploadingImageState
 
+    val isSystemOnDarkMode = viewModel.isSystemOnDarkMode
+    Log.d("DarkMode:PRof", isSystemOnDarkMode.toString())
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -44,6 +47,8 @@ fun ProfileScreen(
     ProfileScreenContent(
         userInfo = userInfo,
         uploadingImageState = uploadingImageState,
+        isSystemOnDarkMode = isSystemOnDarkMode.value,
+        onSystemModeChange = { viewModel.changeSystemMode() },
         onChangeImageClick = {
             galleryLauncher.launch("image/*")
         },
@@ -55,14 +60,16 @@ fun ProfileScreen(
 fun ProfileScreenContent(
     userInfo: User,
     uploadingImageState: Resource<String>?,
+    isSystemOnDarkMode: Boolean,
+    onSystemModeChange: () -> Unit,
     onChangeImageClick: () -> Unit,
     onMyOrderClick: () -> Unit
 ) {
     Scaffold(containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             TopBarProfileScreen(
-                isDarkMode = false,
-                onModeChange = {}
+                isDarkMode = isSystemOnDarkMode,
+                onModeChange = { onSystemModeChange.invoke() }
             )
         }
     ) { innerPadding ->
@@ -110,7 +117,9 @@ fun ProfileScreenContent(
 @Composable
 @Preview(showBackground = true)
 fun ProfilePreview() {
-    KaffeeAppTheme {
+    KaffeeAppTheme(
+        darkTheme = true
+    ) {
         ProfileScreenContent(
             userInfo = User(
                 name = "Mustafa Zakaria",
@@ -118,6 +127,8 @@ fun ProfilePreview() {
                 imageUrl = ""
             ),
             null,
+            false,
+            {},
             {},
             {}
         )

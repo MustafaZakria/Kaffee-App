@@ -74,6 +74,7 @@ class ViewModelModule {
     @Provides
     fun provideProfileRepository(
         remoteDb: DrinkRemoteDb,
-        preference: UserSharedPreference
-    ): ProfileRepository = ProfileRepositoryImp(remoteDb, preference)
+        userPreference: UserSharedPreference,
+        mainSharedPreference: MainSharedPreference
+        ): ProfileRepository = ProfileRepositoryImp(remoteDb, userPreference, mainSharedPreference)
 }

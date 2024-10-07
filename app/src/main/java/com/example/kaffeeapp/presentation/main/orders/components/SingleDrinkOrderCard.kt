@@ -33,7 +33,7 @@ fun SingleDrinkOrderCard(order: DrinkOrder) {
             .fillMaxWidth(),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)),
         colors = CardDefaults.cardColors().copy(
-            containerColor = MaterialTheme.colorScheme.lightWhite
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Row(

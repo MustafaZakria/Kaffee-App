@@ -59,6 +59,7 @@ fun OrderQuantityColumn(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Card(
+                shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .size(dimensionResource(id = R.dimen.circle_size_32))
@@ -69,7 +70,6 @@ fun OrderQuantityColumn(
                 colors = CardDefaults.cardColors().copy(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 ),
-                shape = CircleShape,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 CompositionLocalProvider(
@@ -95,6 +95,7 @@ fun OrderQuantityColumn(
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
             )
             Card(
+                shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .size(dimensionResource(id = R.dimen.circle_size_32))
@@ -105,7 +106,6 @@ fun OrderQuantityColumn(
                 colors = CardDefaults.cardColors().copy(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 ),
-                shape = CircleShape,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Icon(

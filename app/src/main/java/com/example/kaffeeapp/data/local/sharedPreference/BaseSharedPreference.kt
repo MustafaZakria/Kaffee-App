@@ -33,6 +33,14 @@ open class BaseSharedPreference(
         return sharedPreferences.getString(key, "").toString()
     }
 
+    protected fun addBoolean(bool: Boolean, key: String) {
+        sharedPreferences.edit().putBoolean(key, bool).apply()
+    }
+
+    protected fun getBoolean(key: String, default: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, default)
+    }
+
     protected suspend fun stringFlow(key: String, defaultValue: String): Flow<String> = callbackFlow {
         val initialValue = sharedPreferences.getString(key, defaultValue) ?: defaultValue
         trySend(initialValue)
@@ -40,6 +48,21 @@ open class BaseSharedPreference(
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getString(key, defaultValue) ?: defaultValue
+                trySend(newValue)  // Emit the new value whenever it changes
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+
+        awaitClose { sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener) }
+    }
+
+    protected suspend fun booleanFlow(key: String, defaultValue: Boolean): Flow<Boolean> = callbackFlow {
+        val initialValue = sharedPreferences.getBoolean(key, defaultValue)
+        trySend(initialValue)
+
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getBoolean(key, defaultValue)
                 trySend(newValue)  // Emit the new value whenever it changes
             }
         }

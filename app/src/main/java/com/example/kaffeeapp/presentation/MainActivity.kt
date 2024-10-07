@@ -1,9 +1,11 @@
 package com.example.kaffeeapp.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,19 +17,14 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.navigation.RootNavGraph
-import com.example.kaffeeapp.navigation.model.Graph
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.snackbarStuff.ObserveAsEvents
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
@@ -39,12 +36,19 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
 
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
+            val isSystemOnDarkMode = viewModel.isSystemOnDarkMode
             navController = rememberNavController()
-            KaffeeAppTheme {
+
+            KaffeeAppTheme(
+                darkTheme = isSystemOnDarkMode.value
+            ) {
                 KaffeeApp(navHostController = navController)
             }
         }

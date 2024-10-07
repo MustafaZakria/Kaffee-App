@@ -208,7 +208,7 @@ fun SearchSection(
             modifier = Modifier
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
                 .weight(1f)
-                .background(MaterialTheme.colorScheme.searchBackgroundColor),
+                .background(MaterialTheme.colorScheme.surfaceContainerLow),
             hint = stringResource(id = R.string.search_hint),
             searchStateValue = searchStateValue
         ) { value ->
@@ -266,7 +266,9 @@ fun MainPreview() {
             type = DrinkType.COLD
         )
     )
-    KaffeeAppTheme {
+    KaffeeAppTheme(
+        darkTheme = true
+    ) {
         MainScreenContent(
             drinks,
             Resource.Loading(),

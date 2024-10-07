@@ -4,8 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -26,17 +28,18 @@ import com.example.kaffeeapp.ui.theme.lightRed
 fun OfferBannerSection(
     modifier: Modifier
 ) {
-    Box(
+    BoxWithConstraints(
         modifier = modifier
     ) {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium))),
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
+                .height(maxHeight * 0.22f),
             painter = painterResource(id = R.drawable.img_offer_banner),
             contentDescription = stringResource(id = R.string.offer_img_desc),
             contentScale = ContentScale.Crop
-//                .height(maxHeight * 0.29f)
+
         )
         Column(
             modifier = Modifier
@@ -58,10 +61,10 @@ fun OfferBannerSection(
             }
             CustomizedText(
                 text = stringResource(id = R.string.buy_one_get_one),
-                style = MaterialTheme.typography.headlineMedium,
-                fontSize = dimensionResource(id = R.dimen.text_size_x_large),
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = dimensionResource(id = R.dimen.text_size_24),
                 fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline,
+//                textDecoration = TextDecoration.Underline,
             )
         }
     }

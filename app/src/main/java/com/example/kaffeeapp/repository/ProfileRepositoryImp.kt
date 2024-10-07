@@ -2,6 +2,7 @@ package com.example.kaffeeapp.repository
 
 import android.net.Uri
 import com.example.kaffeeapp.data.entities.User
+import com.example.kaffeeapp.data.local.sharedPreference.MainSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
 import com.example.kaffeeapp.repository.interfaces.OrdersResponse
@@ -10,13 +11,21 @@ import com.example.kaffeeapp.util.model.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ProfileRepositoryImp(
+class ProfileRepositoryImp @Inject constructor(
     private val drinkRemoteDb: DrinkRemoteDb,
-    private val userSharedPreference: UserSharedPreference
+    private val userSharedPreference: UserSharedPreference,
+    private val mainSharedPreference: MainSharedPreference
 ) : ProfileRepository {
+
+    override suspend fun isSystemOnDarkMode() = mainSharedPreference.isSystemOnDarkModeFlow()
+
+    override fun changeSystemMode() {
+        mainSharedPreference.changeSystemMode()
+    }
 
     override suspend fun getAllResources(): Flow<OrdersResponse> = flow {
         emit(Resource.Loading())
@@ -50,4 +59,6 @@ class ProfileRepositoryImp(
         }
         return Resource.Failure(uploadingResponse?.exception)
     }
+
+    override fun getIsSystemOnDarkMode() = mainSharedPreference.getIsSystemOnDarkMode()
 }

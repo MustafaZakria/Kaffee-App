@@ -133,7 +133,9 @@ fun MyOrdersScreenPreview() {
         totalPrice = "101.0",
         deliveryDetails = mapOf(ADDRESS_KEY to "23 Dokki St.")
     )
-    KaffeeAppTheme {
+    KaffeeAppTheme(
+        darkTheme = true
+    ) {
         MyOrdersScreenContent(
             ordersResponse = Resource.Success(listOf(order))
         ) {

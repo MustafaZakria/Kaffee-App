@@ -49,7 +49,8 @@ fun MyOrderCard(
             }
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(vertical = dimensionResource(id = R.dimen.padding_x_small))
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_x_small)),
+                color = MaterialTheme.colorScheme.secondary,
             )
             TotalPriceSection(
                 totalPrice = order.totalPrice
