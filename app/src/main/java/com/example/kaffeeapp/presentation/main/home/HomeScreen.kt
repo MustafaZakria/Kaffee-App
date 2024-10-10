@@ -42,7 +42,6 @@ import com.example.kaffeeapp.presentation.main.home.components.GettingRemoteData
 import com.example.kaffeeapp.presentation.main.home.components.OfferBannerSection
 import com.example.kaffeeapp.presentation.main.home.components.SearchBar
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.ui.theme.searchBackgroundColor
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.model.SelectedType
 
@@ -97,7 +96,7 @@ fun MainScreenContent(
 
         //background banner
         BackgroundBanner()
-        //content
+        //content 
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -22,7 +22,6 @@ fun BackgroundBanner() {
             modifier = Modifier
                 .height(maxHeight * 0.3f)
                 .fillMaxWidth()
-//                .background(MaterialTheme.colorScheme.surface)
                 .gradientBackground(
                     listOf(
                         MaterialTheme.colorScheme.surfaceContainer,

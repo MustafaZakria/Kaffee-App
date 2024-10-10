@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
 fun KaffeeApp(navHostController: NavHostController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
     ObserveAsEvents(flow = SnackbarController.events, snackbarHostState) { event ->
         scope.launch {
             snackbarHostState.currentSnackbarData?.dismiss()

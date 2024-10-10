@@ -1,12 +1,15 @@
 package com.example.kaffeeapp.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.dimensionResource
@@ -28,12 +31,16 @@ fun RoundedButton(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier.clickable { onClick.invoke() },
-        shape = RoundedCornerShape(roundedShapeSize),
+        modifier = Modifier
+            .clip(RoundedCornerShape(roundedShapeSize))
+            .background(backgroundColor)
+            .border(borderStroke, RoundedCornerShape(roundedShapeSize))
+            .clickable { onClick.invoke() },
+//        shape = RoundedCornerShape(roundedShapeSize),
         colors = CardDefaults.cardColors().copy(
-            containerColor = backgroundColor
+            containerColor = Color.Transparent
         ),
-        border = borderStroke
+//        border = borderStroke
     ) {
         CustomizedText(
             text = text,

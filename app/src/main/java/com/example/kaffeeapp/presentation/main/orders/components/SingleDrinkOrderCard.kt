@@ -24,7 +24,6 @@ import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.ImageLoaderWithUrl
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
-import com.example.kaffeeapp.ui.theme.lightWhite
 
 @Composable
 fun SingleDrinkOrderCard(order: DrinkOrder) {

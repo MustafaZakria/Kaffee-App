@@ -82,6 +82,7 @@ object Constants {
     const val FAILED_REMOVING_DRINK = "Error: Failed to Remove the Drink!"
     const val DRINK_ADDED_SUCCESSFULLY = "Drink Added to Favourites Successfully!"
     const val ADDRESS_ADDED_SUCCESSFULLY = "Address Added Successfully!"
+    const val NOTE_ADDED_SUCCESSFULLY = "Note Added Successfully!"
     const val FAILED_ADDING_DRINK = "Error: Failed to add the Drink!"
     const val ORDER_SUCCESS = "Order Success!"
     const val SUCCESS_PROFILE_PICTURE = "Success: Added Profile Picture!"

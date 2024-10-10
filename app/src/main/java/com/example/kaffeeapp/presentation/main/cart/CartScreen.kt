@@ -1,6 +1,5 @@
 package com.example.kaffeeapp.presentation.main.cart
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +32,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,8 +67,8 @@ import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
-import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
+import com.example.kaffeeapp.util.Constants.NOTE_ADDED_SUCCESSFULLY
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
@@ -267,7 +265,16 @@ fun CartScreenContent(
                                 onSaveNote.invoke("")
                                 showDialog = false
                             },
-                            onSaveNote = { showDialog = false }
+                            onSaveNote = {
+                                showDialog = false
+                                scope.launch {
+                                    SnackbarController.sendEvent(
+                                        SnackbsrEvent(
+                                            message = NOTE_ADDED_SUCCESSFULLY
+                                        )
+                                    )
+                                }
+                            }
                         )
                     }
                 }
@@ -277,8 +284,7 @@ fun CartScreenContent(
         }
     }
     OnResultState(
-        orderResult = orderResultState,
-        deliveryDetail = cartDetails.deliveryValue,
+        orderResult = orderResultState
     )
 }
 
@@ -396,7 +402,6 @@ fun BranchItem(
 @Composable
 fun OnResultState(
     orderResult: Resource<Boolean>?,
-    deliveryDetail: DeliveryType?,
 ) {
     if (orderResult is Resource.Loading) {
         Box(
@@ -406,15 +411,6 @@ fun OnResultState(
         ) {
             ProgressBar(
                 modifier = Modifier.fillMaxSize()
-            )
-        }
-    }
-    LaunchedEffect(key1 = deliveryDetail) {
-        if (deliveryDetail != null) {
-            SnackbarController.sendEvent(
-                SnackbsrEvent(
-                    message = ADDRESS_ADDED_SUCCESSFULLY
-                )
             )
         }
     }
@@ -528,10 +524,10 @@ fun SelectDeliverMethod(
         ) {
             Box(
                 modifier = Modifier
-                    .clickable { onDeliveryClick.invoke() }
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)))
                     .background(if (isDeliveryEnabled) MaterialTheme.colorScheme.primary else Color.Transparent)
                     .weight(1f)
+                    .clickable { onDeliveryClick.invoke() }
             ) {
                 CustomizedText(
                     text = stringResource(id = R.string.delivery),
@@ -546,10 +542,10 @@ fun SelectDeliverMethod(
             }
             Box(
                 modifier = Modifier
-                    .clickable { onPickUpClick.invoke() }
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)))
                     .background(if (!isDeliveryEnabled) MaterialTheme.colorScheme.primary else Color.Transparent)
                     .weight(1f)
+                    .clickable { onPickUpClick.invoke() }
             ) {
                 CustomizedText(
                     text = stringResource(id = R.string.pick_up),
@@ -822,22 +818,31 @@ fun PromoCodeContainer(
                     keyboardType = KeyboardType.Text
                 ),
                 trailingIcon = {
-                    CustomizedText(
-                        text = stringResource(id = R.string.apply),
-                        fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Medium,
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+                            .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
                             .clickable { onApplyClick.invoke(code) }
-                    )
+                    ) {
+                        CustomizedText(
+                            text = stringResource(id = R.string.apply),
+                            fontSize = dimensionResource(id = R.dimen.text_size_medium),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier
+                                .padding(
+                                    vertical = dimensionResource(id = R.dimen.padding_small),
+                                    horizontal = dimensionResource(id = R.dimen.padding_small)
+                                )
+                        )
+                    }
                 },
                 leadingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.discount_icon),
-                        contentDescription = "Phone",
+                        contentDescription = "",
                         tint = MaterialTheme.colorScheme.onTertiary,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.icon_size))
                     )
                 },
                 colors = TextFieldDefaults.colors().copy(

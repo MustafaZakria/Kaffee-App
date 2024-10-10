@@ -4,6 +4,14 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+val LightAccentColor = Color(0xFFd39e76)
+val DarkGray950 = Color(0xFF222831)
+val DarkGray900 = Color(0xFF323C48)
+val DarkGray850 = Color(0x5E323C48)
+val DarkGray700 = Color(0x7741576F)
+val DarkGray600 = Color(0x4F4E5E75)
+val White50 = Color(0x8DFDFDFD)
+
 val AccentColor = Color(0xFFC67C4E)
 val LightBrown = Color(0xFFF9F2ED)
 val LightGrey = Color(0xFFA2A2A2)
@@ -35,10 +43,6 @@ val ColorScheme.gold: Color
     @Composable
     get() = Gold
 
-val ColorScheme.lightWhite: Color
-    @Composable
-    get() = LightWhite
-
 val ColorScheme.lightBrown: Color
     @Composable
     get() = LightBrown
@@ -47,8 +51,5 @@ val ColorScheme.lightRed: Color
     @Composable
     get() = LightRed
 
-val ColorScheme.searchBackgroundColor: Color
-    @Composable
-    get() = SearchBackgroundColor
 
 
