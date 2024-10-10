@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kaffeeapp.R
+import com.example.kaffeeapp.ui.theme.LightGrey
 import com.example.kaffeeapp.util.Fonts.roboto
 
 @Composable
@@ -70,7 +71,7 @@ fun GoogleButton(
                 fontSize = with(LocalContext.current) { dimensionResource(id = R.dimen.text_size_medium).value.sp },
                 fontFamily = roboto,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = LightGrey,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_x_small))
             )

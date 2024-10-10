@@ -2,6 +2,7 @@ package com.example.kaffeeapp.presentation.main.profile.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,13 +35,13 @@ fun UserImage(
     Box(
         modifier = Modifier
             .size(dimensionResource(id = R.dimen.profile_image_size))
-            .clickable { onChangeImageClick.invoke() }
+
     ) {
         Card(
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
             modifier = Modifier
-                .size(dimensionResource(id = R.dimen.profile_image_size)),
-            shape = CircleShape,
+                .size(dimensionResource(id = R.dimen.profile_image_size))
+                .clip(CircleShape)
+                .border(BorderStroke(1.dp, MaterialTheme.colorScheme.primary), CircleShape),
             colors = CardDefaults.cardColors().copy(
                 containerColor = Color.Transparent
             )
@@ -67,7 +68,8 @@ fun UserImage(
             modifier = Modifier
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.tertiary)
-                .align(Alignment.BottomEnd),
+                .align(Alignment.BottomEnd)
+                .clickable { onChangeImageClick.invoke() },
             contentAlignment = Alignment.Center
         ) {
             Icon(

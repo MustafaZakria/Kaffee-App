@@ -15,6 +15,7 @@ import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
 import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.repository.interfaces.DataRepository
+import com.example.kaffeeapp.util.Constants.ADDRESS_ADDED_SUCCESSFULLY
 import com.example.kaffeeapp.util.Constants.FAILED_REMOVING_DRINK
 import com.example.kaffeeapp.util.Constants.ORDER_SUCCESS
 import com.example.kaffeeapp.util.Constants.SUCCESS_PROMO_CODE
@@ -75,7 +76,7 @@ class CartViewModel @Inject constructor(
                 withContext(dispatcherProvider.io) {
                     dataRepository.updateUserPoints()
                 }
-                cartDetails = cartDetails.copy(drinkOrders = mutableListOf())
+                cleanData()
                 SnackbarController.sendEvent(
                     SnackbsrEvent(
                         message = ORDER_SUCCESS
@@ -109,6 +110,13 @@ class CartViewModel @Inject constructor(
 
     fun setDeliveryMethod(address: DeliveryType) {
         cartDetails = cartDetails.copy(deliveryValue = address)
+        viewModelScope.launch {
+            SnackbarController.sendEvent(
+                SnackbsrEvent(
+                    message = ADDRESS_ADDED_SUCCESSFULLY
+                )
+            )
+        }
     }
 
     fun removeDrinkFromCart(orderIndex: Int) {
@@ -116,7 +124,7 @@ class CartViewModel @Inject constructor(
         calculateItemsPrice()
 
         if (cartDetails.drinkOrders.isEmpty()) {
-            clearStateData()
+            cleanData()
         }
     }
 
@@ -168,7 +176,9 @@ class CartViewModel @Inject constructor(
         bottomNavItems.first { it.route == MainScreen.CartScreen.route }.hasUpdate.value = false
     }
 
-    private fun clearStateData() {
-        cartInputsHandler = cartInputsHandler.copy(phoneErrorValue = "", addressErrorValue = "")
+    private fun cleanData() {
+        cartInputsHandler = CartInputsHandler()
+        cartDetails = CartDetails()
+        orderCost = OrderCost()
     }
 }

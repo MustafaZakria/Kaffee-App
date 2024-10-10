@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +41,9 @@ fun OrderQuantityColumn(
         Box(
             modifier = Modifier
                 .align(Alignment.End)
+                .size(dimensionResource(id = R.dimen.circle_size_32))
+                .padding(dimensionResource(id = R.dimen.padding_x_small))
+                .clip(CircleShape)
                 .clickable {
                     onDeleteClick.invoke()
                 },
@@ -59,11 +63,11 @@ fun OrderQuantityColumn(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Card(
-                shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .size(dimensionResource(id = R.dimen.circle_size_32))
                     .padding(dimensionResource(id = R.dimen.padding_x_small))
+                    .clip(CircleShape)
                     .clickable {
                         onMinusClick.invoke()
                     },
@@ -95,11 +99,11 @@ fun OrderQuantityColumn(
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small))
             )
             Card(
-                shape = CircleShape,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .size(dimensionResource(id = R.dimen.circle_size_32))
                     .padding(dimensionResource(id = R.dimen.padding_x_small))
+                    .clip(CircleShape)
                     .clickable {
                         onPlusClick.invoke()
                     },
