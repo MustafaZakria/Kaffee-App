@@ -32,5 +32,6 @@ Kaffee App
 
 ## Screens
 <p float="left">
-  <img src="screens/preview.png"/>
+  <img src="screens/preview_light.png"/>
+  <img src="screens/preview_dark.png"/>
 </p> 
