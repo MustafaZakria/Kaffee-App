@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.presentation.main.cart.PromoCodeContainer
 import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.util.model.OrderCost
 

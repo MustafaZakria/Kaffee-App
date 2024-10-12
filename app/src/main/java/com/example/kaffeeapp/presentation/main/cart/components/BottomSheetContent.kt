@@ -28,6 +28,7 @@ import com.example.kaffeeapp.components.ErrorImage
 import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.data.entities.BranchDetails
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
+import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.model.Resource
 

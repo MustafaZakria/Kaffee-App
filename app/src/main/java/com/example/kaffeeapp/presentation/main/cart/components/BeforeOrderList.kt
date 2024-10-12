@@ -12,8 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.DeliveryType
-import com.example.kaffeeapp.presentation.main.cart.DeliverySection
-import com.example.kaffeeapp.presentation.main.cart.PhoneNumberContainer
 import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
 import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
