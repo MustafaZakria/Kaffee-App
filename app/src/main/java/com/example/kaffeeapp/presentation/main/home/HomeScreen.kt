@@ -1,32 +1,21 @@
 package com.example.kaffeeapp.presentation.main.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,13 +23,12 @@ import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkType
 import com.example.kaffeeapp.presentation.main.home.components.BackgroundBanner
-import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 import com.example.kaffeeapp.presentation.main.home.components.DrinksSection
 import com.example.kaffeeapp.presentation.main.home.components.DrinksSelectTypeSection
-import com.example.kaffeeapp.presentation.main.home.components.FilterButton
 import com.example.kaffeeapp.presentation.main.home.components.GettingRemoteDataResponse
+import com.example.kaffeeapp.presentation.main.home.components.LocationSection
 import com.example.kaffeeapp.presentation.main.home.components.OfferBannerSection
-import com.example.kaffeeapp.presentation.main.home.components.SearchBar
+import com.example.kaffeeapp.presentation.main.home.components.SearchSection
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.model.SelectedType
@@ -153,73 +141,6 @@ fun MainScreenContent(
             signOutResponse = signOutResponse,
             userDataLoadingState = userDataLoadingState,
             onSignOutSuccess = { onSignOutSuccess.invoke() })
-    }
-}
-
-
-@Composable
-fun LocationSection(
-    modifier: Modifier,
-    location: String,
-    logout: () -> Unit
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            CustomizedText(
-                text = stringResource(id = R.string.location),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = dimensionResource(id = R.dimen.text_size_small),
-                fontWeight = FontWeight.Normal
-            )
-            CustomizedText(
-                text = location,
-                fontSize = dimensionResource(id = R.dimen.text_size_medium),
-                fontWeight = FontWeight.Medium
-            )
-        }
-        IconButton(onClick = { logout.invoke() }) {
-            Image(
-                painter = painterResource(id = R.drawable.logout),
-                contentDescription = stringResource(id = R.string.logout),
-                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
-            )
-        }
-    }
-}
-
-@Composable
-fun SearchSection(
-    modifier: Modifier,
-    searchStateValue: String,
-    onSearchValueChange: (String) -> Unit,
-    onClickFilterButton: () -> Unit
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        SearchBar(
-            modifier = Modifier
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
-                .weight(1f)
-                .background(MaterialTheme.colorScheme.surfaceContainerLow),
-            hint = stringResource(id = R.string.search_hint),
-            searchStateValue = searchStateValue
-        ) { value ->
-            onSearchValueChange.invoke(value)
-        }
-        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
-        FilterButton(
-            Modifier
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_medium)))
-        ) {
-            onClickFilterButton.invoke()
-        }
     }
 }
 
