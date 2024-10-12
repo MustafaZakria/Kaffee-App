@@ -1,1 +1,24 @@
+# Firebase configuration
+firebase.json
+
+# API Keys
+*.key
+*.pem
+*.p12
+
+# Environment Variables
+.env
+.env.*
+
+# Secrets
+secrets.json
+secrets.yaml
+
+# Other Sensitive Files
+config.js
+config.ts
+credentials.json
+
+# Build artifacts
 /build
+/dist
