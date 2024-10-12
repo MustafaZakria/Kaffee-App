@@ -18,6 +18,7 @@ secrets.yaml
 config.js
 config.ts
 credentials.json
+google-services.json
 
 # Build artifacts
 /build
