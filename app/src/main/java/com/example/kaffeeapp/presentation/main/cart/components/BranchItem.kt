@@ -11,8 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.TextWithLeadingIcon
@@ -43,20 +45,20 @@ fun BranchItem(
             )
             TextWithLeadingIcon(
                 text = branch.address,
-                icon = R.drawable.location_icon,
+                iconId = R.drawable.ic_location,
                 textSize = dimensionResource(id = R.dimen.text_size_medium),
                 fontWeight = FontWeight.Medium
             )
             TextWithLeadingIcon(
                 text = branch.workHours,
-                icon = R.drawable.time_icon,
+                iconId = R.drawable.ic_time,
                 textSize = dimensionResource(id = R.dimen.text_size_medium),
                 fontWeight = FontWeight.Medium
             )
         }
         if (selectedBranch == branch.name) {
             Icon(
-                painter = painterResource(id = R.drawable.check_icon),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

@@ -26,7 +26,7 @@ import com.example.kaffeeapp.util.Validator.validatePromoCode
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,13 +78,13 @@ class CartViewModel @Inject constructor(
                 }
                 cleanData()
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = ORDER_SUCCESS
                     )
                 )
             } else if (submitOrderResponse is Resource.Failure) {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = FAILED_REMOVING_DRINK
                     )
                 )
@@ -112,7 +112,7 @@ class CartViewModel @Inject constructor(
         cartDetails = cartDetails.copy(deliveryValue = address)
         viewModelScope.launch {
             SnackbarController.sendEvent(
-                SnackbsrEvent(
+                SnackbarEvent(
                     message = ADDRESS_ADDED_SUCCESSFULLY
                 )
             )
@@ -149,7 +149,7 @@ class CartViewModel @Inject constructor(
             orderCost.setDiscount(promoValue)
             viewModelScope.launch {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = SUCCESS_PROMO_CODE
                     )
                 )

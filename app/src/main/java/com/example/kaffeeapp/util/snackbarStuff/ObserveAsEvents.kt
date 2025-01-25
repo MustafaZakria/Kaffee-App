@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.util.snackbarStuff
+ package com.example.kaffeeapp.util.snackbarStuff
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

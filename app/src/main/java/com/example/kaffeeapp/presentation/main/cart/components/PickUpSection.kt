@@ -25,9 +25,9 @@ fun PickUpSection(
                 1.dp,
                 if (addressErrorValue.isNotBlank()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline
             ),
-            leadingIconId = R.drawable.edit_icon,
+            leadingIconId = R.drawable.ic_edit,
             leadingIconDesc = "edit",
-            trailingIconId = R.drawable.arrow_right_icon,
+            trailingIconId = R.drawable.ic_arrow_right,
             trailingIconDesc = "arrow right",
             color = MaterialTheme.colorScheme.primary,
             text = if (branch == "") stringResource(id = R.string.select_nearby_branch) else branch

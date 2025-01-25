@@ -51,7 +51,7 @@ import com.example.kaffeeapp.util.Constants.NOTE_ADDED_SUCCESSFULLY
 import com.example.kaffeeapp.util.model.OrderCost
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 import kotlinx.coroutines.launch
 
 @Composable
@@ -248,7 +248,7 @@ fun CartScreenContent(
                                 showDialog = false
                                 scope.launch {
                                     SnackbarController.sendEvent(
-                                        SnackbsrEvent(
+                                        SnackbarEvent(
                                             message = NOTE_ADDED_SUCCESSFULLY
                                         )
                                     )

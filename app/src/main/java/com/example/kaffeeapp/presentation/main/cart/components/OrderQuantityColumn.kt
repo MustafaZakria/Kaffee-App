@@ -19,8 +19,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
@@ -49,10 +51,10 @@ fun OrderQuantityColumn(
                 },
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.close_icon),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_close),
                 contentDescription = "delete",
                 tint = MaterialTheme.colorScheme.onTertiary,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(dimensionResource(R.dimen.icon_size))
             )
         }
         //drink quantity
@@ -84,10 +86,12 @@ fun OrderQuantityColumn(
                             else MaterialTheme.colorScheme.onTertiary.copy(alpha = 1f)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.negative_icon),
+                        ImageVector.vectorResource(id = R.drawable.ic_minus),
                         contentDescription = "minus",
                         modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.icon_size_large))
                             .padding(dimensionResource(id = R.dimen.padding_x_small))
+
                     )
                 }
             }
@@ -113,10 +117,10 @@ fun OrderQuantityColumn(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.positive_icon),
-                    contentDescription = "minus",
-                    tint = MaterialTheme.colorScheme.onTertiary,
+                    ImageVector.vectorResource(id = R.drawable.ic_plus),
+                    contentDescription = "plus",
                     modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.icon_size_large))
                         .padding(dimensionResource(id = R.dimen.padding_x_small))
                 )
             }

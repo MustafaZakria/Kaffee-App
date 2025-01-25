@@ -16,9 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
@@ -56,7 +58,7 @@ fun PhoneNumberContainer(
                 ),
                 leadingIcon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.phone_icon),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_phone),
                         contentDescription = "Phone",
                         tint = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))

@@ -3,7 +3,7 @@ package com.example.kaffeeapp.util.snackbarStuff
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
-data class SnackbsrEvent(
+data class SnackbarEvent(
     val message: String,
     val action: SnackbarAction? = null
 )
@@ -14,10 +14,10 @@ data class SnackbarAction(
 )
 
 object SnackbarController {
-    private val _events = Channel<SnackbsrEvent>()
+    private val _events = Channel<SnackbarEvent>()
     val events = _events.receiveAsFlow()
 
-    suspend fun sendEvent(event: SnackbsrEvent) {
+    suspend fun sendEvent(event: SnackbarEvent) {
         _events.send(event)
     }
 }

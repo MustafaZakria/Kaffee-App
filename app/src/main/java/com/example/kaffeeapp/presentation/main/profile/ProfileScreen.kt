@@ -37,7 +37,7 @@ fun ProfileScreen(
     val uploadingImageState = viewModel.uploadingImageState
 
     val isSystemOnDarkMode = viewModel.isSystemOnDarkMode
-    Log.d("DarkMode:PRof", isSystemOnDarkMode.toString())
+
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->

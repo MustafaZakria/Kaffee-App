@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -45,7 +44,7 @@ import com.example.kaffeeapp.util.Constants.SIGNED_IN_SUCCESSFULLY
 import com.example.kaffeeapp.util.Fonts.sora
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 import kotlinx.coroutines.launch
 
 @Composable
@@ -170,7 +169,7 @@ fun SignInScreenContent(
         onSuccess = {
             scope.launch {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = SIGNED_IN_SUCCESSFULLY
                     )
                 )
@@ -180,7 +179,7 @@ fun SignInScreenContent(
         onError = { exception ->
             scope.launch {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = exception.message ?: NETWORK_ERROR
                     )
                 )

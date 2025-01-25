@@ -9,8 +9,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import com.example.kaffeeapp.R
@@ -19,7 +21,7 @@ import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 @Composable
 fun TextWithLeadingIcon(
     text: String,
-    icon: Int,
+    iconId: Int,
     textSize: Dp,
     fontWeight: FontWeight
 ) {
@@ -29,7 +31,7 @@ fun TextWithLeadingIcon(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = icon),
+            ImageVector.vectorResource(iconId),
             contentDescription = "",
             tint = MaterialTheme.colorScheme.onTertiary,
             modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))

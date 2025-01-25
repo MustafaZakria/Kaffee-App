@@ -19,8 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.kaffeeapp.R
@@ -60,7 +62,7 @@ fun RoundedButtonWithIcon(
                 )
         ) {
             Icon(
-                painter = painterResource(id = leadingIconId),
+                imageVector = ImageVector.vectorResource(leadingIconId),
                 contentDescription = leadingIconDesc,
                 tint = color,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
@@ -75,7 +77,7 @@ fun RoundedButtonWithIcon(
             if (trailingIconId != null) {
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
-                    painter = painterResource(id = trailingIconId),
+                    imageVector = ImageVector.vectorResource(trailingIconId),
                     contentDescription = trailingIconDesc,
                     tint = color,
                     modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))

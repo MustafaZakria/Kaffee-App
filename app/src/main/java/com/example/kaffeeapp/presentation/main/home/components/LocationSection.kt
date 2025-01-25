@@ -5,14 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 
@@ -41,10 +44,11 @@ fun LocationSection(
             )
         }
         IconButton(onClick = { logout.invoke() }) {
-            Image(
-                painter = painterResource(id = R.drawable.logout),
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_logout),
                 contentDescription = stringResource(id = R.string.logout),
-                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
+                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size)),
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

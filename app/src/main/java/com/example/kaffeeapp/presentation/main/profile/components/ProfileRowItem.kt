@@ -13,8 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
@@ -50,7 +52,7 @@ fun ProfileRowItem(
                 style = MaterialTheme.typography.headlineSmall
             )
             Icon(
-                painter = painterResource(id = R.drawable.arrow_right_icon),
+                imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_right),
                 contentDescription = "",
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size)),
                 tint = MaterialTheme.colorScheme.onTertiary

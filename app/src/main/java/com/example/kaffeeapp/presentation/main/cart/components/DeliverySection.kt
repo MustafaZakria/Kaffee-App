@@ -30,9 +30,9 @@ fun DeliverySection(
             RoundedButtonWithIcon(
                 modifier = Modifier.weight(1f),
                 backgroundColor = MaterialTheme.colorScheme.tertiary,
-                leadingIconId = R.drawable.edit_icon,
+                leadingIconId = R.drawable.ic_edit,
                 leadingIconDesc = "edit",
-                trailingIconId = R.drawable.arrow_right_icon,
+                trailingIconId = R.drawable.ic_arrow_right,
                 trailingIconDesc = "arrow right",
                 color = MaterialTheme.colorScheme.primary,
                 text = if (address == "") stringResource(id = R.string.add_address) else address,
@@ -45,7 +45,7 @@ fun DeliverySection(
             }
             RoundedButtonWithIcon(
                 backgroundColor = MaterialTheme.colorScheme.tertiary,
-                leadingIconId = R.drawable.document_icon,
+                leadingIconId = R.drawable.ic_document,
                 leadingIconDesc = "add",
                 color = MaterialTheme.colorScheme.primary,
                 text = stringResource(id = R.string.add_note),

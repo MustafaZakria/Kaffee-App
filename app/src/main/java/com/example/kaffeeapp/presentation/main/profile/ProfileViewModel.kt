@@ -15,7 +15,7 @@ import com.example.kaffeeapp.util.Constants.SUCCESS_PROFILE_PICTURE
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -60,13 +60,13 @@ class ProfileViewModel @Inject constructor(
             uploadingImageState = profileRepository.setUserImage(uri)
             if (uploadingImageState is Resource.Success) {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = SUCCESS_PROFILE_PICTURE
                     )
                 )
             } else if (uploadingImageState is Resource.Failure) {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = FAILURE_PROFILE_PICTURE
                     )
                 )

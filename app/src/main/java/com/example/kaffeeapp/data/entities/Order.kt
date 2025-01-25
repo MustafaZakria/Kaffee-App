@@ -22,9 +22,7 @@ data class Order(
     val isHomeDeliveryOrder: Boolean = true,
     val totalPrice: String = "",
     val note: String = "",
-
     val deliveryDetails: Map<String, String> = mapOf(),
-
     val drinkOrders: List<DrinkOrder> = listOf()
 ) {
     fun setUserId(id: String) {

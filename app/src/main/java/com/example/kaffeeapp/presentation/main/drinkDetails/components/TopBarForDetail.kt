@@ -13,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
@@ -43,7 +45,7 @@ fun TopBarForDetail(
             onBackClick.invoke()
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.back_icon),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_arrow_left),
                 contentDescription = stringResource(id = R.string.back_img_desc),
                 tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
@@ -60,8 +62,8 @@ fun TopBarForDetail(
             onFavouriteClick.invoke()
         }) {
             Icon(
-                painter = if (isFav) painterResource(id = R.drawable.heart_filled) else painterResource(
-                    id = R.drawable.heart_outlined
+                imageVector = if (isFav) ImageVector.vectorResource(id = R.drawable.ic_heart_filled) else ImageVector.vectorResource(
+                    id = R.drawable.ic_heart_outlined
                 ),
                 contentDescription = stringResource(id = R.string.heart_img_desc),
                 tint = if (isFav) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,

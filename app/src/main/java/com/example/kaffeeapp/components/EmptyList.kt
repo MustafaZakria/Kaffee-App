@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
@@ -26,7 +28,7 @@ fun EmptyList(
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.empty_icon),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_empty),
             contentDescription = stringResource(id = R.string.error_img_desc),
             tint = MaterialTheme.colorScheme.onTertiary,
             modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size_large))

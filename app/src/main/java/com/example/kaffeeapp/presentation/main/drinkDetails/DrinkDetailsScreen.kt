@@ -34,7 +34,7 @@ import com.example.kaffeeapp.presentation.main.drinkDetails.components.TopBarFor
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.ADDED_TO_CART_SUCCESSFULLY
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 
 @Composable
 fun DrinkDetailsScreen(
@@ -153,7 +153,7 @@ fun DrinkDetailsContent(
         LaunchedEffect(key1 = addedToCartState) {
             if (addedToCartState) {
                 SnackbarController.sendEvent(
-                    SnackbsrEvent(
+                    SnackbarEvent(
                         message = ADDED_TO_CART_SUCCESSFULLY
                     )
                 )
@@ -166,7 +166,9 @@ fun DrinkDetailsContent(
 @Preview(showBackground = true)
 @Composable
 fun DrinkDetailsPreview() {
-    KaffeeAppTheme {
+    KaffeeAppTheme(
+        darkTheme = true
+    ) {
         val drink = Drink(
             id = "1",
             name = "Americano",

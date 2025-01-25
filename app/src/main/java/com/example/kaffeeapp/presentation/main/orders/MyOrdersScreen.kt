@@ -33,7 +33,7 @@ import com.example.kaffeeapp.util.Constants.ADDRESS_KEY
 import com.example.kaffeeapp.util.Constants.NETWORK_ERROR
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 
 @Composable
 fun MyOrdersScreen(
@@ -99,7 +99,7 @@ fun MyOrdersScreenContent(
             LaunchedEffect(key1 = ordersResponse) {
                 if (ordersResponse is Resource.Failure) {
                     SnackbarController.sendEvent(
-                        SnackbsrEvent(
+                        SnackbarEvent(
                             message = NETWORK_ERROR
                         )
                     )

@@ -16,7 +16,7 @@ import com.example.kaffeeapp.util.Constants.ID_KEY
 import com.example.kaffeeapp.util.DispatcherProvider
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
-import com.example.kaffeeapp.util.snackbarStuff.SnackbsrEvent
+import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,13 +51,13 @@ class DrinkDetailsViewModel @Inject constructor(
         val response = dataRepository.addDrinkToFav(_drink.value.id)
         if (response is Resource.Success) {
             SnackbarController.sendEvent(
-                SnackbsrEvent(
+                SnackbarEvent(
                     message = DRINK_ADDED_SUCCESSFULLY
                 )
             )
         } else if (response is Resource.Failure) {
             SnackbarController.sendEvent(
-                SnackbsrEvent(
+                SnackbarEvent(
                     message = FAILED_ADDING_DRINK
                 )
             )
@@ -68,13 +68,13 @@ class DrinkDetailsViewModel @Inject constructor(
         val response = dataRepository.removeDrinkFromFav(_drink.value.id)
         if (response is Resource.Success) {
             SnackbarController.sendEvent(
-                SnackbsrEvent(
+                SnackbarEvent(
                     message = DRINK_REMOVED_SUCCESSFULLY
                 )
             )
         } else if (response is Resource.Failure) {
             SnackbarController.sendEvent(
-                SnackbsrEvent(
+                SnackbarEvent(
                     message = FAILED_REMOVING_DRINK
                 )
             )

@@ -17,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
@@ -68,7 +70,7 @@ fun BottomBarForDetail(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.cart_outlined),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_calendar),
                         contentDescription = "shopping cart",
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))

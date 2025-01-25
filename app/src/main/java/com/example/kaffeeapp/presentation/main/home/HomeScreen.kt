@@ -187,7 +187,7 @@ fun MainPreview() {
         )
     )
     KaffeeAppTheme(
-        darkTheme = true
+        darkTheme = false
     ) {
         MainScreenContent(
             drinks,

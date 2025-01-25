@@ -21,26 +21,26 @@ val bottomNavItems = listOf(
     BottomNavigationItem(
         title = HOME_TITLE,
         route = MainScreen.HomeScreen.route,
-        selectedIcon = R.drawable.home_filled,
-        unselectedItem = R.drawable.home_outlined
+        selectedIcon = R.drawable.ic_home_filled,
+        unselectedItem = R.drawable.ic_home_outlined
     ),
     BottomNavigationItem(
         title = FAVOURITE_TITLE,
         route = MainScreen.FavouriteScreen.route,
-        selectedIcon = R.drawable.heart_filled,
-        unselectedItem = R.drawable.heart_outlined,
+        selectedIcon = R.drawable.ic_heart_filled,
+        unselectedItem = R.drawable.ic_heart_outlined,
     ),
     BottomNavigationItem(
         title = CART_TITLE,
         route = MainScreen.CartScreen.route,
-        selectedIcon = R.drawable.cart_filled,
-        unselectedItem = R.drawable.cart_outlined,
+        selectedIcon = R.drawable.ic_cart_filled,
+        unselectedItem = R.drawable.ic_cart_outlined,
     ),
     BottomNavigationItem(
         title = PROFILE_TITLE,
         route = MainScreen.ProfileScreen.route,
-        selectedIcon = R.drawable.profile_filled,
-        unselectedItem = R.drawable.profile_outlined,
+        selectedIcon = R.drawable.ic_profile_filled,
+        unselectedItem = R.drawable.ic_profile_outlined,
     )
 )
 val bottomNavRoutes = bottomNavItems.map { it.route }
