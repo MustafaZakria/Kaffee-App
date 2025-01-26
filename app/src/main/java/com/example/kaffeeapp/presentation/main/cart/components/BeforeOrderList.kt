@@ -12,14 +12,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.data.entities.DeliveryType
-import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
-import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
+import com.example.kaffeeapp.presentation.main.cart.models.OrderUi
+import com.example.kaffeeapp.presentation.main.cart.models.InputValidationResult
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 
 @Composable
 fun BeforeOrderList(
-    cartDetails: CartDetails,
-    errorHandler: CartInputsHandler,
+    orderUi: OrderUi,
+    errorHandler: InputValidationResult,
     navigateToMapScreen: () -> Unit,
     onPhoneValueChange: (String) -> Unit,
     onAddNoteClick: () -> Unit,
@@ -30,7 +30,7 @@ fun BeforeOrderList(
         modifier = Modifier.fillMaxWidth()
     ) {
         CustomizedText(
-            text = if (cartDetails.isDeliveryEnabled) stringResource(id = R.string.home_address) else stringResource(
+            text = if (orderUi.isDeliveryEnabled) stringResource(id = R.string.home_address) else stringResource(
                 id = R.string.pick_up_branch
             ),
             fontSize = dimensionResource(id = R.dimen.text_size_16),
@@ -39,11 +39,11 @@ fun BeforeOrderList(
         )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
-        if (cartDetails.isDeliveryEnabled) {
+        if (orderUi.isDeliveryEnabled) {
             var address = ""
-            if (cartDetails.deliveryValue != null) {
+            if (orderUi.deliveryValue != null) {
                 address =
-                    (cartDetails.deliveryValue as? DeliveryType.HomeDelivery)?.address ?: ""
+                    (orderUi.deliveryValue as? DeliveryType.HomeDelivery)?.address ?: ""
             }
             DeliverySection(
                 address = address,
@@ -55,9 +55,9 @@ fun BeforeOrderList(
             )
         } else {
             var branchName = ""
-            if (cartDetails.deliveryValue != null) {
+            if (orderUi.deliveryValue != null) {
                 branchName =
-                    (cartDetails.deliveryValue as? DeliveryType.BranchDelivery)?.branchName
+                    (orderUi.deliveryValue as? DeliveryType.BranchDelivery)?.branchName
                         ?: ""
             }
             PickUpSection(
@@ -74,7 +74,7 @@ fun BeforeOrderList(
                 onPhoneValueChange.invoke(value)
             },
             phoneErrorValue = errorHandler.phoneErrorValue,
-            phoneNumber = cartDetails.phoneNumberValue
+            phoneNumber = orderUi.phoneNumberValue
         )
     }
 }

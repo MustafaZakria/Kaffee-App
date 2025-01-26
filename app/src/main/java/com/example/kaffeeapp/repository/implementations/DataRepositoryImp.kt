@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.repository
+package com.example.kaffeeapp.repository.implementations
 
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.Order
@@ -6,12 +6,10 @@ import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.MainSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
-import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
 import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.repository.interfaces.FavDrinksResult
 import com.example.kaffeeapp.util.Constants.POINTS_ADDED_PER_ORDER
-import com.example.kaffeeapp.util.Utils.generateUniqueId
 import com.example.kaffeeapp.util.model.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -60,27 +58,13 @@ class DataRepositoryImp @Inject constructor(
     }
 
     override suspend fun addOrder(
-        cartDetails: CartDetails,
-        totalPrice: String,
+        order: Order
     ): Resource<Boolean> {
-        val orderId = generateUniqueId()
-        val order = Order(
-            orderId = orderId,
-            timestamp = System.currentTimeMillis(),
-            telephoneNumber = cartDetails.phoneNumberValue,
-            isHomeDeliveryOrder = cartDetails.isDeliveryEnabled,
-            totalPrice = totalPrice,
-            deliveryDetails = cartDetails.deliveryValue?.toMap() ?: mapOf(),
-            drinkOrders = cartDetails.drinkOrders,
-            note = cartDetails.note
-        )
-
         val response = addOrderToServer(order)
         if (response is Resource.Success) {
-            addOrderToDatabase(orderId)
-            return Resource.Success(true)
+            addOrderToDatabase(order.orderId)
         }
-        return Resource.Failure(response.exception)
+        return response
     }
 
     override suspend fun addOrderToDatabase(orderId: String) =
@@ -98,7 +82,6 @@ class DataRepositoryImp @Inject constructor(
     }
 
     override suspend fun getBranchesDetails(): Flow<BranchesResult> = flow {
-        emit(Resource.Loading())
         emit(drinkRemoteDb.getBranches())
     }
 

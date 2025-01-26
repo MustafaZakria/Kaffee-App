@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.repository
+package com.example.kaffeeapp.repository.implementations
 
 import androidx.lifecycle.LiveData
 import com.example.kaffeeapp.data.entities.Drink
@@ -50,14 +50,7 @@ class MainRepositoryImp @Inject constructor(
         val userResponse = drinkRemoteDb.getUser()
         if (userResponse is Resource.Success) {
             val user = userResponse.data ?: User()
-            userSharedPreference.addUserInfo(
-                name = user.name,
-                email = user.email,
-                imageUrl = user.imageUrl,
-                orders = user.orders,
-                favourites = user.favouriteDrinks,
-                points = user.points
-            )
+            userSharedPreference.addUserInfo(user)
             return Resource.Success(true)
         }
         return Resource.Failure(userResponse.exception)

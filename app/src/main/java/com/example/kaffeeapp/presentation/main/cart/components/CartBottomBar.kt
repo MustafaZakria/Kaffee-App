@@ -19,11 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
 import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
-import com.example.kaffeeapp.util.model.OrderCost
 
 @Composable
 fun CartBottomBar(
-    orderCost: OrderCost,
+    orderTotalCost: String,
     onOrderClick: () -> Unit
 ) {
     Box(
@@ -49,7 +48,7 @@ fun CartBottomBar(
                     fontWeight = FontWeight.Medium
                 )
                 CustomizedText(
-                    text = stringResource(id = R.string.drink_price, orderCost.getTotalCost()),
+                    text = stringResource(id = R.string.drink_price, orderTotalCost),
                     fontSize = dimensionResource(id = R.dimen.text_size_18),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold

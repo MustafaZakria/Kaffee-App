@@ -30,8 +30,7 @@ fun OrderCard(
     order: DrinkOrder,
     orderPrice: String,
     onDeleteClick: () -> Unit,
-    onPlusClick: () -> Unit,
-    onMinusClick: () -> Unit
+    onQuantityChange: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -94,9 +93,8 @@ fun OrderCard(
                     .height(85.dp)
                     .weight(1f),
                 quantity = order.quantity,
-                onMinusClick = { onMinusClick.invoke() },
                 onDeleteClick = { onDeleteClick.invoke() },
-                onPlusClick = { onPlusClick.invoke() }
+                onQuantityChange = { newQuantity -> onQuantityChange.invoke(newQuantity) }
             )
         }
     }

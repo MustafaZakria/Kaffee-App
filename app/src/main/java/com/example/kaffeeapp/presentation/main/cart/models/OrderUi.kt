@@ -3,14 +3,19 @@ package com.example.kaffeeapp.presentation.main.cart.models
 import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.Drink
 import com.example.kaffeeapp.data.entities.DrinkOrder
+import com.example.kaffeeapp.data.entities.Order
+import com.example.kaffeeapp.util.Utils.generateUniqueId
 import com.example.kaffeeapp.util.model.DrinkSize
 
-data class CartDetails(
+data class OrderUi(
     val deliveryValue: DeliveryType? = null,
     val isDeliveryEnabled: Boolean = true,
     val phoneNumberValue: String = "",
     val promoCodeValue: String = "",
     val note: String = "",
+    val itemsPrice: String = "0.0",
+    val discountValue: String = "0.0",
+    val deliveryFee: String = "0.0",
     val drinkOrders: MutableList<DrinkOrder> = mutableListOf()
 ) {
     fun setOrderQuantity(index: Int, quantity: Int) {
@@ -43,4 +48,24 @@ data class CartDetails(
             )
         }
     }
+
+    fun getTotalCost(): String {
+        val itemsPrice = itemsPrice.toDoubleOrNull() ?: 0.0
+        val discountValue = discountValue.toDoubleOrNull() ?: 0.0
+        val deliveryFee = deliveryFee.toDoubleOrNull() ?: 0.0
+
+        return (itemsPrice + deliveryFee - discountValue).toString()
+    }
+
+    fun toOrder() = Order(
+        orderId = generateUniqueId(),
+        timestamp = System.currentTimeMillis(),
+        telephoneNumber = phoneNumberValue,
+        isHomeDeliveryOrder = isDeliveryEnabled,
+        totalPrice = getTotalCost(),
+        deliveryDetails = deliveryValue?.toMap() ?: mapOf(),
+        drinkOrders = drinkOrders,
+        note = note
+    )
+
 }

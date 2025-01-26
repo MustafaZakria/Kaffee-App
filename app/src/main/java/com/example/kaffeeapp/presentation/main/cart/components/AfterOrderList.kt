@@ -6,13 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
-import com.example.kaffeeapp.util.model.OrderCost
+import com.example.kaffeeapp.presentation.main.cart.models.InputValidationResult
+import com.example.kaffeeapp.presentation.main.cart.models.OrderUi
 
 @Composable
 fun AfterOrderList(
-    orderCost: OrderCost,
-    errorHandler: CartInputsHandler,
+    orderUi: OrderUi,
+    errorHandler: InputValidationResult,
     isDeliveryEnabled: Boolean,
     onApplyPromoClick: (String) -> Unit,
 ) {
@@ -25,7 +25,10 @@ fun AfterOrderList(
 
     //payment summary
     PaymentSummarySection(
-        orderCost = orderCost,
+        itemsPrice = orderUi.itemsPrice,
+        discountValue = orderUi.discountValue,
+        deliveryFee = orderUi.deliveryFee,
+        totalPrice = orderUi.getTotalCost(),
         isDeliveryEnabled = isDeliveryEnabled
     )
 }

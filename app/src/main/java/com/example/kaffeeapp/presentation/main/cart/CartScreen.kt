@@ -33,8 +33,6 @@ import com.example.kaffeeapp.R
 import com.example.kaffeeapp.components.EmptyList
 import com.example.kaffeeapp.components.ProgressBar
 import com.example.kaffeeapp.components.TopBarTitle
-import com.example.kaffeeapp.data.entities.BranchDetails
-import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.DrinkOrder
 import com.example.kaffeeapp.presentation.main.cart.components.AfterOrderList
 import com.example.kaffeeapp.presentation.main.cart.components.BeforeOrderList
@@ -43,12 +41,21 @@ import com.example.kaffeeapp.presentation.main.cart.components.CartBottomBar
 import com.example.kaffeeapp.presentation.main.cart.components.NoteDialog
 import com.example.kaffeeapp.presentation.main.cart.components.OrderCard
 import com.example.kaffeeapp.presentation.main.cart.components.SelectDeliverMethod
-import com.example.kaffeeapp.presentation.main.cart.models.CartDetails
-import com.example.kaffeeapp.presentation.main.cart.models.CartInputsHandler
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.BranchSelected
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.DeliveryEnabledChanged
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.NoteSaved
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.OrderDeleted
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.OrderSubmitted
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.PhoneChanged
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.PromoCodeApplied
+import com.example.kaffeeapp.presentation.main.cart.models.CartScreenAction.QuantityChanged
+import com.example.kaffeeapp.presentation.main.cart.models.InputValidationResult
+import com.example.kaffeeapp.presentation.main.cart.models.OrderUi
 import com.example.kaffeeapp.repository.interfaces.BranchesResult
 import com.example.kaffeeapp.ui.theme.KaffeeAppTheme
 import com.example.kaffeeapp.util.Constants.NOTE_ADDED_SUCCESSFULLY
-import com.example.kaffeeapp.util.model.OrderCost
+import com.example.kaffeeapp.util.Utils.removeBadgeOnCart
 import com.example.kaffeeapp.util.model.Resource
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarController
 import com.example.kaffeeapp.util.snackbarStuff.SnackbarEvent
@@ -59,60 +66,34 @@ fun CartScreen(
     viewModel: CartViewModel,
     navigateToMapScreen: () -> Unit
 ) {
-    val orderCost = viewModel.orderCost
-    val cartDetails = viewModel.cartDetails
-    val orderResultState = viewModel.submitOrderResponse
-    val inputsHandler = viewModel.cartInputsHandler
-    val branches = viewModel.branches.value
+    val orderUi = viewModel.orderUi
+    val orderSubmissionResult = viewModel.orderSubmissionResult
+    val inputsHandler = viewModel.inputValidationResult
+    val branches = viewModel.branches
 
-    if (cartDetails.drinkOrders.isEmpty()) {
-        viewModel.removeBadgeOnCart()
+    if (orderUi.drinkOrders.isEmpty()) {
+        removeBadgeOnCart()
     }
 
     CartScreenContent(
-        orderCost = orderCost,
-        cartDetails = cartDetails,
-        orderResultState = orderResultState,
+        orderUi = orderUi,
+        orderSubmissionResult = orderSubmissionResult,
         inputsHandler = inputsHandler,
-        onDeleteOrderClick = { index -> viewModel.removeDrinkFromCart(index) },
-        onChangeQuantityClick = { index, newValue ->
-            viewModel.setDrinkOrderQuantity(
-                index,
-                newValue
-            )
-        },
-        onApplyPromoClick = { code -> viewModel.setPromoCode(code) },
-        onDeliveryEnableChange = { isEnabled -> viewModel.setDeliveryEnabledValue(isEnabled) },
-        navigateToMapScreen = { navigateToMapScreen.invoke() },
-        onPhoneValueChange = { value -> viewModel.onPhoneNumberValueChange(value) },
-        onOrderClick = { viewModel.submitOrder() },
-        onSaveNote = { value -> viewModel.setNoteValue(value) },
         branches = branches,
-        onSelectBranch = { branch ->
-            viewModel.setDeliveryMethod(
-                DeliveryType.BranchDelivery(branch.name, branch.address)
-            )
-        }
+        navigateToMapScreen = { navigateToMapScreen.invoke() },
+        onUserAction = { action -> viewModel.handleUserAction(action) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreenContent(
-    onDeleteOrderClick: (Int) -> Unit,
-    onChangeQuantityClick: (Int, Int) -> Unit,
-    onApplyPromoClick: (String) -> Unit,
-    orderCost: OrderCost,
-    onDeliveryEnableChange: (Boolean) -> Unit,
-    navigateToMapScreen: () -> Unit,
-    onPhoneValueChange: (String) -> Unit,
-    cartDetails: CartDetails,
-    inputsHandler: CartInputsHandler,
-    orderResultState: Resource<Boolean>?,
-    onOrderClick: () -> Unit,
-    onSaveNote: (String) -> Unit,
+    orderUi: OrderUi,
+    inputsHandler: InputValidationResult,
+    orderSubmissionResult: Resource<Boolean>?,
     branches: BranchesResult,
-    onSelectBranch: (BranchDetails) -> Unit
+    navigateToMapScreen: () -> Unit,
+    onUserAction: (CartScreenAction) -> Unit
 ) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -126,14 +107,13 @@ fun CartScreenContent(
         sheetContent = {
             BottomSheetContent(
                 branchesResult = branches,
-                onSelectBranch = { branch -> onSelectBranch.invoke(branch) }
+                onSelectBranch = ::BranchSelected
             )
         },
         sheetPeekHeight = 0.dp,
         scaffoldState = scaffoldState,
-//        sheetDragHandle = {}
 
-    ) { innerPadding ->
+        ) { innerPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -142,7 +122,7 @@ fun CartScreenContent(
                     bottom = dimensionResource(id = R.dimen.padding_bottom_navigation),
                 )
         ) {
-            if (cartDetails.drinkOrders.isNotEmpty()) {
+            if (orderUi.drinkOrders.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -155,13 +135,8 @@ fun CartScreenContent(
                                 start = dimensionResource(id = R.dimen.padding_medium),
                                 end = dimensionResource(id = R.dimen.padding_medium)
                             ),
-                        isDeliveryEnabled = cartDetails.isDeliveryEnabled,
-                        onDeliveryClick = {
-                            onDeliveryEnableChange.invoke(true)
-                        },
-                        onPickUpClick = {
-                            onDeliveryEnableChange.invoke(false)
-                        }
+                        isDeliveryEnabled = orderUi.isDeliveryEnabled,
+                        onDeliveryEnabledChange = { onUserAction.invoke(DeliveryEnabledChanged(it)) }
                     )
                     Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                     //drink orders
@@ -178,10 +153,10 @@ fun CartScreenContent(
                     ) {
                         item {
                             BeforeOrderList(
-                                cartDetails = cartDetails,
+                                orderUi = orderUi,
                                 errorHandler = inputsHandler,
                                 navigateToMapScreen = { navigateToMapScreen.invoke() },
-                                onPhoneValueChange = { value -> onPhoneValueChange.invoke(value) },
+                                onPhoneValueChange = { onUserAction.invoke(PhoneChanged(it)) },
                                 onAddNoteClick = { showDialog = true },
                                 onSelectBranchClick = {
                                     scope.launch {
@@ -194,21 +169,17 @@ fun CartScreenContent(
                             HorizontalDivider(color = MaterialTheme.colorScheme.secondary)
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_x_small)))
                         }
-                        itemsIndexed(cartDetails.drinkOrders) { index, order ->
+                        itemsIndexed(orderUi.drinkOrders) { index, order ->
                             OrderCard(
                                 order = order,
                                 orderPrice = (order.price.toDouble() * order.quantity).toString(),
-                                onDeleteClick = { onDeleteOrderClick.invoke(index) },
-                                onPlusClick = {
-                                    onChangeQuantityClick.invoke(
-                                        index,
-                                        order.quantity + 1
-                                    )
-                                },
-                                onMinusClick = {
-                                    onChangeQuantityClick.invoke(
-                                        index,
-                                        order.quantity - 1
+                                onDeleteClick = { onUserAction.invoke(OrderDeleted(index)) },
+                                onQuantityChange = {
+                                    onUserAction.invoke(
+                                        QuantityChanged(
+                                            index,
+                                            it
+                                        )
                                     )
                                 }
                             )
@@ -220,28 +191,24 @@ fun CartScreenContent(
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
 
                             AfterOrderList(
-                                orderCost = orderCost,
+                                orderUi = orderUi,
                                 errorHandler = inputsHandler,
-                                isDeliveryEnabled = cartDetails.isDeliveryEnabled,
-                                onApplyPromoClick = { code -> onApplyPromoClick.invoke(code) }
+                                isDeliveryEnabled = orderUi.isDeliveryEnabled,
+                                onApplyPromoClick = { onUserAction.invoke(PromoCodeApplied(it)) },
                             )
                             Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
                         }
                     }
                     CartBottomBar(
-                        orderCost = orderCost,
-                        onOrderClick = {
-                            onOrderClick.invoke()
-                        }
+                        orderTotalCost = orderUi.getTotalCost(),
+                        onOrderClick = { onUserAction.invoke(OrderSubmitted) }
                     )
                     if (showDialog) {
                         NoteDialog(
-                            noteValue = cartDetails.note,
-                            onNoteValueChange = { value ->
-                                onSaveNote.invoke(value)
-                            },
+                            noteValue = orderUi.note,
+                            onNoteValueChange = ::NoteSaved,
                             onDismiss = {
-                                onSaveNote.invoke("")
+                                onUserAction.invoke(NoteSaved(orderUi.note))
                                 showDialog = false
                             },
                             onSaveNote = {
@@ -263,7 +230,7 @@ fun CartScreenContent(
         }
     }
     OnResultState(
-        orderResult = orderResultState
+        orderResult = orderSubmissionResult
     )
 }
 
@@ -302,23 +269,22 @@ fun CartScreenPreview() {
             price = "35.0"
         )
     )
-    val cartDetails = CartDetails(drinkOrders = orders)
+    val orderUi = OrderUi(drinkOrders = orders)
     KaffeeAppTheme {
-        CartScreenContent(
-            {},
-            { _, _ -> },
-            {},
-            OrderCost(),
-            {},
-            {},
-            {},
-            cartDetails,
-            CartInputsHandler(),
-            null,
-            {},
-            {},
-            Resource.Loading(),
-            {}
-        )
+//        CartScreenContent(
+//            {},
+//            { _, _ -> },
+//            {},
+//            {},
+//            {},
+//            {},
+//            orderUi,
+//            InputValidationResult(),
+//            null,
+//            {},
+//            {},
+//            Resource.Loading(),
+//            {}
+//        )
     }
 }

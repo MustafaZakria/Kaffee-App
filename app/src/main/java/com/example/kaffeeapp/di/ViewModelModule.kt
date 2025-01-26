@@ -8,10 +8,10 @@ import com.example.kaffeeapp.data.local.DrinkDao
 import com.example.kaffeeapp.data.local.sharedPreference.MainSharedPreference
 import com.example.kaffeeapp.data.local.sharedPreference.UserSharedPreference
 import com.example.kaffeeapp.data.remote.DrinkRemoteDb
-import com.example.kaffeeapp.repository.AuthRepositoryImp
-import com.example.kaffeeapp.repository.DataRepositoryImp
-import com.example.kaffeeapp.repository.MainRepositoryImp
-import com.example.kaffeeapp.repository.ProfileRepositoryImp
+import com.example.kaffeeapp.repository.implementations.AuthRepositoryImp
+import com.example.kaffeeapp.repository.implementations.DataRepositoryImp
+import com.example.kaffeeapp.repository.implementations.MainRepositoryImp
+import com.example.kaffeeapp.repository.implementations.ProfileRepositoryImp
 import com.example.kaffeeapp.repository.interfaces.AuthRepository
 import com.example.kaffeeapp.repository.interfaces.DataRepository
 import com.example.kaffeeapp.repository.interfaces.MainRepository

@@ -33,8 +33,7 @@ fun OrderQuantityColumn(
     modifier: Modifier,
     quantity: Int,
     onDeleteClick: () -> Unit,
-    onPlusClick: () -> Unit,
-    onMinusClick: () -> Unit
+    onQuantityChange: (Int) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -71,7 +70,7 @@ fun OrderQuantityColumn(
                     .padding(dimensionResource(id = R.dimen.padding_x_small))
                     .clip(CircleShape)
                     .clickable {
-                        onMinusClick.invoke()
+                        onQuantityChange.invoke(quantity - 1)
                     },
                 colors = CardDefaults.cardColors().copy(
                     containerColor = MaterialTheme.colorScheme.tertiary
@@ -109,7 +108,7 @@ fun OrderQuantityColumn(
                     .padding(dimensionResource(id = R.dimen.padding_x_small))
                     .clip(CircleShape)
                     .clickable {
-                        onPlusClick.invoke()
+                        onQuantityChange.invoke(quantity + 1)
                     },
                 colors = CardDefaults.cardColors().copy(
                     containerColor = MaterialTheme.colorScheme.tertiary

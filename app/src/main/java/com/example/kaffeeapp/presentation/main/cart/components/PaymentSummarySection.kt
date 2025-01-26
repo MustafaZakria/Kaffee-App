@@ -16,11 +16,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.kaffeeapp.R
-import com.example.kaffeeapp.util.model.OrderCost
 
 @Composable
 fun PaymentSummarySection(
-    orderCost: OrderCost,
+    itemsPrice: String,
+    discountValue: String,
+    deliveryFee: String,
+    totalPrice: String,
     isDeliveryEnabled: Boolean
 ) {
     Card(
@@ -38,20 +40,20 @@ fun PaymentSummarySection(
             //items
             RowOfPriceItem(
                 item = stringResource(id = R.string.items),
-                price = stringResource(id = R.string.price_value, orderCost.itemsPrice)
+                price = stringResource(id = R.string.price_value, itemsPrice)
             )
             //discount
             RowOfPriceItem(
                 item = stringResource(id = R.string.discount),
-                price = stringResource(id = R.string.discount_price, orderCost.discountValue)
+                price = stringResource(id = R.string.discount_price, discountValue)
             )
             if (isDeliveryEnabled) {
                 //delivery
                 RowOfPriceItem(
                     item = stringResource(id = R.string.delivery),
-                    price = if (orderCost.deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
+                    price = if (deliveryFee.toDouble() == 0.0) stringResource(id = R.string.free) else stringResource(
                         id = R.string.price_value,
-                        orderCost.deliveryFee
+                        deliveryFee
                     )
                 )
             }
@@ -63,7 +65,7 @@ fun PaymentSummarySection(
             //total
             RowOfPriceItem(
                 item = stringResource(id = R.string.total),
-                price = stringResource(id = R.string.drink_price, orderCost.getTotalCost()),
+                price = stringResource(id = R.string.drink_price, totalPrice),
                 fontWeightItem = FontWeight.Medium
             )
         }

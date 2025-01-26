@@ -27,8 +27,7 @@ import com.example.kaffeeapp.presentation.main.home.components.CustomizedText
 fun SelectDeliverMethod(
     modifier: Modifier,
     isDeliveryEnabled: Boolean,
-    onDeliveryClick: () -> Unit,
-    onPickUpClick: () -> Unit
+    onDeliveryEnabledChange: (Boolean) -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -49,7 +48,7 @@ fun SelectDeliverMethod(
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)))
                     .background(if (isDeliveryEnabled) MaterialTheme.colorScheme.primary else Color.Transparent)
                     .weight(1f)
-                    .clickable { onDeliveryClick.invoke() }
+                    .clickable { onDeliveryEnabledChange.invoke(true) }
             ) {
                 CustomizedText(
                     text = stringResource(id = R.string.delivery),
@@ -67,7 +66,7 @@ fun SelectDeliverMethod(
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.shape_rounded_corner_small)))
                     .background(if (!isDeliveryEnabled) MaterialTheme.colorScheme.primary else Color.Transparent)
                     .weight(1f)
-                    .clickable { onPickUpClick.invoke() }
+                    .clickable { onDeliveryEnabledChange.invoke(false) }
             ) {
                 CustomizedText(
                     text = stringResource(id = R.string.pick_up),

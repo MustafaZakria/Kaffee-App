@@ -6,6 +6,8 @@ import androidx.compose.material3.RippleConfiguration
 import androidx.compose.ui.graphics.Color
 import com.example.kaffeeapp.data.entities.DeliveryType
 import com.example.kaffeeapp.data.entities.User
+import com.example.kaffeeapp.navigation.MainScreen
+import com.example.kaffeeapp.navigation.model.bottomNavItems
 import com.example.kaffeeapp.util.Constants.INVALID_VALUE
 import com.example.kaffeeapp.util.Constants.NULL_VALUE
 import com.google.firebase.auth.FirebaseUser
@@ -35,4 +37,11 @@ object Utils {
         )
     }
 
+    fun showBadgeOnCart() {
+        bottomNavItems.first { it.route == MainScreen.CartScreen.route }.hasUpdate.value = true
+    }
+
+    fun removeBadgeOnCart() {
+        bottomNavItems.first { it.route == MainScreen.CartScreen.route }.hasUpdate.value = false
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.kaffeeapp.repository
+package com.example.kaffeeapp.repository.implementations
 
 import android.net.Uri
 import com.example.kaffeeapp.data.entities.User

@@ -1,6 +1,7 @@
 package com.example.kaffeeapp.data.local.sharedPreference
 
 import android.content.SharedPreferences
+import com.example.kaffeeapp.data.entities.User
 import com.example.kaffeeapp.util.Constants.EMAIL_KEY
 import com.example.kaffeeapp.util.Constants.FAV_DRINKS_KEY
 import com.example.kaffeeapp.util.Constants.NAME_KEY
@@ -13,19 +14,16 @@ class UserSharedPreference (
 ) : BaseSharedPreference(sharedPreferences = sharedPreferences) {
 
     fun addUserInfo(
-        name: String,
-        email: String,
-        imageUrl: String,
-        orders: List<String>,
-        favourites: List<String>,
-        points: String
+        user: User
     ) {
-        addString(name, NAME_KEY)
-        addString(email, EMAIL_KEY)
-        addString(imageUrl, IMAGE_URL_KEY)
-        insertList(orders, ORDERS_KEY)
-        insertList(favourites, FAV_DRINKS_KEY)
-        addString(points, POINTS_KEY)
+        user.apply {
+            addString(name, NAME_KEY)
+            addString(email, EMAIL_KEY)
+            addString(imageUrl, IMAGE_URL_KEY)
+            insertList(orders, ORDERS_KEY)
+            insertList(favouriteDrinks, FAV_DRINKS_KEY)
+            addString(points, POINTS_KEY)
+        }
     }
 
     fun addOrder(id: String) = appendString(id, ORDERS_KEY)
