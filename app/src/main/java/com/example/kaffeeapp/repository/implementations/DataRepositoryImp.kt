@@ -14,6 +14,7 @@ import com.example.kaffeeapp.util.model.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -45,15 +46,21 @@ class DataRepositoryImp @Inject constructor(
         return response
     }
 
-    override suspend fun getFavDrinks(): Flow<FavDrinksResult> = flow {
-        emit(Resource.Loading())
-        userSharedPreference.getUserFavFlow()
+    override suspend fun getFavDrinks(): Flow<FavDrinksResult> {
+        return userSharedPreference.getUserFavFlow()
             .distinctUntilChanged()
-            .collect { value ->
-
-                val list = value.split(",").mapNotNull { id -> getDrinkById(id) }
-
-                emit(Resource.Success(list))
+            .map { value ->
+                try {
+                    if (value.isNullOrEmpty()) {
+                        return@map Resource.Success(emptyList())
+                    }
+                    val list = value.split(",").mapNotNull { id ->
+                        getDrinkById(id)
+                    }
+                    Resource.Success(list)
+                } catch (e: Exception) {
+                    Resource.Failure(e)
+                }
             }
     }
 
@@ -94,3 +101,5 @@ class DataRepositoryImp @Inject constructor(
         }
     }
 }
+
+

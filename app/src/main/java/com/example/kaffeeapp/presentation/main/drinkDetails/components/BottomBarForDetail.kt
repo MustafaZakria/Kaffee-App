@@ -70,7 +70,7 @@ fun BottomBarForDetail(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_calendar),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_cart_outlined),
                         contentDescription = "shopping cart",
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(dimensionResource(id = R.dimen.icon_size))
